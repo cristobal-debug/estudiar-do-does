@@ -132,6 +132,11 @@ body:has(.session, .flash) .side-nav, body:has(.session, .flash) .bottom-nav { d
 body:has(.session, .flash) .layout { display: block; }
 body:has(.session, .flash) main { padding-bottom: 40px; }
 
+/* ——— Footer ——— */
+.site-footer { max-width: 1120px; margin: 40px auto 0; padding-top: 18px; border-top: 1px solid var(--line); text-align: center; color: var(--muted); font-size: .88rem; }
+.site-footer a { font-weight: 700; }
+body:has(.session, .flash) .site-footer { display: none; }
+
 /* ——— Page structure ——— */
 .page-head { margin-bottom: 22px; }
 .page-head .lead { max-width: 60ch; }

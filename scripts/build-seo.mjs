@@ -38,7 +38,7 @@ ${units.map(u => `<section class="panel"><h3>${u.icon} Unidad ${u.n}: ${esc(u.ti
 <h2>Gramática ${lv.code}</h2>
 <div class="grid">${topics.map(t => `<article class="link-card"><b>${esc(t.title)}</b><span>${esc(t.es)}</span><span>${esc(strip(t.sum))}</span>${t.contrast?.[0] ? `<span class="small">✗ <s>${esc(t.contrast[0].wrong)}</s> → ✓ <b>${esc(t.contrast[0].right)}</b></span>` : ''}</article>`).join('')}</div>
 <p class="center"><a class="btn primary lg" href="../#/learn/${lv.id}">Practicar el nivel ${lv.code} ahora</a></p>
-</div></main></body></html>`;
+</div><footer class="site-footer">Desarrollado por <a href="https://cristobaljeldrez.com" target="_blank" rel="noopener">cristobaljeldrez.com</a></footer></main></body></html>`;
   mkdirSync(slug, { recursive: true });
   writeFileSync(`${slug}/index.html`, html);
 }

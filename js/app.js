@@ -110,7 +110,10 @@ function route() {
   renderChrome(path);
   const root = document.createElement('div');
   root.className = 'view-inner';
-  view.replaceChildren(root);
+  const footer = document.createElement('footer');
+  footer.className = 'site-footer';
+  footer.innerHTML = `${L('Developed by', 'Desarrollado por')} <a href="https://cristobaljeldrez.com" target="_blank" rel="noopener">cristobaljeldrez.com</a>`;
+  view.replaceChildren(root, footer);
   try { r.fn(root, params); }
   catch (err) { console.error(err); root.innerHTML = `<div class="panel notice">${icon('alert')}<p>${L('Something went wrong loading this page.', 'Algo ha fallado al cargar esta página.')} <a href="#/">${L('Go home', 'Ir al inicio')}</a></p></div>`; }
   document.title = `${L(...r.title)} · Doable English`;
