@@ -1,275 +1,77 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8">
+<html lang="es">
+<head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Guía y ejercicios interactivos de inglés: Present Simple, to be, can, tercera persona, do y make, verbos regulares e irregulares."><title>Inglés: guía y práctica</title>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
-<style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
---bg:#EDF2F8;--card:#fff;--ink:#1B2740;--mute:#5B6885;--line:#C9D3E3;--acc:#0E7C86;--onacc:#fff;--accbg:#D7EFF0;--ok:#1E7A45;--okbg:#DDF3E5;--bad:#B3372E;--badbg:#F9E1DE;--tile:#FFF6DC;--tl:#E2B93B}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121A2B;--card:#1B2640;--ink:#EAF0FB;--mute:#9AA8C6;--line:#33415F;--acc:#5FD0D8;--onacc:#0B1A1C;--accbg:#173A45;--ok:#6FD79A;--okbg:#163A28;--bad:#FF8F85;--badbg:#472220;--tile:#3A3320;--tl:#C9A032}}
-:root[data-theme="dark"]{--bg:#121A2B;--card:#1B2640;--ink:#EAF0FB;--mute:#9AA8C6;--line:#33415F;--acc:#5FD0D8;--onacc:#0B1A1C;--accbg:#173A45;--ok:#6FD79A;--okbg:#163A28;--bad:#FF8F85;--badbg:#472220;--tile:#3A3320;--tl:#C9A032}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif}
-.wrap{max-width:640px;margin:0 auto;padding:20px 16px 40px}
-h1{font-size:1.6rem;line-height:1.2;margin:0 0 4px}
-.sub{color:var(--mute);margin:0 0 16px}
-.tabs,.row{display:flex;gap:8px;flex-wrap:wrap}
-.tabs{margin-bottom:16px}
-.tab{font:inherit;border:2px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;cursor:pointer}
-.tab[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
-.meta{display:flex;justify-content:space-between;color:var(--mute);font-size:.9rem;margin-bottom:10px}
-.bar{height:6px;background:var(--line);border-radius:3px;margin-bottom:16px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--acc);transition:width .3s}
-.q{font-size:1.35rem;line-height:1.35;margin:0 0 8px}
-.badge{display:inline-block;background:var(--accbg);color:var(--acc);border-radius:6px;padding:1px 8px;font-size:.85rem;margin-bottom:8px}
-.slot{min-height:56px;border-bottom:2px dashed var(--line);display:flex;flex-wrap:wrap;gap:8px;padding:8px 0;margin-bottom:14px}
-.pool{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.tile{font:inherit;background:var(--tile);color:var(--ink);border:1px solid var(--tl);border-bottom-width:4px;border-radius:8px;padding:6px 12px;cursor:pointer}
-.tile:active{transform:translateY(2px);border-bottom-width:2px}
-.pool .tile[disabled]{opacity:.25;cursor:default}
-.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
-.opt{font:inherit;font-size:1.15rem;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:12px;cursor:pointer}
-.opt[disabled]{color:var(--ink);cursor:default}
-.opt.ok{background:var(--okbg);border-color:var(--ok)}
-.opt.no{background:var(--badbg);border-color:var(--bad)}
-.btn{font:inherit;background:var(--acc);color:var(--onacc);border:2px solid var(--acc);border-radius:10px;padding:8px 18px;cursor:pointer}
-.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-.btn[disabled]{opacity:.4;cursor:default}
-.fb{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--okbg);border-left:5px solid var(--ok)}
-.fb.no{background:var(--badbg);border-left-color:var(--bad)}
-:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
-h2{font-size:1.15rem;margin:22px 0 8px}h2:first-child{margin-top:0}
-table{border-collapse:collapse;width:100%;font-size:.95rem}
-th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
-th{color:var(--mute)}.tw{overflow-x:auto}
-td.cv{color:transparent;background:var(--line);cursor:pointer;user-select:none}
-.mk{display:flex;gap:10px;align-items:center;margin:6px 0}.mk i{width:16px;height:16px;border-radius:4px;flex:none}
-input{font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px;padding:8px 12px;flex:1;min-width:0}
-.pista{background:var(--accbg);border-radius:10px;padding:10px 14px;margin:8px 0 14px}.pista div{margin-top:2px}
-.ln{margin:8px 0}.ln input{width:100%;box-sizing:border-box}
-.ln small{display:block;min-height:1.3em;font-size:.85rem;color:var(--mute)}.ln small.ok{color:var(--ok)}.ln small.no{color:var(--bad)}
-.sum{font-weight:700;margin:12px 0 0}
-</style></head>
-<body><div class="wrap">
-<h1>Inglés: guía y práctica</h1>
-<p class="sub">Guía de estudio y ejercicios cortos. Los fallos se repiten al final.</p>
-<div class="tabs" id="tabs"></div>
-<div id="app"></div>
-</div>
+<title>Doable English · Aprende inglés de A1 a C1, paso a paso</title>
+<meta name="description" content="Plataforma para aprender inglés de A1 a C1 pensada para hispanohablantes: ruta de aprendizaje, gramática clara, vocabulario con repetición espaciada, listening, reading, writing, speaking y test de nivel gratuito.">
+<link rel="canonical" href="https://estudiar-do-does.vercel.app/">
+<meta name="theme-color" content="#f6f4ef">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Doable English">
+<meta property="og:title" content="Doable English · Aprende inglés de A1 a C1, paso a paso">
+<meta property="og:description" content="Ruta estructurada, test de nivel adaptativo, repetición espaciada y correcciones pensadas para hispanohablantes.">
+<meta property="og:url" content="https://estudiar-do-does.vercel.app/">
+<meta property="og:image" content="https://estudiar-do-does.vercel.app/assets/og.png">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Doable">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,500;9..144,650&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<link rel="modulepreload" href="js/app.js">
 <script>
-const LAB={aff:'Afirmativa',neg:'Negativa',q:'Pregunta Yes/No',wh:'Pregunta Wh-',be:'Verbo to be',can:'Verbo can'};
-const TIPS={aff:'He, she, it: verbo + s.',neg:'Sujeto + do / does + not + verbo base.',q:'Do / Does + sujeto + verbo base.',wh:'Palabra interrogativa + do / does + sujeto + verbo base.',be:'Am / is / are; en la negativa + not; en la pregunta el verbo va antes del sujeto.',can:'Sujeto + can + verbo base, sin -s con he, she, it. Negativa: can\'t. Pregunta: Can + sujeto + verbo.'};
-const B=[
-['Ella tiene un ordenador nuevo.','aff','She has a new computer','have'],
-['Ella no tiene un ordenador nuevo.','neg',"She doesn't have a new computer",'has'],
-['¿Ella tiene un ordenador nuevo?','q','Does she have a new computer','has'],
-['Ellos no usan guantes.','neg',"They don't use gloves",'doesn\'t'],
-['¿Ellos usan guantes?','q','Do they use gloves','does'],
-['Mi hermana envía muchos emails.','aff','My sister sends a lot of emails','send'],
-['¿Cómo funciona?','wh','How does it work','works'],
-['¿Qué conducen?','wh','What do they drive','does'],
-['Él no canta en un grupo.','neg',"He doesn't sing in a band",'sings'],
-['Ella compra pan todos los días.','aff','She buys bread every day','buy'],
-['Nosotros pagamos con tarjeta.','aff','We pay by credit card','pays'],
-['¿Dónde vivo?','wh','Where do I live','does'],
-['¿Por qué canta él en un grupo?','wh','Why does he sing in a band','sings'],
-['Mi madre no comete errores.','neg',"My mother doesn't make mistakes",'do'],
-['Estoy en casa.','be',"I'm at home",'is'],['Él es mi primo.','be','He is my cousin','are'],
-['Ellos no son diferentes.','be',"They aren't different","isn't"],['¿Dónde estamos?','be','Where are we','is'],
-['¿Ella es bailarina?','be','Is she a dancer','are'],['Puedo ir.','can','I can go','cans'],
-['Él sabe montar en bicicleta.','can','He can ride a bike','rides'],['Ella no sabe esquiar.','can',"She can't ski","doesn't"],
-['¿Puedes quedarte?','can','Can you stay','Do'],['Sara sabe hacer galletas.','can','Sara can make cookies','makes'],
-['Sabemos escribir informes.','can','We can write reports','writes']];
-const F=[
-["He ___ sing in a band.",["don't","doesn't"],1,"Con he, she, it se usa doesn't."],
-["___ she run a company?",["Do","Does"],1,"Con he, she, it se usa does."],
-["They ___ a 4x4.",["drive","drives"],0,"Con they no se añade -s."],
-["It ___ from China.",["come","comes"],1,"Con it el verbo lleva -s."],
-["She doesn't ___ bread.",["buy","buys"],0,"Después de doesn't el verbo va en forma base."],
-["___ you work for a big company?",["Do","Does"],0,"Con you se usa do."],
-["My sister ___ more than 100 emails a day.",["send","sends"],1,"My sister equivale a she: verbo + s."],
-["Does he ___ in NY?",["live","lives"],0,"Después de does el verbo va en forma base."],
-["We ___ pay by credit card.",["don't","doesn't"],0,"Con we se usa don't."],
-["She ___ in the library.",["study","studies"],1,"Consonante + y: la y cambia a -ies."],
-["The boy ___ bad.",["smell","smells"],1,"The boy equivale a he: verbo + s."],
-["What ___ they drive?",["do","does"],0,"Con they se usa do."],
-["She ___ a new computer.",["have","has"],1,"Con she, have cambia a has."],
-["He ___ his homework every day.",["do","does"],1,"Con he, do se convierte en does."],
-["She ___ a dancer.",["is","are"],0,"She usa is."],["We ___ friends.",["is","are"],1,"We usa are."],
-["___ they colleagues?",["Is","Are"],1,"They usa are."],["He ___ sing opera.",["cans","can"],1,"Can no cambia: sin -s con he, she, it."],
-["She ___ ski.",["can't","doesn't can"],0,"Con can no se usa do / does."],["___ you speak many languages?",["Can","Do"],0,"Con can la pregunta empieza por Can."]];
-const DM=[['___ homework',0,'hacer los deberes'],['___ a cake',1,'hacer una tarta'],['___ a mistake',1,'cometer un error'],['___ the dishes',0,'fregar los platos'],['___ the bed',1,'hacer la cama'],['___ exercise',0,'hacer ejercicio'],['___ a decision',1,'tomar una decisión'],['___ friends',1,'hacer amigos'],['___ business',0,'hacer negocios'],['___ a phone call',1,'hacer una llamada'],['___ noise',1,'hacer ruido'],['___ housework',0,'hacer las tareas del hogar']]
-.map(([s,c,es])=>[s,['do','make'],c,s.replace('___',['do','make'][c])+': '+es+'. Do es para actividades, make para crear algo.']);
-const RV='accept arrive ask call change cheat clap clean close cook cry dance dream enjoy enter fail finish hate help hope jump kill kiss laugh learn like listen live look love need open pass play remember share smile start stay stop study talk text travel try use wait walk want work'.split(' ');
-const RU={s:'Regla general: se añade -s.',es:'Acaba en -s, -sh, -ch, -x, -z u -o: se añade -es.',ies:'Consonante + y: la y cambia a -ies.',ys:'Vocal + y: se añade -s.',has:'have es irregular: has.'};
-const t3=v=>v=='have'?['has','has']:/(s|sh|ch|x|z|o)$/.test(v)?[v+'es','es']:/[^aeiou]y$/.test(v)?[v.slice(0,-1)+'ies','ies']:[v+'s',/y$/.test(v)?'ys':'s'];
-const TH=RV.concat('fly go do watch teach fix carry have'.split(' ')).map(v=>{const [a,r]=t3(v);return [v,a,RU[r]]});
-const IRR='be,was/were,been,ser/estar;become,became,become,convertirse;begin,began,begun,empezar;bring,brought,brought,traer;build,built,built,construir;buy,bought,bought,comprar;catch,caught,caught,atrapar;choose,chose,chosen,elegir;come,came,come,venir;cost,cost,cost,costar;do,did,done,hacer;drink,drank,drunk,beber;drive,drove,driven,conducir;eat,ate,eaten,comer;fall,fell,fallen,caer;feed,fed,fed,alimentar;find,found,found,encontrar;fly,flew,flown,volar;get,got,got,obtener;give,gave,given,dar;go,went,gone,ir;have,had,had,tener;hear,heard,heard,oír;keep,kept,kept,guardar;leave,left,left,salir / dejar;lend,lent,lent,prestar;lose,lost,lost,perder;make,made,made,hacer;meet,met,met,conocer;know,knew,known,saber;put,put,put,poner;read,read,read,leer;run,ran,run,correr;say,said,said,decir;see,saw,seen,ver;sell,sold,sold,vender;send,sent,sent,enviar;shoot,shot,shot,disparar;sleep,slept,slept,dormir;speak,spoke,spoken,hablar;spell,spelled,spelled,deletrear;spend,spent,spent,gastar;take,took,taken,tomar;tell,told,told,contar;think,thought,thought,pensar;understand,understood,understood,entender;wear,wore,worn,llevar puesto;win,won,won,ganar;write,wrote,written,escribir';
-const GUIDE=`<div class="card"><h2>Present Simple: estructura</h2><div class="tw"><table><tr><th>Tipo</th><th>Estructura</th></tr>
-<tr><td>Afirmativa</td><td>Sujeto + verbo (he, she, it: verbo + s)</td></tr>
-<tr><td>Negativa</td><td>Sujeto + do / does + not + verbo base</td></tr>
-<tr><td>Pregunta</td><td>Do / Does + sujeto + verbo base</td></tr>
-<tr><td>Wh-</td><td>Palabra + do / does + sujeto + verbo base</td></tr></table></div>
-<h2>Tercera persona (he, she, it)</h2><div class="tw"><table><tr><th>Regla</th><th>Ejemplos</th></tr>
-<tr><td>Casi todos: +s</td><td>work → works, kill → kills</td></tr>
-<tr><td>Acaba en -s, -sh, -ch, -x, -z, -o: +es</td><td>kiss → kisses, pass → passes, finish → finishes, watch → watches, fix → fixes, go → goes, do → does</td></tr>
-<tr><td>Consonante + y: -ies</td><td>fly → flies, study → studies, cry → cries, try → tries</td></tr>
-<tr><td>Vocal + y: +s</td><td>play → plays, enjoy → enjoys, stay → stays</td></tr>
-<tr><td>Irregular</td><td>have → has</td></tr></table></div>
-<h2>Verbo to be</h2><div class="tw"><table><tr><th>Sujeto</th><th>Afirmativa</th><th>Negativa</th><th>Pregunta</th></tr>
-<tr><td>I</td><td>I am (I'm)</td><td>I'm not</td><td>Am I?</td></tr>
-<tr><td>he, she, it</td><td>is (he's)</td><td>isn't, 's not</td><td>Is he?</td></tr>
-<tr><td>you, we, they</td><td>are (you're)</td><td>aren't, 're not</td><td>Are you?</td></tr></table></div>
-<p>Wh-: palabra + to be + sujeto. Where are we? How is she?</p>
-<h2>Verbo can</h2><p>Sirve para habilidad, capacidad, permiso y favores. Sujeto + can + verbo base, sin -s con he, she, it. Negativa: can't o cannot. Pregunta: Can + sujeto + verbo. Wh-: When can I go?</p>
-<h2>Mayúsculas y punto final</h2><div class="tw"><table><tr><th>Se escribe con mayúscula</th><th>Ejemplos</th></tr>
-<tr><td>Idiomas</td><td>English, Spanish</td></tr>
-<tr><td>Nacionalidades</td><td>British, American</td></tr>
-<tr><td>Días de la semana</td><td>Monday, Tuesday</td></tr>
-<tr><td>Meses</td><td>January, February</td></tr>
-<tr><td>El pronombre I, esté donde esté en la frase</td><td>Yesterday I went home.</td></tr>
-<tr><td>Siglas</td><td>TV, CD, DVD, NASA, NBA, ASAP, OK, LOL</td></tr></table></div>
-<p>Pon un punto al final de cada frase, salvo que termine en signo de interrogación o de exclamación.</p>
-<h2>Colores para marcar errores</h2>
-<div class="mk"><i style="background:#F28C28"></i>Naranja: ortografía (spelling)</div>
-<div class="mk"><i style="background:#D93636"></i>Rojo: gramática (grammar)</div>
-<div class="mk"><i style="background:#2F6FDE"></i>Azul: vocabulario (vocabulary)</div>
-<div class="mk"><i style="background:#2E9B4F"></i>Verde: puntuación, o falta o sobra alguna palabra</div>
-<div class="mk"><i style="background:#F2C21B"></i>Amarillo: atención a las instrucciones del ejercicio</div></div>`;
-const M={guide:'Guía',tareas:'Tareas',build:'Construye la frase',fill:'Completa la frase',third:'Tercera persona',dm:'Do o make',may:'Mayúsculas',clase:'Tus frases',reg:'Verbos regulares',irr:'Verbos irregulares'};
-const CL=[
-['Pasa a negativa: My English teacher is a professional.','be',"My English teacher isn't a professional","aren't"],
-['Pasa a pregunta: The dog is soft.','be','Is the dog soft','Are'],
-['Pasa a negativa: We are a good class.','be',"We aren't a good class","isn't"],
-['Pasa a pregunta: She is a singer.','be','Is she a singer','Are'],
-['Pasa a negativa: Spain is a world champion.','be',"Spain isn't a world champion","aren't"],
-['Pasa a afirmativa: You are not beautiful.','be','You are beautiful','is'],
-['Pasa a pregunta: She is not jealous.','be','Is she jealous','Are'],
-['Pasa a afirmativa: They are not bad people.','be','They are bad people','is'],
-['Pasa a pregunta: My dad is not an old man.','be','Is my dad an old man','Are'],
-['Pasa a negativa: She plays guitar.','neg',"She doesn't play guitar",'plays'],
-['Pasa a pregunta: They work very hard.','q','Do they work very hard','Does'],
-['Pasa a negativa: My mom remembers me.','neg',"My mom doesn't remember me",'remembers'],
-['Pasa a pregunta: Charles pays the bill.','q','Does Charles pay the bill','pays'],
-['Pasa a negativa: My dad runs every day.','neg',"My dad doesn't run every day",'do'],
-['Pasa a pregunta: We wait for you.','q','Do we wait for you','Does'],
-['Pasa a negativa: Juan smiles when he sees Alejandra.','neg',"Juan doesn't smile when he sees Alejandra",'smiles']];
-const MY=[
-["My friends speak ___.",["spanish","Spanish"],1,"Los idiomas llevan mayúscula."],
-["She is ___.",["british","British"],1,"Las nacionalidades llevan mayúscula."],
-["My teacher is ___.",["american","American"],1,"Las nacionalidades llevan mayúscula."],
-["They study ___ at school.",["english","English"],1,"Los idiomas llevan mayúscula."],
-["We have class on ___.",["monday","Monday"],1,"Los días de la semana llevan mayúscula."],
-["My birthday is in ___.",["september","September"],1,"Los meses llevan mayúscula."],
-["The course starts in ___.",["january","January"],1,"Los meses llevan mayúscula."],
-["Yesterday ___ went to the park.",["i","I"],1,"El pronombre I siempre lleva mayúscula."],
-["We watch ___ every night.",["tv","TV"],1,"Las siglas van en mayúsculas."],
-["He loves the ___.",["nba","NBA"],1,"Las siglas van en mayúsculas."],
-["Send me the file ___.",["asap","ASAP"],1,"Las siglas van en mayúsculas."],
-["I live in Spain___",[".","?"],0,"Una frase afirmativa termina en punto."],
-["Where do you live___",[".","?"],1,"Una pregunta termina en signo de interrogación, no en punto."]];
-const DATA={build:B,fill:F,dm:DM,third:TH,clase:CL,may:MY};
-let mode='build',Q=[],i=0,ok=0,miss=[];
-const $=s=>document.querySelector(s);
-const sh=a=>{a=a.slice();for(let k=a.length;k>1;k--){const j=Math.floor(Math.random()*k);[a[k-1],a[j]]=[a[j],a[k-1]]}return a};
-function tabs(){$('#tabs').innerHTML=Object.entries(M).map(([k,v])=>`<button class="tab" aria-pressed="${k===mode}" data-m="${k}">${v}</button>`).join('')}
-$('#tabs').onclick=e=>{const b=e.target.closest('[data-m]');if(b)start(b.dataset.m)};
-function start(m,items){mode=m;tabs();
-  if(m==='guide'){$('#app').onclick=null;$('#app').innerHTML=GUIDE;return}
-  if(m==='tareas')return tareas();
-  if(m==='irr')return irr();
-  if(m==='reg')return reg();
-  Q=sh(items||DATA[m]);if(m==='third'&&!items)Q=Q.slice(0,15);i=0;ok=0;miss=[];draw()}
-function tab(R,H,C,note){let cv=false;
-  const p=()=>{$('#app').innerHTML=`<div class="card"><p class="sub">${note}</p><div class="row" style="margin-bottom:12px"><button class="btn" id="tg">${cv?'Mostrar todo':'Tapar las respuestas'}</button></div><div class="tw"><table><tr>${H.map(h=>`<th>${h}</th>`).join('')}</tr>${R.map(r=>`<tr>${r.map((c,k)=>`<td class="${cv&&C.includes(k)?'cv':''}">${k?c:'<b>'+c+'</b>'}</td>`).join('')}</tr>`).join('')}</table></div></div>`};
-  $('#app').onclick=e=>{if(e.target.closest('#tg')){cv=!cv;p()}else if(e.target.classList.contains('cv'))e.target.classList.remove('cv')};p()}
-const irr=()=>tab(IRR.split(';').map(r=>r.split(',')),['Infinitivo','Past simple','Past participle','Traducción'],[1,2],'Tapa las formas para comprobarte y toca una celda tapada para verla.');
-const reg=()=>tab(TH.slice(0,RV.length).map(([v,a,r])=>[({enter:'enter (a place)',listen:'listen (to something)'})[v]||v,a,r]),['Infinitivo','He / she / it','Regla'],[1],'Los 50 verbos regulares de clase. Tapa la columna del medio y comprueba la tercera persona.');
-const TK=[
-{t:'10 preguntas en Present Simple',n:'No uses be ni can. Cada frase con un sujeto distinto y un verbo distinto. Cuatro deben ser preguntas Wh-.',h:['Yes/No: Do / Does + sujeto + verbo base ?','Wh-: palabra interrogativa + do / does + sujeto + verbo base ?'],ex:'Does she run a company? / Where do I live?',k:'q',w:4},
-{t:'10 frases negativas en Present Simple',n:'No uses be ni can. Cada frase con un sujeto distinto y un verbo distinto.',h:['Sujeto + do / does + not + verbo base','Forma corta: don\'t / doesn\'t'],ex:'She doesn\'t run a company.',k:'neg'},
-{t:'10 frases afirmativas en Present Simple',n:'No uses be ni can. Cada frase con un sujeto distinto y un verbo distinto.',h:['Sujeto + verbo (he, she, it: verbo + s / es / ies)'],ex:'She runs a company.',k:'aff'},
-{t:'10 preguntas con can',n:'Cada frase con un sujeto distinto. No repitas el verbo que va después de can. Cuatro deben ser preguntas Wh-.',h:['Yes/No: Can + sujeto + verbo base ?','Wh-: palabra interrogativa + can + sujeto + verbo base ?'],ex:'Can he sing opera? / When can I go?',k:'can',w:4},
-{t:'10 frases negativas con can',n:'Cada frase con un sujeto distinto. No repitas el verbo que va después de can.',h:['Sujeto + can\'t (o cannot) + verbo base'],ex:'She can\'t skate.',k:'cn'},
-{t:'10 frases afirmativas con can',n:'Cada frase con un sujeto distinto. No repitas el verbo que va después de can.',h:['Sujeto + can + verbo base (sin -s con he, she, it)'],ex:'He can sing opera.',k:'ca'},
-{t:'10 preguntas con el verbo to be',n:'Cada frase con un sujeto distinto. Cuatro deben ser preguntas Wh-.',h:['Yes/No: Am / Is / Are + sujeto ... ?','Wh-: palabra interrogativa + am / is / are + sujeto ... ?'],ex:'Is she married? / Where are we?',k:'bq',w:4}];
-const BEN=/\b(am|is|are|isn't|aren't)\b/i,CAN=/\bcan(not|'t)?\b/i,WHR=/^(what|where|when|why|who|how|which|whose)\b/i;
-function chk(k,x){x=x.trim().replace(/’/g,"'");if(!x)return['',''];
-  if(!/^[A-Z]/.test(x))return['no','Empieza con mayúscula.'];
-  if(k!=='bq'&&BEN.test(x))return['no','No uses be.'];
-  if(k[0]!=='c'&&CAN.test(x))return['no','No uses can.'];
-  const wh=WHR.test(x);
-  if(k==='aff'){if(/\b(don't|doesn't|not)\b/i.test(x))return['no','Es afirmativa: sin not.'];return /\.$/.test(x)?['ok','']:['no','Falta el punto final.']}
-  if(k==='neg'){if(!/\b(don't|doesn't|do not|does not)\b/i.test(x))return['no','Falta don\'t / doesn\'t (o do not / does not).'];return /\.$/.test(x)?['ok','']:['no','Falta el punto final.']}
-  if(k==='cn'){if(/\b(don't|doesn't)\b/i.test(x))return['no','Con can no se usa don\'t / doesn\'t.'];if(!/\b(can't|cannot|can not)\b/i.test(x))return['no','Falta can\'t o cannot.'];return /\.$/.test(x)?['ok','']:['no','Falta el punto final.']}
-  if(k==='ca'){if(/\b(can't|cannot|not)\b/i.test(x))return['no','Es afirmativa: sin not.'];if(!/\bcan\b/i.test(x))return['no','Falta can.'];return /\.$/.test(x)?['ok','']:['no','Falta el punto final.']}
-  if(!/\?$/.test(x))return['no','Falta el signo ?.'];
-  if(k==='q')return /^(do|does)\b/i.test(x)||wh&&/\b(do|does)\b/i.test(x)?['ok',wh?'Wh-':'Yes/No']:['no','Empieza con Do / Does, o con una palabra Wh- y luego do / does.'];
-  if(k==='bq')return /^(am|is|are)\b/i.test(x)||wh&&/\b(am|is|are)\b/i.test(x)?['ok',wh?'Wh-':'Yes/No']:['no','Empieza con Am / Is / Are, o con una palabra Wh- y luego am / is / are.'];
-  return /^can\b/i.test(x)||wh&&/\bcan\b/i.test(x)?['ok',wh?'Wh-':'Yes/No']:['no','Empieza con Can, o con una palabra Wh- y luego can.']}
-function tareas(){let sv={};try{sv=JSON.parse(localStorage.getItem('tareas')||'{}')}catch(_){}
-  const a=$('#app');a.onclick=null;a.onkeydown=null;
-  a.innerHTML=TK.map((T,j)=>`<div class="card" style="margin-bottom:16px"><h2>${T.t}</h2><p>${T.n}</p><div class="pista"><b>Pista: estructura</b>${T.h.map(h=>`<div>${h}</div>`).join('')}<div>Ejemplo de clase: ${T.ex}</div></div>${[...Array(10)].map((_,i)=>`<div class="ln"><input data-j="${j}" data-i="${i}" autocomplete="off" aria-label="Frase ${i+1}" placeholder="${i+1}." value="${(sv[j+'-'+i]||'').replace(/"/g,'&quot;')}"><small></small></div>`).join('')}<p class="sum" aria-live="polite"></p></div>`).join('');
-  const upd=j=>{const T=TK[j];let g=0,w=0;const L=[...document.querySelectorAll(`input[data-j="${j}"]`)];
-    L.forEach(x=>{const [st,m]=chk(T.k,x.value),sm=x.nextElementSibling;sm.className=st;sm.textContent=st==='ok'?'Correcto'+(m?' ('+m+')':''):m;if(st==='ok'){g++;if(m==='Wh-')w++}});
-    L[0].closest('.card').querySelector('.sum').textContent=`Frases correctas: ${g} de 10.`+(T.w?` Preguntas Wh-: ${w} de ${T.w}.`:'')+' Comprueba tú que cada sujeto y cada verbo sean distintos.'};
-  a.oninput=e=>{const t=e.target;if(t.dataset.j===undefined)return;upd(+t.dataset.j);try{sv[t.dataset.j+'-'+t.dataset.i]=t.value;localStorage.setItem('tareas',JSON.stringify(sv))}catch(_){}};
-  TK.forEach((_,j)=>upd(j))}
-function typed(){const [v,a,e]=Q[i];let res=null;
-  const go=()=>{const x=$('#ans').value.trim().toLowerCase();if(!x)return;res=x===a?'ok':'no';res==='ok'?ok++:miss.push(Q[i]);paint()};
-  const paint=()=>{shell(`<span class="badge">Tercera persona</span><p class="q">He / she / it: <b>${v}</b></p>${res?fb(res==='ok',(res==='ok'?'Correcto. ':'Era "'+a+'". ')+e):`<div class="row"><input id="ans" autocomplete="off" autocapitalize="none" aria-label="Tu respuesta"><button class="btn" id="chk">Comprobar</button></div>`}`);
-    const n=$('#ans')||$('#nx');n.focus();
-    $('#app').onclick=ev=>{if(next(ev))return;if(!res&&ev.target.closest('#chk'))go()};
-    $('#app').onkeydown=ev=>{if(ev.key==='Enter'&&!res&&ev.target.id==='ans')go()}};
-  paint()}
-function shell(inner){$('#app').innerHTML=`<div class="card"><div class="meta"><span>${i+1} de ${Q.length}</span><span>Aciertos: ${ok}</span></div><div class="bar"><i style="width:${i/Q.length*100}%"></i></div>${inner}</div>`}
-const fb=(good,t)=>`<div class="fb ${good?'':'no'}" role="status">${t}</div><div class="row" style="margin-top:12px"><button class="btn" id="nx">Siguiente</button></div>`;
-function next(e){if(e.target.closest('#nx')){i++;draw();return true}}
-function draw(){
-  if(i>=Q.length){
-    $('#app').innerHTML=`<div class="card"><p class="q">${ok} de ${Q.length} aciertos</p><p class="sub">${miss.length?'Repite los fallos para fijarlos.':'Sin fallos. Prueba otro ejercicio o repítelo.'}</p><div class="row">${miss.length?`<button class="btn" id="rp">Repetir los fallos (${miss.length})</button>`:''}<button class="btn ghost" id="ag">Empezar de nuevo</button></div></div>`;
-    $('#app').onclick=e=>{if(e.target.closest('#rp'))start(mode,miss);if(e.target.closest('#ag'))start(mode)};
-    return;
-  }
-  mode==='build'||mode==='clase'?build():mode==='third'?typed():fill();
-}
-function build(){
-  const [es,t,a,d]=Q[i];const w=sh(a.split(' ').concat(d));let sel=[],res=null;
-  const paint=()=>{
-    shell(`<span class="badge">${LAB[t]}</span><p class="q">${es}</p>
-    <div class="slot" aria-label="Tu frase">${sel.map(k=>`<button class="tile" data-s="${k}" ${res?'disabled':''}>${w[k]}</button>`).join('')}</div>
-    <div class="pool">${w.map((x,k)=>`<button class="tile" data-p="${k}" ${sel.includes(k)||res?'disabled':''}>${x}</button>`).join('')}</div>
-    ${res?fb(res==='ok',res==='ok'?'Correcto. '+TIPS[t]:'Era: '+a+'. '+TIPS[t]):`<div class="row"><button class="btn" id="chk" ${sel.length?'':'disabled'}>Comprobar</button><button class="btn ghost" id="clr">Borrar</button></div>`}`);
-    $('#app').onclick=e=>{
-      if(next(e))return;
-      const p=e.target.closest('[data-p]'),s=e.target.closest('[data-s]');
-      if(res)return;
-      if(p&&!p.disabled){sel.push(+p.dataset.p);paint()}
-      else if(s){sel=sel.filter(k=>k!==+s.dataset.s);paint()}
-      else if(e.target.closest('#clr')){sel=[];paint()}
-      else if(e.target.closest('#chk')){
-        const good=sel.map(k=>w[k]).join(' ').toLowerCase()===a.toLowerCase();
-        res=good?'ok':'no';good?ok++:miss.push(Q[i]);paint();
-      }
-    };
-  };
-  paint();
-}
-function fill(){
-  const [s,o,c,e]=Q[i];let pick=null;
-  const paint=()=>{
-    shell(`<p class="q">${s.replace('___','<b>_____</b>')}</p>
-    <div class="opts">${o.map((x,k)=>`<button class="opt ${pick===null?'':k===c?'ok':k===pick?'no':''}" data-o="${k}" ${pick===null?'':'disabled'}>${x}</button>`).join('')}</div>
-    ${pick===null?'':fb(pick===c,(pick===c?'Correcto. ':'Era "'+o[c]+'". ')+e)}`);
-    $('#app').onclick=ev=>{
-      if(next(ev))return;
-      const b=ev.target.closest('[data-o]');
-      if(b&&pick===null){pick=+b.dataset.o;pick===c?ok++:miss.push(Q[i]);paint()}
-    };
-  };
-  paint();
-}
-start('guide');
-</script></body></html>
+  // Apply the saved theme before first paint to avoid a flash.
+  try { var t = JSON.parse(localStorage.getItem('doable:v1') || '{}').theme; if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Course","name":"Doable English: inglés de A1 a C1","description":"Curso interactivo de inglés para hispanohablantes con ruta por niveles MCER (A1, A2, B1, B2, C1), gramática, vocabulario, listening, reading, writing y speaking.","inLanguage":"en","provider":{"@type":"Organization","name":"Doable English","url":"https://estudiar-do-does.vercel.app/"},"educationalLevel":"A1–C1 (CEFR)","isAccessibleForFree":true,"hasCourseInstance":{"@type":"CourseInstance","courseMode":"online","courseWorkload":"PT10M"}}
+</script>
+</head>
+<body>
+<a class="skip" href="#view">Saltar al contenido</a>
+<header class="topbar">
+  <a class="brand" href="#/" aria-label="Doable English, inicio">
+    <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--brand)"/><path d="M9 21.5c3.5 0 4-11 7.5-11s3.5 11 7 11" fill="none" stroke="var(--on-brand)" stroke-width="2.6" stroke-linecap="round"/><circle cx="9" cy="21.5" r="2.2" fill="var(--accent)"/></svg>
+    <span>Doable <b>English</b></span>
+  </a>
+  <button type="button" class="search-btn" id="search-btn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Buscar</span><kbd aria-hidden="true">/</kbd></button>
+  <div class="top-stats" id="top-stats"></div>
+  <button type="button" class="icon-btn" id="theme-btn" aria-label="Cambiar tema"><svg class="ico sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="ico moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+</header>
+<div class="layout">
+  <nav class="side-nav" id="side-nav" aria-label="Principal"></nav>
+  <main id="view" tabindex="-1">
+    <section class="seo-fallback">
+      <h1>Aprende inglés de A1 a C1, paso a paso</h1>
+      <p>Doable English es un profesor de inglés interactivo para hispanohablantes: una ruta de aprendizaje estructurada por niveles del MCER, con explicaciones claras de gramática, vocabulario con repetición espaciada, listening, reading, writing, speaking y un test de nivel adaptativo gratuito.</p>
+      <ul>
+        <li><a href="english-a1/">Inglés A1 · Principiante</a></li>
+        <li><a href="english-a2/">Inglés A2 · Elemental</a></li>
+        <li><a href="english-b1/">Inglés B1 · Intermedio</a></li>
+        <li><a href="english-b2/">Inglés B2 · Intermedio alto</a></li>
+        <li><a href="english-c1/">Inglés C1 · Avanzado</a></li>
+      </ul>
+      <noscript><p>Esta aplicación necesita JavaScript para los ejercicios interactivos. Puedes consultar el contenido de cada nivel en los enlaces de arriba.</p></noscript>
+    </section>
+  </main>
+</div>
+<nav class="bottom-nav" id="bottom-nav" aria-label="Principal (móvil)"></nav>
+<dialog class="search-dlg" id="search-dlg" aria-label="Buscar">
+  <form method="dialog" class="search-form" onsubmit="return false">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="search-input" type="search" autocomplete="off" spellcheck="false" aria-label="Buscar" aria-controls="search-results">
+    <button type="button" class="icon-btn" onclick="this.closest('dialog').close()" aria-label="Cerrar"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </form>
+  <div id="search-results" class="search-results" aria-live="polite"></div>
+</dialog>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

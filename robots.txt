@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://estudiar-do-does.vercel.app/sitemap.xml
