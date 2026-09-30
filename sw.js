@@ -1,6 +1,6 @@
 // Offline support: app files are served from cache and refreshed in the background
 // (stale-while-revalidate), so a new deploy is picked up on the next visit.
-const CACHE = 'doable-v2';
+const CACHE = 'doable-v3';
 const CORE = ['./', 'index.html', 'css/app.css', 'js/app.js', 'manifest.webmanifest', 'assets/icon.svg', 'assets/icon-192.png'];
 
 self.addEventListener('install', e => {

@@ -4,7 +4,8 @@ import { esc, shuffle } from '../core/util.js';
 import { L } from '../core/i18n.js';
 import { icon } from '../core/icons.js';
 import { S, save, addXP } from '../core/store.js';
-import { canSpeak, speak, stopSpeaking } from '../core/speech.js';
+import { stop as stopSpeaking } from '../core/speech.js';
+import { canSpeak, listenPanel } from '../core/audio.js';
 import { PLACEMENT, PLACEMENT_LEVELS } from '../data/placement.js';
 import { LEVEL, unitsOf } from '../data/index.js';
 import { h1 } from './ui.js';
@@ -66,12 +67,11 @@ export function placement(root) {
       <div class="ses-body enter">
         <div class="ins"><span class="chip">${{ grammar: L('Grammar', 'Gramática'), vocabulary: L('Vocabulary', 'Vocabulario'), reading: L('Reading', 'Lectura'), listening: 'Listening' }[q.s]}</span></div>
         ${q.text ? `<blockquote class="passage-q" lang="en">${esc(q.text)}</blockquote>` : ''}
-        ${q.say ? `<div class="listen-row"><button type="button" class="play-big" data-say="${esc(q.say)}" aria-label="${L('Play audio', 'Reproducir audio')}">${icon('volume')}</button></div>` : ''}
+        ${q.say ? listenPanel(q.say, { transcript: false }) : ''}
         <p class="q" lang="en">${esc(q.q)}</p>
         <div class="opts ${opts.some(o => o.t.length > 28) ? 'long' : ''}">${opts.map((o, i) => `<button type="button" class="opt" data-i="${i}"><kbd aria-hidden="true">${i + 1}</kbd><span>${esc(o.t)}</span></button>`).join('')}
           <button type="button" class="opt idk" data-i="-1"><span>${L('I don\'t know', 'No lo sé')}</span></button></div>
       </div></section>`;
-    if (q.say) setTimeout(() => speak(q.say), 300);
     const pick = i => {
       asked.push({ lv, s: q.s, ok: i >= 0 && opts[i].ok });
       bi++;

@@ -3,7 +3,8 @@ import { L, lang } from '../core/i18n.js';
 import { icon } from '../core/icons.js';
 import { S } from '../core/store.js';
 import { strength, addCards } from '../core/srs.js';
-import { sayBtn, runSession } from '../core/session.js';
+import { runSession } from '../core/session.js';
+import { audioBtn } from '../core/audio.js';
 import { vocabItems } from '../core/generate.js';
 import { WORDS, WORD, CATEGORIES, LEVELS, LEVEL, UNIT } from '../data/index.js';
 import { h1, bar } from './ui.js';
@@ -15,7 +16,7 @@ const status = w => { const s = strength(w.id); return s === 0 ? ['new', L('New'
 function wordRow(w) {
   const [cls, lbl] = status(w);
   return `<li class="word-row"><a href="#/vocabulary/word/${encodeURIComponent(w.id)}"><b lang="en">${esc(w.en)}</b><span class="muted">/${esc(w.ipa)}/</span><span>${esc(w.es)}</span></a>
-    ${sayBtn(w.en, L('Listen', 'Escuchar'))}<span class="wstat ${cls}">${lbl}</span></li>`;
+    ${audioBtn(w.en)}<span class="wstat ${cls}">${lbl}</span></li>`;
 }
 
 export function vocabulary(root) {
@@ -63,10 +64,10 @@ export function word(root, { id }) {
   const u = UNIT[w.unit];
   root.innerHTML = `${h1(w.en, { eyebrow: `${LEVEL[w.level].code} · ${esc(catName(w.cat))}`, back: `#/vocabulary/topic/${w.cat}` })}
   <section class="panel word-detail">
-    <div class="wd-top"><p class="ipa big">/${esc(w.ipa)}/</p>${sayBtn(w.en, L('Listen', 'Escuchar'))}${sayBtn(w.en, L('Listen slowly', 'Escuchar despacio'), true)}</div>
+    <div class="wd-top"><p class="ipa big">/${esc(w.ipa)}/</p>${audioBtn(w.en, { variant: 'label' })}${audioBtn(w.en, { variant: 'label', slow: true })}</div>
     <dl class="facts"><div><dt>${L('Spanish', 'Español')}</dt><dd>${esc(w.es)}</dd></div><div><dt>${L('Type', 'Tipo')}</dt><dd>${esc(w.pos)}</dd></div>
       <div><dt>${L('Level', 'Nivel')}</dt><dd>${LEVEL[w.level].code}</dd></div><div><dt>${L('Status', 'Estado')}</dt><dd><span class="wstat ${cls}">${lbl}</span>${c && c.r ? ` · ${L('next review', 'próximo repaso')}: ${new Date(c.d).toLocaleDateString()}` : ''}</dd></div></dl>
-    ${w.ex ? `<p class="wc-ex big" lang="en">“${esc(w.ex)}” ${sayBtn(w.ex, L('Listen to the example', 'Escuchar el ejemplo'))}</p>` : ''}
+    ${w.ex ? `<p class="wc-ex big" lang="en">“${esc(w.ex)}”</p><div class="row">${audioBtn(w.ex, { variant: 'label', kind: 'example' })}${audioBtn(w.ex, { variant: 'label', slow: true })}</div>` : ''}
     <div class="row">${c ? '' : `<button type="button" class="btn primary" id="add">${icon('layers')} ${L('Add to my review', 'Añadir a mi repaso')}</button>`}
       <a class="btn ghost" href="#/unit/${u.id}">${L('From unit', 'De la unidad')}: ${esc(u.title)}</a></div>
   </section>`;

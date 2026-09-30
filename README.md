@@ -33,6 +33,21 @@ Todo el contenido vive en `js/data/`. Las lecciones, la ruta, el buscador y la p
 - **SEO:** después de cambiar contenido, ejecuta `node scripts/build-seo.mjs` para regenerar `english-a1/` … `english-c1/` y `sitemap.xml`.
 - **Caché de la PWA:** sube la versión de `CACHE` en `sw.js` cuando cambie algo importante.
 
+## Audio y pronunciación (Web Speech API)
+
+Solo usa `speechSynthesis`, del propio navegador: es gratis, sin API externa ni backend.
+
+- **`js/core/speech.js`:** el `speechService`, el único módulo que toca `speechSynthesis`. Ofrece `speak`, `speakSequence`, `toggle`, `pause`, `resume`, `stop`, `getVoices`, `selectVoice`, `setAccent`, `setSpeed`, `setRate`, `setPitch`, `setVolume` y `subscribe`.
+  - Espera a `voiceschanged` (y además consulta varias veces, porque Safari no siempre lo emite).
+  - Nunca deja sonar dos audios a la vez: cancela el anterior antes de empezar.
+  - Divide los textos largos en frases.
+  - Si una voz falla, reintenta con la voz por defecto del idioma.
+- **`js/core/audio.js`:** los componentes (`audioBtn`, `listenPanel`, `readAlong`) y un único controlador delegado que sincroniza el estado de todos los botones (reposo, reproduciendo, en pausa) y el resaltado por frase.
+- **Ajustes:** en Perfil → Audio y pronunciación (acento, voz, velocidad y volumen). Se guardan en una sola clave, `englishLearningSpeechSettings`. Solo se ofrecen los acentos que tienen voz instalada en el dispositivo.
+- **Nunca suena solo:** todo audio empieza con un clic o una tecla del alumno, y se detiene al cambiar de página.
+- **Sin síntesis de voz:** los botones de audio desaparecen, se muestra la transcripción con el aviso "El audio no está disponible en este navegador" y las lecciones siguen funcionando.
+- **Reconocimiento de voz:** está en `js/core/recognition.js`, separado a propósito. La síntesis de voz no evalúa la pronunciación; para eso habría que conectar un proveedor en `ai.js` (`pronunciation`).
+
 ## Datos del alumno
 
 El progreso se guarda en `localStorage` (clave `doable:v1`), y solo `js/core/store.js` lo lee y lo escribe. Para sincronizar entre dispositivos hay que sustituir `load()` y `persist()` por llamadas a un backend. El perfil ya permite exportar e importar el progreso como JSON. Las frases de las tareas originales mantienen su clave `tareas`.

@@ -2,8 +2,10 @@ import { esc, md, canon, debounce } from '../core/util.js';
 import { L, lang } from '../core/i18n.js';
 import { icon } from '../core/icons.js';
 import { S, save, itemScore, markDone, addXP, answer } from '../core/store.js';
-import { runSession, sayBtn } from '../core/session.js';
-import { canSpeak, canRecognize, canRecord, speak, recognize, startRecording, stopSpeaking } from '../core/speech.js';
+import { runSession } from '../core/session.js';
+import { speak, stop as stopSpeaking, splitSentences } from '../core/speech.js';
+import { audioBtn, listenPanel, readAlong, audioNote, canSpeak } from '../core/audio.js';
+import { canRecognize, canRecord, recognize, startRecording } from '../core/recognition.js';
 import { checkWriting, writingScore, MECH_TEXT } from '../core/writing-check.js';
 import { ai } from '../core/ai.js';
 import { unitState } from '../core/path.js';
@@ -46,14 +48,14 @@ export function listening(root, { id }) {
     title: `Listening · ${u.title}`, exitHref: '#/listening',
     items: [
       { t: 'card', html: `<p class="eyebrow">${LEVEL[u.level].code} · ${esc(u.title)}</p><h2>${icon('listen')} ${L('Listen and answer', 'Escucha y responde')}</h2>
-        <p>${L('Listen as many times as you need. Use the slow button if it is too fast. The transcript appears after you answer.', 'Escucha tantas veces como necesites. Usa el botón lento si va muy rápido. La transcripción aparece al responder.')}</p>
-        ${canSpeak ? `<div class="listen-row"><button type="button" class="play-big" data-say="${esc(li.say)}" aria-label="${L('Play audio', 'Reproducir audio')}">${icon('volume')}</button><button type="button" class="play-slow" data-say="${esc(li.say)}" data-rate="0.7">${icon('slow')}<span>${L('Slow', 'Lento')}</span></button></div>` : `<p class="note">${L('Audio is not available in this browser; the questions will show the transcript.', 'Tu navegador no reproduce audio; las preguntas mostrarán la transcripción.')}</p>`}` },
-      ...li.q.map((q, i) => ({ t: 'listen', say: li.say, q: q.q, o: q.o, skill: 'listening', key: q.key, noAuto: true })),
+        <ol class="method"><li><b>${L('Listen', 'Escucha')}</b> ${L('without reading. Use Slow if it is too fast.', 'sin leer. Usa Lento si va muy rápido.')}</li><li><b>${L('Understand', 'Comprende')}</b>: ${L('answer the questions.', 'responde las preguntas.')}</li><li><b>${L('Check', 'Comprueba')}</b> ${L('with the transcript, then listen again.', 'con la transcripción y vuelve a escuchar.')}</li></ol>
+        ${listenPanel(li.say)}` },
+      ...li.q.map(q => ({ t: 'listen', say: li.say, q: q.q, o: q.o, skill: 'listening', key: q.key })),
       ...(sentences.length ? [{ t: 'dict', say: sentences[Math.floor(Math.random() * sentences.length)], skill: 'listening', noScore: false }] : []),
     ],
     onFinish(s) {
       itemScore(`listening:${u.id}`, s.score); markDone('listening');
-      return { title: L('Listening complete', 'Listening completado'), extra: `<details class="panel transcript" open><summary>${L('Transcript', 'Transcripción')}</summary><p lang="en">${esc(li.say)}</p>${sayBtn(li.say)}</details>`, nextHref: '#/listening', nextLabel: L('More listening', 'Más listening') };
+      return { title: L('Listening complete', 'Listening completado'), extra: `<details class="panel transcript" open><summary>${L('Transcript', 'Transcripción')}</summary><p lang="en">${esc(li.say)}</p><div class="row">${audioBtn(li.say, { variant: 'label', kind: 'sentence' })}${audioBtn(li.say, { variant: 'label', slow: true })}</div></details>`, nextHref: '#/listening', nextLabel: L('More listening', 'Más listening') };
     },
   });
 }
@@ -63,13 +65,19 @@ export function reading(root, { id }) {
   const u = UNIT[id]; if (!u) { location.hash = '#/reading'; return; }
   const r = u.reading;
   const words = r.text.split(/\s+/).length;
-  let html = esc(r.text);
+  // Sentences are wrapped so read-along can highlight the one being spoken; glossed words become buttons.
+  const parts = splitSentences(r.text);
+  const html = parts.map(p => esc(p));
   Object.entries(r.gloss).sort((a, b) => b[0].length - a[0].length).forEach(([w, m]) => {
-    html = html.replace(new RegExp(`\\b(${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'i'), `<button type="button" class="gloss" aria-expanded="false" data-m="${esc(m)}">$1</button>`);
+    const re = new RegExp(`\\b(${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b(?![^<]*>)`, 'i');
+    const i = html.findIndex(h => re.test(h));
+    if (i >= 0) html[i] = html[i].replace(re, `<button type="button" class="gloss" aria-expanded="false" data-m="${esc(m)}">$1</button>`);
   });
   root.innerHTML = `${h1(r.title, { eyebrow: `${LEVEL[u.level].code} · ${L('Reading', 'Lectura')} · ${words} ${L('words', 'palabras')} · ~${Math.max(1, Math.round(words / 120))} min`, back: '#/reading' })}
-  <article class="panel reading-text" lang="en"><p>${html.replace(/\n+/g, '</p><p>')}</p>
-    <div class="row">${sayBtn(r.text, L('Listen to the text', 'Escuchar el texto'))}<span class="small muted">${L('Tap the underlined words to see what they mean.', 'Toca las palabras subrayadas para ver su significado.')}</span></div></article>
+  <article class="panel reading-text" lang="en">
+    <div class="rt-head">${readAlong(parts, 'rt-body', { title: L('Reading practice', 'Práctica de lectura') })}</div>
+    <p id="rt-body">${html.map((h, i) => `<span class="ra-part" data-part="${i}">${h}</span>`).join(' ')}</p>
+    <p class="small muted">${L('Tap the underlined words to see what they mean. Read first, then listen and follow the highlighted sentence.', 'Toca las palabras subrayadas para ver su significado. Lee primero; después escucha y sigue la frase resaltada.')}</p></article>
   <section class="panel"><h2>${L('Key vocabulary', 'Vocabulario clave')}</h2><dl class="glossary">${Object.entries(r.gloss).map(([w, m]) => `<div><dt lang="en">${esc(w)}</dt><dd>${esc(m)}</dd></div>`).join('')}</dl></section>
   <div class="center"><button type="button" class="btn primary lg" id="go">${L('Answer the questions', 'Responder las preguntas')} ${icon('arrow')}</button></div>`;
   root.querySelectorAll('.gloss').forEach(b => b.addEventListener('click', () => {
@@ -106,7 +114,7 @@ export function writing(root, { id }) {
       ${ai.can('writingFeedback') ? `<button type="button" class="btn ghost" id="ai">${icon('sparkle')} ${L('AI feedback', 'Corrección con IA')}</button>` : ''}</div>
   </section>
   <section id="fb" aria-live="polite"></section>
-  <details class="panel model"><summary>${L('See a model answer', 'Ver un texto modelo')}</summary><p lang="en">${esc(w.model).replace(/\n/g, '<br>')}</p>${sayBtn(w.model.replace(/\n/g, ' '), L('Listen', 'Escuchar'))}</details>`;
+  <details class="panel model"><summary>${L('See a model answer', 'Ver un texto modelo')}</summary><p lang="en">${esc(w.model).replace(/\n/g, '<br>')}</p>${audioBtn(w.model.replace(/\n/g, ' '), { variant: 'label', kind: 'sentence' })}</details>`;
   const ta = root.querySelector('#txt'), wc = root.querySelector('#wc');
   const persist = debounce(() => { S.drafts[key] = ta.value; save(); root.querySelector('#saved').textContent = L('Draft saved', 'Borrador guardado'); }, 600);
   const count = () => { const n = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0; wc.textContent = `${n} / ${w.min} ${L('words', 'palabras')}`; };
@@ -146,19 +154,55 @@ export function speaking(root, { id }) {
   const scores = {};
   root.innerHTML = `${h1(L('Speaking', 'Speaking'), { eyebrow: `${LEVEL[u.level].code} · ${esc(u.title)}`, back: '#/speaking' })}
   ${capNote()}
-  <section class="panel"><h2>1. ${L('Repeat after me', 'Repite después de mí')}</h2>
-    <p class="muted">${L('Listen, then say the sentence. Focus on rhythm and the stressed words.', 'Escucha y repite la frase. Fíjate en el ritmo y en las palabras acentuadas.')}</p>
+  <section class="panel shadowing"><h2>1. Shadowing · ${L('listen and repeat', 'escucha y repite')}</h2>
+    <p class="muted">${L('Listen to each sentence and repeat it out loud straight away, copying the rhythm and the stressed words.', 'Escucha cada frase y repítela en voz alta enseguida, copiando el ritmo y las palabras acentuadas.')}</p>
+    ${canSpeak ? `<div class="row"><button type="button" class="btn primary" id="shadow-go" aria-pressed="false">${icon('play')} <span>${L('Start shadowing', 'Empezar shadowing')}</span></button></div>
+      <p class="shadow-status" id="shadow-status" aria-live="polite"></p>` : audioNote()}
+    <p class="small muted">${L('Shadowing plays the model so you can imitate it; it does not grade your pronunciation.', 'El shadowing reproduce el modelo para que lo imites; no puntúa tu pronunciación.')}${canRecognize ? ' ' + L('"Speak" shows what your browser understood — a rough guide, not a score.', '«Hablar» muestra lo que entendió tu navegador: una guía aproximada, no una nota.') : ''}</p>
     <ol class="repeat">${sp.repeat.map((t, i) => `<li data-i="${i}"><p lang="en" class="rp-target">${esc(t)}</p>
-      <div class="row">${sayBtn(t, L('Listen', 'Escuchar'))}${sayBtn(t, L('Listen slowly', 'Escuchar despacio'), true)}${micBtn(`rp-${i}`)}</div><div class="rp-out" aria-live="polite"></div></li>`).join('')}</ol>
+      <div class="row">${audioBtn(t, { variant: 'label', kind: 'sentence' })}${audioBtn(t, { variant: 'label', slow: true })}${micBtn(`rp-${i}`)}</div><div class="rp-out" aria-live="polite"></div></li>`).join('')}</ol>
   </section>
   <section class="panel"><h2>2. ${L('Your turn', 'Tu turno')}</h2>
     <p class="task-p" lang="en"><b>${esc(sp.p)}</b></p>${sp.es && lang() === 'es' ? `<p class="muted">${esc(sp.es)}</p>` : ''}
     <p class="small">${L('Try to use', 'Intenta usar')}: ${sp.use.map(x => `<span class="chip">${esc(x.split('|')[0])}</span>`).join(' ')}</p>
     <div class="row">${micBtn('free', true)}</div>
     <div id="free-out" aria-live="polite"></div>
-    <details class="model"><summary>${L('Listen to a model answer', 'Escuchar una respuesta modelo')}</summary><p lang="en">${esc(sp.model)}</p>${sayBtn(sp.model)}</details>
+    <details class="model"><summary>${L('Listen to a model answer', 'Escuchar una respuesta modelo')}</summary><p lang="en">${esc(sp.model)}</p>${audioBtn(sp.model, { variant: 'label', kind: 'sentence' })}</details>
   </section>
   <div class="center"><button type="button" class="btn primary lg" id="done">${icon('check')} ${L('Finish speaking practice', 'Terminar la práctica')}</button></div>`;
+
+  // Guided shadowing: model sentence → pause sized to the sentence for the learner to repeat → next.
+  let shadowRun = 0;
+  const goBtn = root.querySelector('#shadow-go'), status = root.querySelector('#shadow-status');
+  const endShadow = msg => {
+    shadowRun++;
+    root.querySelectorAll('.repeat li').forEach(li => li.classList.remove('active'));
+    if (goBtn) { goBtn.setAttribute('aria-pressed', 'false'); goBtn.innerHTML = `${icon('play')} <span>${L('Start shadowing', 'Empezar shadowing')}</span>`; }
+    if (status) status.innerHTML = msg || '';
+  };
+  goBtn?.addEventListener('click', () => {
+    if (goBtn.getAttribute('aria-pressed') === 'true') { stopSpeaking(); endShadow(); return; }
+    const run = ++shadowRun;
+    goBtn.setAttribute('aria-pressed', 'true'); goBtn.innerHTML = `${icon('stop')} <span>${L('Stop shadowing', 'Parar shadowing')}</span>`;
+    const step = i => {
+      if (run !== shadowRun || !root.isConnected) return;
+      if (i >= sp.repeat.length) { endShadow(`${icon('check')} ${L('Well done! Repeat the round, or try part 2.', '¡Bien hecho! Repite la ronda o pasa a la parte 2.')}`); return; }
+      const li = root.querySelectorAll('.repeat li')[i];
+      root.querySelectorAll('.repeat li').forEach(x => x.classList.toggle('active', x === li));
+      li.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      status.innerHTML = `${icon('listen')} ${L('Listen…', 'Escucha…')} <span class="muted">(${i + 1}/${sp.repeat.length})</span>`;
+      speak(sp.repeat[i], { onend: failed => {
+        if (run !== shadowRun || !root.isConnected) return;
+        if (failed) { endShadow(); return; }
+        const ms = 1500 + sp.repeat[i].split(' ').length * 450;
+        status.innerHTML = `${icon('speak')} <b>${L('Now repeat the sentence', 'Ahora repite la frase')}</b><span class="shadow-timer" style="--d:${ms}ms"></span>`;
+        setTimeout(() => step(i + 1), ms);
+      } });
+    };
+    step(0);
+  });
+  // Any other audio or mic action ends the guided round cleanly.
+  root.addEventListener('click', e => { if (goBtn?.getAttribute('aria-pressed') === 'true' && e.target.closest('[data-audio], [data-audio-stop], [data-mic]')) endShadow(); }, true);
 
   let active = null;
   root.addEventListener('click', async e => {
@@ -188,7 +232,7 @@ export function speaking(root, { id }) {
         setMic(b, true);
         const rec = await startRecording();
         active = { stop: async () => { const url = await rec.stop(); setMic(b, false); active = null; scores[k] = 0.6;
-          out.innerHTML = `<div class="rec-play"><p class="small">${L('Your recording', 'Tu grabación')}:</p><audio controls src="${url}"></audio>${target ? `<p class="small">${L('Compare with the model', 'Compárala con el modelo')}: ${sayBtn(target)}</p>` : ''}</div>`; } };
+          out.innerHTML = `<div class="rec-play"><p class="small">${L('Your recording', 'Tu grabación')}:</p><audio controls src="${url}"></audio>${target ? `<p class="small">${L('Compare with the model', 'Compárala con el modelo')}: ${audioBtn(target, { kind: 'sentence' })}</p>` : ''}</div>`; } };
       } catch (_) { setMic(b, false); out.innerHTML = `<p class="note">${icon('alert')} ${L('Microphone permission was denied.', 'Se ha denegado el permiso del micrófono.')}</p>`; }
     }
   });

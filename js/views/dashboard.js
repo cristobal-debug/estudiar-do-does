@@ -5,7 +5,7 @@ import { S, day, streak, doneToday } from '../core/store.js';
 import { dueCount } from '../core/srs.js';
 import { currentUnit, nextLesson, todayPlan, skillProgress, topMistakes, levelRatio, SKILL_META, lessonDone, wordsLearned } from '../core/path.js';
 import { LEVEL, WORDS, TIPS, UNITS } from '../data/index.js';
-import { sayBtn } from '../core/session.js';
+import { audioBtn } from '../core/audio.js';
 import { bar, skillMeters } from './ui.js';
 
 function greeting() {
@@ -137,10 +137,10 @@ export default function dashboard(root) {
 
       ${w ? `<section class="panel wod" aria-labelledby="wod-t">
         <p class="eyebrow" id="wod-t">${L('Word of the day', 'Palabra del día')}</p>
-        <div class="wod-word"><h2 lang="en">${esc(w.en)}</h2>${sayBtn(w.en, L('Listen', 'Escuchar'))}</div>
+        <div class="wod-word"><h2 lang="en">${esc(w.en)}</h2>${audioBtn(w.en)}</div>
         <p class="ipa">/${esc(w.ipa)}/ · ${esc(w.pos)}</p>
         <p><b>${esc(w.es)}</b></p>
-        <p class="wc-ex" lang="en">“${esc(w.ex)}” ${sayBtn(w.ex, L('Listen to the example', 'Escuchar el ejemplo'))}</p>
+        <p class="wc-ex" lang="en">“${esc(w.ex)}”</p>${audioBtn(w.ex, { variant: 'label', kind: 'example' })}
       </section>` : ''}
 
       <section class="panel tip" aria-labelledby="tip-t">

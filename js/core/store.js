@@ -8,7 +8,7 @@ export const SKILLS = ['vocabulary', 'grammar', 'listening', 'reading', 'writing
 const fresh = () => ({
   v: 1, created: Date.now(),
   name: '', level: 'a1', placed: null, onboarded: false,
-  goal: 10, lang: 'auto', theme: 'system', voice: '', rate: 0.95,
+  goal: 10, lang: 'auto', theme: 'system',   // audio settings live in speech.js
   xp: 0,
   days: {},        // 'YYYY-MM-DD' -> { sec, xp, lessons, reviews, c, t, done: [] }
   lessons: {},     // lessonId -> { done: ts, best: 0..1 }

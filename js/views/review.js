@@ -4,8 +4,8 @@ import { icon } from '../core/icons.js';
 import { S, markDone, addXP } from '../core/store.js';
 import { dueIds, dueTomorrow, grade, intervalLabel, addCards, learnedIds, isMastered } from '../core/srs.js';
 import { newWords } from '../core/path.js';
-import { sayBtn } from '../core/session.js';
-import { speak, canSpeak, stopSpeaking } from '../core/speech.js';
+import { audioBtn } from '../core/audio.js';
+import { stop as stopSpeaking } from '../core/speech.js';
 import { WORD, WORDS, CATEGORIES, LEVEL } from '../data/index.js';
 import { h1, empty } from './ui.js';
 
@@ -51,7 +51,7 @@ export function flashcards(root, { ids, title, back = '#/', learning = false, to
   const start = Date.now();
   const onKey = e => {
     if (!root.querySelector('.flash')) return document.removeEventListener('keydown', onKey);
-    if (e.target.matches('input, textarea')) return;
+    if (e.target.matches('input, textarea') || e.target.closest('[data-audio]')) return;
     if (!shown && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); reveal(); }
     else if (shown && /^[1-4]$/.test(e.key)) rate(+e.key - 1);
   };
@@ -63,16 +63,16 @@ export function flashcards(root, { ids, title, back = '#/', learning = false, to
     const w = WORD[queue[i]];
     root.innerHTML = `<section class="flash" aria-label="${esc(title)}">
       <header class="ses-top"><a class="icon-btn" href="${back}" aria-label="${L('Exit', 'Salir')}">${icon('x')}</a>
-        <div class="ses-bar" role="progressbar" aria-valuenow="${Math.round(i / queue.length * 100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${i / queue.length * 100}%"></i></div>
+        <div class="ses-bar" role="progressbar" aria-label="${L('Progress', 'Progreso')}" aria-valuenow="${Math.round(i / queue.length * 100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${i / queue.length * 100}%"></i></div>
         <span class="ses-count">${i + 1} / ${queue.length}</span></header>
       ${total && total > queue.length ? `<p class="small muted center">${L(`${total - queue.length} more after this round`, `${total - queue.length} más después de esta ronda`)}</p>` : ''}
       <div class="fc ${shown ? 'flipped' : ''}">
         <div class="fc-face">
           <p class="eyebrow">${esc(CATEGORIES[w.cat][lang() === 'es' ? 1 : 0])} · ${LEVEL[w.level].code}</p>
           <h2 class="fc-word" lang="en">${esc(w.en)}</h2>
-          <p class="ipa">/${esc(w.ipa)}/ · ${esc(w.pos)} ${sayBtn(w.en, L('Listen', 'Escuchar'))}</p>
-          ${shown ? `<div class="fc-back" aria-live="polite"><p class="fc-es">${esc(w.es)}</p>${w.ex ? `<p class="wc-ex" lang="en">“${esc(w.ex)}” ${sayBtn(w.ex, L('Listen to the example', 'Escuchar el ejemplo'))}</p>` : ''}</div>`
-            : `<p class="fc-q">${learning ? L('New word — say it out loud, then reveal.', 'Palabra nueva: dila en voz alta y luego descúbrela.') : L('What does this mean?', '¿Qué significa?')}</p>`}
+          <p class="ipa">/${esc(w.ipa)}/ · ${esc(w.pos)}</p><div class="fc-audio">${audioBtn(w.en, { variant: 'label' })}${audioBtn(w.en, { variant: 'label', slow: true })}</div>
+          ${shown ? `<div class="fc-back" aria-live="polite"><p class="fc-es">${esc(w.es)}</p>${w.ex ? `<p class="wc-ex" lang="en">“${esc(w.ex)}”</p>${audioBtn(w.ex, { variant: 'label', kind: 'example' })}` : ''}</div>`
+            : `<p class="fc-q">${learning ? L('New word — listen, say it out loud, then reveal.', 'Palabra nueva: escúchala, dila en voz alta y luego descúbrela.') : L('What does this mean?', '¿Qué significa?')}</p>`}
         </div>
       </div>
       <footer class="fc-foot">${shown
@@ -82,7 +82,6 @@ export function flashcards(root, { ids, title, back = '#/', learning = false, to
     root.querySelector('#reveal')?.addEventListener('click', reveal);
     root.querySelectorAll('[data-g]').forEach(b => b.addEventListener('click', () => rate(+b.dataset.g)));
     (root.querySelector('#reveal') || root.querySelector('[data-g="2"]'))?.focus({ preventScroll: true });
-    if (!shown && canSpeak && learning) speak(w.en);
   }
   function reveal() { shown = true; paint(); }
   function rate(g) {

@@ -2,7 +2,8 @@ import { esc } from '../core/util.js';
 import { L } from '../core/i18n.js';
 import { icon } from '../core/icons.js';
 import { S, save, streak, reset, exportState, importState } from '../core/store.js';
-import { englishVoices, canSpeak, speak } from '../core/speech.js';
+import * as speech from '../core/speech.js';
+import { audioBtn, audioNote } from '../core/audio.js';
 import { areas, skillProgress, SKILL_META, currentUnit, nextLesson, wordsLearned } from '../core/path.js';
 import { LEVELS, LEVEL } from '../data/index.js';
 import { h1 } from './ui.js';
@@ -14,7 +15,6 @@ export default function profile(root) {
   const prog = skillProgress();
   const sorted = Object.entries(prog).sort((a, b) => a[1] - b[1]);
   const u = currentUnit(); const nl = nextLesson(u);
-  const voices = englishVoices();
   root.innerHTML = `${h1(L('Profile', 'Perfil'))}
   <section class="panel profile-top">
     <div class="avatar" aria-hidden="true">${esc((S.name || '?').slice(0, 1).toUpperCase())}</div>
@@ -38,11 +38,9 @@ export default function profile(root) {
         <fieldset><legend>${L('Theme', 'Tema')}</legend><div class="seg">${[['system', L('System', 'Sistema')], ['light', L('Light', 'Claro')], ['dark', L('Dark', 'Oscuro')]].map(([v, t]) => `<label><input type="radio" name="theme" value="${v}" ${S.theme === v ? 'checked' : ''}><span>${t}</span></label>`).join('')}</div></fieldset>
         <fieldset><legend>${L('Level', 'Nivel')}</legend><div class="seg">${LEVELS.filter(l => !l.soon).map(l => `<label><input type="radio" name="level" value="${l.id}" ${S.level === l.id ? 'checked' : ''}><span>${l.code}</span></label>`).join('')}</div>
           <p class="small muted">${L('Not sure?', '¿No estás seguro?')} <a href="#/placement">${L('Take the level test', 'Haz el test de nivel')}</a></p></fieldset>
-        ${canSpeak ? `<fieldset><legend>${L('Voice', 'Voz')}</legend>
-          <label class="field"><span class="sr">${L('English voice', 'Voz en inglés')}</span><select id="voice"><option value="">${L('Automatic', 'Automática')}</option>${voices.map(v => `<option value="${esc(v.name)}" ${S.voice === v.name ? 'selected' : ''}>${esc(v.name)} (${esc(v.lang)})</option>`).join('')}</select></label>
-          <label class="field"><span>${L('Speed', 'Velocidad')}: <output id="rate-o">${S.rate}</output></span><input type="range" id="rate" min="0.6" max="1.2" step="0.05" value="${S.rate}"></label>
-          <button type="button" class="btn ghost sm" id="test-voice">${icon('volume')} ${L('Test voice', 'Probar voz')}</button></fieldset>` : ''}
+
       </section>
+      <section class="panel settings" id="audio-settings" aria-labelledby="as-t"></section>
     </div>
     <aside class="col-side">
       <section class="panel"><h2>${L('Your data', 'Tus datos')}</h2>
@@ -67,9 +65,7 @@ export default function profile(root) {
     if (r.name === 'theme') applyTheme();
     if (r.name === 'lang' || r.name === 'level') profile(root);
   }));
-  $('#voice')?.addEventListener('change', e => { S.voice = e.target.value; save(); speak('Hello! This is my voice.'); });
-  $('#rate')?.addEventListener('input', e => { S.rate = +e.target.value; $('#rate-o').textContent = S.rate; save(); });
-  $('#test-voice')?.addEventListener('click', () => speak('Hello! Nice to meet you. How are you today?'));
+  audioSettings($('#audio-settings'));
   $('#export').addEventListener('click', () => {
     const box = $('#export-box'); box.hidden = false; box.value = exportState(); box.select();
     navigator.clipboard?.writeText(box.value).then(() => { $('#data-msg').textContent = L('Copied to the clipboard. Save it somewhere safe.', 'Copiado al portapapeles. Guárdalo en un lugar seguro.'); }, () => { $('#data-msg').textContent = L('Copy the text above and save it.', 'Copia el texto de arriba y guárdalo.'); });
@@ -82,4 +78,37 @@ export default function profile(root) {
   $('#reset').addEventListener('click', () => { $('#reset-confirm').hidden = false; $('#reset-no').focus(); });
   $('#reset-no').addEventListener('click', () => { $('#reset-confirm').hidden = true; });
   $('#reset-yes').addEventListener('click', () => { reset(); location.hash = '#/welcome'; location.reload(); });
+}
+
+// 🔊 Audio & Pronunciation. Only accents/voices this device really has are offered.
+const SAMPLE = 'Hello! I usually wake up at seven, and I have breakfast at eight.';
+function audioSettings(box) {
+  const paint = () => {
+    const c = speech.settings();
+    const accents = speech.availableAccents();
+    const voices = accents.includes(c.preferredAccent) ? speech.voicesFor(c.preferredAccent) : speech.englishVoices();
+    const active = speech.resolveVoice();
+    box.innerHTML = `<h2 id="as-t">${icon('volume')} ${L('Audio & Pronunciation', 'Audio y pronunciación')}</h2>
+    ${!speech.canSpeak ? audioNote() : `
+      <fieldset><legend>${L('English pronunciation', 'Pronunciación del inglés')}</legend>
+        ${accents.length ? `<div class="seg">${accents.map(a => `<label><input type="radio" name="accent" value="${a}" ${c.preferredAccent === a || (accents.length === 1) ? 'checked' : ''}><span>${speech.ACCENTS[a].flag} ${L(speech.ACCENTS[a].en, speech.ACCENTS[a].es)}</span></label>`).join('')}</div>
+          ${accents.length < 2 ? `<p class="small muted">${L('Only this accent has a voice installed on this device.', 'En este dispositivo solo hay voz instalada para este acento.')}</p>` : ''}`
+        : `<p class="small muted">${speech.getVoices().length ? L('No American or British voice was found on this device; another available voice will be used.', 'No hay voz americana ni británica en este dispositivo; se usará otra voz disponible.') : L('Loading voices…', 'Cargando voces…')}</p>`}
+      </fieldset>
+      ${voices.length > 1 ? `<fieldset><legend>${L('Voice', 'Voz')}</legend><label class="field"><span class="sr">${L('Voice', 'Voz')}</span><select id="voice"><option value="">${L('Automatic (best available)', 'Automática (la mejor disponible)')}</option>${voices.map(v => `<option value="${esc(v.voiceURI)}" ${c.preferredVoice === v.voiceURI ? 'selected' : ''}>${esc(v.name)} · ${esc(v.lang)}</option>`).join('')}</select></label></fieldset>` : ''}
+      <fieldset><legend>${L('Speaking speed', 'Velocidad de lectura')}</legend>
+        <div class="seg">${[['slow', 'turtle', 'Slow', 'Lento'], ['normal', 'play', 'Normal', 'Normal'], ['fast', 'bolt', 'Fast', 'Rápido']].map(([v, ic, en, es]) => `<label><input type="radio" name="speed" value="${v}" ${c.speechSpeed === v ? 'checked' : ''}><span>${icon(ic)} ${L(en, es)}</span></label>`).join('')}</div>
+        <label class="field"><span>${L('Fine-tune', 'Ajuste fino')}: <output id="rate-o">${c.speechRate.toFixed(2)}×</output></span><input type="range" id="rate" min="0.5" max="1.3" step="0.05" value="${c.speechRate}"></label>
+        <p class="small muted">${L('Slow is ideal for new words and dictation. Pronunciation is not changed, only the speed.', 'Lento es ideal para palabras nuevas y dictados. No cambia la pronunciación, solo la velocidad.')}</p></fieldset>
+      <fieldset><legend>${L('Volume', 'Volumen')}</legend><label class="field"><span class="sr">${L('Volume', 'Volumen')}</span><input type="range" id="vol" min="0" max="1" step="0.05" value="${c.speechVolume}"></label></fieldset>
+      <div class="row">${audioBtn(SAMPLE, { variant: 'label', kind: 'sentence', label: L('Test voice', 'Probar voz') })}<span class="small muted">${active ? `${esc(active.name)} · ${esc(active.lang)}` : ''}</span></div>`}`;
+    const $ = s => box.querySelector(s);
+    box.querySelectorAll('input[name=accent]').forEach(r => r.addEventListener('change', () => { speech.stop(); speech.setAccent(r.value); paint(); }));
+    box.querySelectorAll('input[name=speed]').forEach(r => r.addEventListener('change', () => { speech.setSpeed(r.value); paint(); }));
+    $('#voice')?.addEventListener('change', e => { speech.stop(); speech.selectVoice(e.target.value); paint(); });
+    $('#rate')?.addEventListener('input', e => { speech.setRate(e.target.value); $('#rate-o').textContent = `${(+e.target.value).toFixed(2)}×`; box.querySelectorAll('input[name=speed]').forEach(r => { r.checked = r.value === speech.settings().speechSpeed; }); });
+    $('#vol')?.addEventListener('input', e => speech.setVolume(e.target.value));
+  };
+  paint();
+  if (speech.canSpeak && !speech.getVoices().length) speech.voicesReady().then(() => box.isConnected && paint());
 }

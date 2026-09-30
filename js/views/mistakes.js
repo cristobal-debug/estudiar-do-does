@@ -6,6 +6,9 @@ import { topMistakes } from '../core/path.js';
 import { mistakeItems } from '../core/generate.js';
 import { MISTAKES, LEVEL, TOPICS, LEVEL_IDS } from '../data/index.js';
 import { h1, empty } from './ui.js';
+import { audioBtn } from '../core/audio.js';
+
+const say = t => audioBtn(t.replace(/\s*\/\s*/g, ' '), { kind: 'sentence' });
 
 export default function mistakes(root) {
   const tags = topMistakes(10);
@@ -18,7 +21,7 @@ export default function mistakes(root) {
   <div class="row"><a class="btn primary${practicable ? '' : ' disabled'}" href="#/practice/mistakes" ${practicable ? '' : 'aria-disabled="true"'}>${icon('refresh')} ${L(`Practise my mistakes (${practicable})`, `Practicar mis errores (${practicable})`)}</a><span class="muted small">${fixed} ${L('fixed so far', 'corregidos hasta ahora')}</span></div>
 
   ${tags.length ? `<section class="panel"><h2>${L('You often confuse…', 'Sueles confundir…')}</h2><ul class="mk-list">${tags.map(m => `<li>
-    <p><span class="tag no">${icon('x')}</span> <s>${esc(m.wrong)}</s></p><p><span class="tag ok">${icon('check')}</span> <strong>${esc(m.right)}</strong></p>
+    <p><span class="tag no">${icon('x')}</span> <s>${esc(m.wrong)}</s></p><p><span class="tag ok">${icon('check')}</span> <strong>${esc(m.right)}</strong> ${say(m.right)}</p>
     <p class="small">${md(m.es)}</p><p class="small muted">${L('Times', 'Veces')}: ${m.open}${m.topic ? ` · <a href="#/grammar/${m.topic}">${esc(TOPICS[m.topic].title)}</a>` : ''}</p></li>`).join('')}</ul></section>` : ''}
 
   <section class="panel"><h2>${L('Recent mistakes', 'Errores recientes')}</h2>
@@ -29,7 +32,7 @@ export default function mistakes(root) {
 
   <section class="panel"><h2>${L('Common mistakes of Spanish speakers', 'Errores típicos de hispanohablantes')}</h2>
     <p class="muted small">${L('Up to your level. Learn them before you make them!', 'Hasta tu nivel. ¡Apréndelos antes de cometerlos!')}</p>
-    <ul class="mk-list cat">${catalogue.map(([id, m]) => `<li id="${id}"><p><span class="level-chip sm"><b>${LEVEL[m.level].code}</b></span> <s>${esc(m.wrong)}</s> → <strong>${esc(m.right)}</strong></p><p class="small">${md(m.es)}</p></li>`).join('')}</ul>
+    <ul class="mk-list cat">${catalogue.map(([id, m]) => `<li id="${id}"><p><span class="level-chip sm"><b>${LEVEL[m.level].code}</b></span> <s>${esc(m.wrong)}</s> → <strong>${esc(m.right)}</strong> ${say(m.right)}</p><p class="small">${md(m.es)}</p></li>`).join('')}</ul>
   </section>`;
   const target = decodeURIComponent(location.hash.split('#')[2] || '');
   if (target) root.querySelector(`#${CSS.escape(target)}`)?.scrollIntoView({ block: 'center' });

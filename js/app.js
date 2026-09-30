@@ -4,7 +4,8 @@ import { L, lang } from './core/i18n.js';
 import { icon } from './core/icons.js';
 import { S, save, onChange, tick, streak } from './core/store.js';
 import { dueCount } from './core/srs.js';
-import { speak } from './core/speech.js';
+import { stop as stopAudio, canSpeak } from './core/speech.js';
+import { initAudio, paintSpeed, cycleSpeed } from './core/audio.js';
 import { checkAchievements } from './core/gamification.js';
 import { search, TYPE_LABEL } from './core/search.js';
 import { applyTheme } from './core/theme.js';
@@ -108,6 +109,7 @@ function route() {
   const params = Object.fromEntries(r.keys.map((k, i) => [k, m[i + 1]]));
   document.documentElement.lang = lang();
   renderChrome(path);
+  stopAudio();   // never carry audio over to another page
   const root = document.createElement('div');
   root.className = 'view-inner';
   const footer = document.createElement('footer');
@@ -125,11 +127,10 @@ function route() {
 }
 addEventListener('hashchange', route);
 
-// Anything with data-say plays English audio.
-document.addEventListener('click', e => {
-  const b = e.target.closest('[data-say]');
-  if (b) { e.preventDefault(); speak(b.dataset.say, { rate: b.dataset.rate ? +b.dataset.rate : undefined }); b.classList.add('playing'); setTimeout(() => b.classList.remove('playing'), 600); }
-});
+// Audio: one delegated controller; a global speed chip in the top bar (🐢 / ▶ / ⚡).
+initAudio();
+const speedBtn = document.getElementById('speed-btn');
+if (canSpeak && speedBtn) { speedBtn.hidden = false; paintSpeed(speedBtn); speedBtn.addEventListener('click', cycleSpeed); }
 
 // Theme toggle (light ↔ dark; "system" is available in the profile).
 document.getElementById('theme-btn').addEventListener('click', () => {

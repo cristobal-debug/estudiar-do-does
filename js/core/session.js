@@ -4,7 +4,8 @@
 import { esc, md, shuffle, matchAnswer, matchExact, canon, lev, uid } from './util.js';
 import { L } from './i18n.js';
 import { icon } from './icons.js';
-import { speak, canSpeak, stopSpeaking } from './speech.js';
+import { stop as stopSpeaking } from './speech.js';
+import { audioBtn, listenPanel, canSpeak } from './audio.js';
 import * as store from './store.js';
 import { MISTAKES } from '../data/index.js';
 
@@ -21,9 +22,7 @@ const INSTR = {
 };
 const PRAISE = [['Correct!', '¡Correcto!'], ['Great!', '¡Muy bien!'], ['Exactly!', '¡Exacto!'], ['Nice work!', '¡Genial!']];
 
-export const sayBtn = (text, label = 'Listen', slow = false) => canSpeak
-  ? `<button type="button" class="say-btn${slow ? ' slow' : ''}" data-say="${esc(text)}"${slow ? ' data-rate="0.7"' : ''} aria-label="${esc(label)}${slow ? ' (slow)' : ''}: ${esc(text)}">${icon(slow ? 'slow' : 'volume')}</button>`
-  : '';
+export { audioBtn };
 
 const blankIn = (q, a) => q.includes('___') ? q.replace(/_{3,}/, `**${a}**`) : a;
 
@@ -34,7 +33,8 @@ const R = {
   mc(it, el, api, opts = {}) {
     const items = shuffle(it.o.map((t, i) => ({ t, ok: i === 0 })));
     const passage = it.ctx ? `<details class="passage" open><summary>${esc(it.ctx.title || L('Text', 'Texto'))}</summary><p>${md(it.ctx.text)}</p></details>` : '';
-    const audio = it.say ? `<div class="listen-row">${bigPlay(it.say)}</div>` : '';
+    // Listening items get the listening panel (no transcript until answered); word items get Listen + Slow.
+    const audio = !it.say ? '' : it.t === 'listen' ? listenPanel(it.say, { transcript: false }) : `<div class="word-audio">${audioBtn(it.say, { variant: 'label' })}${audioBtn(it.say, { variant: 'label', slow: true })}</div>`;
     el.innerHTML = `${head(it)}${passage}${audio}<p class="q">${md(it.q)}</p>
       <div class="opts ${items.some(x => x.t.length > 28) ? 'long' : ''}" role="group" aria-label="${L('Options', 'Opciones')}">
       ${items.map((x, i) => `<button type="button" class="opt" data-i="${i}"><kbd aria-hidden="true">${i + 1}</kbd><span>${esc(x.t)}</span></button>`).join('')}</div>`;
@@ -52,7 +52,6 @@ const R = {
     };
     el.onclick = e => { const b = e.target.closest('.opt'); if (b) pick(+b.dataset.i); };
     api.keys(k => { const n = +k - 1; if (n >= 0 && n < items.length) pick(n); });
-    if (it.say && !it.noAuto && opts.autoplay !== false) setTimeout(() => speak(it.say), 250);
   },
 
   listen(it, el, api) {
@@ -65,8 +64,7 @@ const R = {
   fix(it, el, api) { textInput(it, el, api, true); },
 
   dict(it, el, api) {
-    el.innerHTML = `${head(it)}<div class="listen-row">${bigPlay(it.say)}</div>
-      ${canSpeak ? '' : `<p class="note">${L('Audio is not available in this browser. Read and copy:', 'Tu navegador no reproduce audio. Lee y copia:')} <em>${esc(it.say)}</em></p>`}
+    el.innerHTML = `${head(it)}${canSpeak ? listenPanel(it.say, { transcript: false }) : `<p class="note">${L('Audio isn\'t available in this browser. Read and copy:', 'El audio no está disponible en este navegador. Lee y copia:')} <em>${esc(it.say)}</em></p>`}
       <label class="field"><span class="sr">${L('Your answer', 'Tu respuesta')}</span><input class="answer" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${L('Type what you hear…', 'Escribe lo que oyes…')}"></label>`;
     const inp = el.querySelector('input');
     inp.oninput = () => api.ready(!!inp.value.trim());
@@ -76,7 +74,7 @@ const R = {
       inp.disabled = true;
       return { ok: d <= Math.max(1, Math.floor(a.length / 25)), typo: d > 0, given: inp.value, right: it.say };
     });
-    setTimeout(() => { speak(it.say); inp.focus(); }, 250);
+    setTimeout(() => inp.focus(), 60);
   },
 
   build(it, el, api) {
@@ -132,10 +130,6 @@ function head(it) {
   const [en, es] = INSTR[it.t] || ['', ''];
   return `<div class="ins">${it.label ? `<span class="chip">${esc(it.label)}</span>` : ''}<span>${esc(it.ins || L(en, es))}</span></div>`;
 }
-function bigPlay(text) {
-  return canSpeak ? `<button type="button" class="play-big" data-say="${esc(text)}" aria-label="${L('Play audio', 'Reproducir audio')}">${icon('volume')}</button>
-    <button type="button" class="play-slow" data-say="${esc(text)}" data-rate="0.7" aria-label="${L('Play slowly', 'Reproducir despacio')}">${icon('slow')}<span>${L('Slow', 'Lento')}</span></button>` : '';
-}
 function textInput(it, el, api, prefill) {
   const q = it.t === 'fix' ? `<p class="q wrong-sent">${icon('x', 'inline-x')} ${esc(it.q)}</p>` : `<p class="q">${md(it.q)}</p>`;
   el.innerHTML = `${head(it)}${q}${it.hint ? `<p class="hint">${icon('bulb')} ${md(it.hint)}</p>` : ''}
@@ -174,7 +168,9 @@ export function runSession(root, opts) {
   const onKey = e => {
     if (!root.isConnected || !root.querySelector('.session')) return document.removeEventListener('keydown', onKey);
     if (e.target.matches('textarea')) return;
-    if (e.key === 'Enter') { const b = foot.querySelector('.btn.primary:not([disabled])'); if (b) { e.preventDefault(); b.click(); } return; }
+    if (e.key === 'Enter') {
+      // A focused button (audio, options, tiles…) keeps its own Enter behaviour.
+      if (e.target.closest('button:not(.btn.primary), summary, a')) return; const b = foot.querySelector('.btn.primary:not([disabled])'); if (b) { e.preventDefault(); b.click(); } return; }
     if (!e.target.matches('input') && keyFn && /^[1-9]$/.test(e.key)) keyFn(e.key);
   };
   document.addEventListener('keydown', onKey);
@@ -246,12 +242,13 @@ export function runSession(root, opts) {
     const showRight = res.right && (!res.ok || res.typo || it.t === 'listen' || it.t === 'dict');
     fbBox.className = `ses-fb show ${res.ok ? 'ok' : 'no'}`;
     fbBox.innerHTML = `<div class="fb-head">${icon(res.ok ? 'check' : 'x')}<strong>${res.ok ? L(p[0], p[1]) : L('Not quite', 'Casi…')}</strong>${res.ok ? `<span class="xp-pop">+${it.retry ? 1 : 2} XP</span>` : ''}</div>
-      ${showRight ? `<p>${res.ok ? '' : L('Correct answer: ', 'Respuesta correcta: ')}<strong>${md(res.right)}</strong> ${it.t === 'listen' || it.t === 'dict' ? '' : sayBtn(res.right.replace(/\*\*/g, ''))}</p>` : ''}
+      ${showRight ? `<p>${res.ok ? '' : L('Correct answer: ', 'Respuesta correcta: ')}<strong>${md(res.right)}</strong> ${it.t === 'listen' || it.t === 'dict' ? '' : audioBtn(res.right.replace(/\*\*/g, ''), { kind: 'sentence' })}</p>` : ''}
       ${res.typo ? `<p class="small">${L('Watch the spelling.', 'Ojo con la ortografía.')}</p>` : ''}
       ${res.note ? `<p class="small">${esc(res.note)}</p>` : ''}
       ${it.e ? `<p class="fb-e">${md(it.e)}</p>` : ''}
       ${!res.ok && mk ? `<p class="fb-tag">${icon('alert')} ${L('Common mistake for Spanish speakers', 'Error típico de hispanohablantes')}: <s>${esc(mk.wrong)}</s> → <strong>${esc(mk.right)}</strong></p>` : ''}`;
-    if (it.t === 'listen' && canSpeak) fbBox.insertAdjacentHTML('beforeend', `<p class="small">${L('Transcript', 'Transcripción')}: <em>${esc(it.say)}</em></p>`);
+    // After answering: read the transcript and listen again to connect sound and text.
+    if (it.t === 'listen' && canSpeak) fbBox.insertAdjacentHTML('beforeend', `<p class="small transcript-row">${L('Transcript', 'Transcripción')}: <em lang="en">${esc(it.say)}</em> ${audioBtn(it.say, { kind: 'sentence' })}</p>`);
   }
 
   function next() { idx++; show(); }

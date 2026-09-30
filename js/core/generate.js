@@ -2,8 +2,7 @@
 import { esc, md, shuffle, sample, seeded, dayKey, uid, canon } from './util.js';
 import { L, lang } from './i18n.js';
 import { icon } from './icons.js';
-import { sayBtn } from './session.js';
-import { canSpeak } from './speech.js';
+import { audioBtn, readAlong, canSpeak } from './audio.js';
 import { S } from './store.js';
 import { strength, dueIds } from './srs.js';
 import { UNIT, UNITS, TOPICS, WORDS, WORD, LESSON, LEVEL_IDS, unitsOf, topicsOf, MISTAKES } from '../data/index.js';
@@ -43,10 +42,10 @@ const withPhase = (items, phase) => items.map(x => ({ ...x, phase }));
 
 // ——— Content cards (teaching before testing) ———
 const wordCard = w => `<article class="word-card">
-  <div class="wc-top"><h3 lang="en">${esc(w.en)}</h3>${sayBtn(w.en, L('Listen', 'Escuchar'))}</div>
+  <div class="wc-top"><h3 lang="en">${esc(w.en)}</h3>${audioBtn(w.en)}</div>
   <p class="ipa">/${esc(w.ipa)}/ · <span>${esc(w.pos)}</span></p>
   <p class="wc-es">${esc(w.es)}</p>
-  ${w.ex ? `<p class="wc-ex" lang="en">${esc(w.ex)} ${sayBtn(w.ex, L('Listen to the example', 'Escuchar el ejemplo'))}</p>` : ''}
+  ${w.ex ? `<p class="wc-ex" lang="en">${esc(w.ex)}</p>${audioBtn(w.ex, { variant: 'label', kind: 'example' })}` : ''}
 </article>`;
 
 export function topicBody(t, { compact = false } = {}) {
@@ -58,11 +57,30 @@ export function contrastBlock(t) {
   return `<div class="contrast"><h3>${icon('alert')} ${L('Watch out, Spanish speakers', '¡Ojo! Español → inglés')}</h3>${t.contrast.map(c => `
     <div class="ct-row">${c.es ? `<p class="ct-es"><span class="flag-es">ES</span> ${esc(c.es)}</p>` : ''}
     <p class="ct-no"><span class="tag no">${icon('x')} NO</span> <s>${esc(c.wrong)}</s></p>
-    <p class="ct-ok"><span class="tag ok">${icon('check')} ${L('YES', 'SÍ')}</span> <strong>${esc(c.right)}</strong> ${sayBtn(c.right)}</p>
+    <p class="ct-ok"><span class="tag ok">${icon('check')} ${L('YES', 'SÍ')}</span> <strong>${esc(c.right)}</strong> ${audioBtn(c.right, { kind: 'sentence' })}</p>
     <p class="small">${md(c.why)}</p></div>`).join('')}</div>`;
 }
 export function examplesBlock(rows) {
-  return `<ul class="examples">${rows.map(([en, es]) => `<li><span lang="en">${md(en)}</span> ${sayBtn(en)}${es ? `<span class="tr">${esc(es)}</span>` : ''}</li>`).join('')}</ul>`;
+  return `<ul class="examples">${rows.map(([en, es]) => `<li><span lang="en">${md(en)}</span> ${audioBtn(en.replace(/\*\*/g, ''), { kind: 'sentence' })}${es ? `<span class="tr">${esc(es)}</span>` : ''}</li>`).join('')}</ul>`;
+}
+
+// Dialogue: play it all (line by line, highlighted) or line by line. Listen → understand → repeat.
+export function dialogueHtml(u) {
+  const id = `dlg-${u.id}`;
+  return `<h2>${L('Dialogue', 'Diálogo')}</h2>
+    <p class="small muted">${L('1. Listen to the whole dialogue. 2. Read it. 3. Play each line and repeat it out loud.', '1. Escucha todo el diálogo. 2. Léelo. 3. Reproduce cada línea y repítela en voz alta.')}</p>
+    ${readAlong(u.dialogue.map(d => d[1]), id)}
+    <dl class="dialogue" id="${id}">${u.dialogue.map(([who, line], i) => `<div><dt>${esc(who)}</dt><dd lang="en"><span class="ra-part" data-part="${i}">${esc(line)}</span> ${audioBtn(line, { kind: 'sentence' })}</dd></div>`).join('')}</dl>`;
+}
+
+// "What does the speaker say?" — hear a useful phrase without seeing it, pick its meaning.
+function phraseListen(u, rnd) {
+  const clean = u.phrases.filter(p => !/[/…]/.test(p[0]));
+  if (clean.length < 3) return [];
+  const [en, es] = sample(clean, 1, rnd)[0];
+  const others = sample(clean.filter(p => p[0] !== en), 2, rnd);
+  const useEs = !!es && lang() === 'es' && others.every(p => p[1]);
+  return [{ t: 'listen', say: en, q: L('What does the speaker say?', '¿Qué dice la persona?'), o: useEs ? [es, ...others.map(p => p[1])] : [en, ...others.map(p => p[0])], skill: 'listening', key: uid(['pl', u.id, en]), e: useEs ? `_${en}_ = ${es}` : '' }];
 }
 
 // ——— Lessons: intro → explanation → examples → guided → exercise → challenge → review → mini test ———
@@ -129,8 +147,8 @@ export function buildLesson(lessonId) {
   return [
     intro(L('Real English', 'Inglés real'), u.can),
     card('explain', `<h2>${L('Useful phrases', 'Frases útiles')}</h2>${examplesBlock(phr)}`),
-    card('examples', `<h2>${L('Dialogue', 'Diálogo')}</h2>${sayBtn(u.dialogue.map(d => d[1]).join(' '), L('Play the whole dialogue', 'Escuchar todo el diálogo'))}<dl class="dialogue">${u.dialogue.map(([who, line]) => `<div><dt>${esc(who)}</dt><dd lang="en">${esc(line)} ${sayBtn(line)}</dd></div>`).join('')}</dl>`),
-    ...withPhase(li.q.map((q, i) => ({ t: 'listen', say: li.say, q: q.q, o: q.o, skill: 'listening', key: q.key, unit: u.id, noAuto: i > 0 })), 'guided'),
+    card('examples', dialogueHtml(u)),
+    ...withPhase([...(canSpeak ? phraseListen(u, rnd) : []), ...li.q.map(q => ({ t: 'listen', say: li.say, q: q.q, o: q.o, skill: 'listening', key: q.key, unit: u.id }))], 'guided'),
     ...withPhase(u.reading.q.map(q => ({ t: 'mc', q: q.q, o: q.o, skill: 'reading', key: q.key, unit: u.id, ctx: { title: u.reading.title, text: u.reading.text } })), 'exercise'),
     ...withPhase([
       { t: 'dict', say: sample(u.dialogue, 1, rnd)[0][1], skill: 'listening', key: uid(['dict', u.id, rnd()]) },
