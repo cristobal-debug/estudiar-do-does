@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Guía y ejercicios interactivos de inglés: Present Simple, to be, can, tercera persona, do y make, verbos regulares e irregulares."><title>Inglés: guía y práctica</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#EDF2F8;--card:#fff;--ink:#1B2740;--mute:#5B6885;--line:#C9D3E3;--acc:#0E7C86;--onacc:#fff;--accbg:#D7EFF0;--ok:#1E7A45;--okbg:#DDF3E5;--bad:#B3372E;--badbg:#F9E1DE;--tile:#FFF6DC;--tl:#E2B93B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121A2B;--card:#1B2640;--ink:#EAF0FB;--mute:#9AA8C6;--line:#33415F;--acc:#5FD0D8;--onacc:#0B1A1C;--accbg:#173A45;--ok:#6FD79A;--okbg:#163A28;--bad:#FF8F85;--badbg:#472220;--tile:#3A3320;--tl:#C9A032}}
+:root[data-theme="dark"]{--bg:#121A2B;--card:#1B2640;--ink:#EAF0FB;--mute:#9AA8C6;--line:#33415F;--acc:#5FD0D8;--onacc:#0B1A1C;--accbg:#173A45;--ok:#6FD79A;--okbg:#163A28;--bad:#FF8F85;--badbg:#472220;--tile:#3A3320;--tl:#C9A032}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.6rem;line-height:1.2;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 16px}
+.tabs,.row{display:flex;gap:8px;flex-wrap:wrap}
+.tabs{margin-bottom:16px}
+.tab{font:inherit;border:2px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;cursor:pointer}
+.tab[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.meta{display:flex;justify-content:space-between;color:var(--mute);font-size:.9rem;margin-bottom:10px}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-bottom:16px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc);transition:width .3s}
+.q{font-size:1.35rem;line-height:1.35;margin:0 0 8px}
+.badge{display:inline-block;background:var(--accbg);color:var(--acc);border-radius:6px;padding:1px 8px;font-size:.85rem;margin-bottom:8px}
+.slot{min-height:56px;border-bottom:2px dashed var(--line);display:flex;flex-wrap:wrap;gap:8px;padding:8px 0;margin-bottom:14px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.tile{font:inherit;background:var(--tile);color:var(--ink);border:1px solid var(--tl);border-bottom-width:4px;border-radius:8px;padding:6px 12px;cursor:pointer}
+.tile:active{transform:translateY(2px);border-bottom-width:2px}
+.pool .tile[disabled]{opacity:.25;cursor:default}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.opt{font:inherit;font-size:1.15rem;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:12px;cursor:pointer}
+.opt[disabled]{color:var(--ink);cursor:default}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.no{background:var(--badbg);border-color:var(--bad)}
+.btn{font:inherit;background:var(--acc);color:var(--onacc);border:2px solid var(--acc);border-radius:10px;padding:8px 18px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn[disabled]{opacity:.4;cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--okbg);border-left:5px solid var(--ok)}
+.fb.no{background:var(--badbg);border-left-color:var(--bad)}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+h2{font-size:1.15rem;margin:22px 0 8px}h2:first-child{margin-top:0}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{color:var(--mute)}.tw{overflow-x:auto}
+td.cv{color:transparent;background:var(--line);cursor:pointer;user-select:none}
+.mk{display:flex;gap:10px;align-items:center;margin:6px 0}.mk i{width:16px;height:16px;border-radius:4px;flex:none}
+input{font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px;padding:8px 12px;flex:1;min-width:0}
+</style></head>
+<body><div class="wrap">
+<h1>Inglés: guía y práctica</h1>
+<p class="sub">Guía de estudio y ejercicios cortos. Los fallos se repiten al final.</p>
+<div class="tabs" id="tabs"></div>
+<div id="app"></div>
+</div>
+<script>
+const LAB={aff:'Afirmativa',neg:'Negativa',q:'Pregunta Yes/No',wh:'Pregunta Wh-',be:'Verbo to be',can:'Verbo can'};
+const TIPS={aff:'He, she, it: verbo + s.',neg:'Sujeto + do / does + not + verbo base.',q:'Do / Does + sujeto + verbo base.',wh:'Palabra interrogativa + do / does + sujeto + verbo base.',be:'Am / is / are; en la negativa + not; en la pregunta el verbo va antes del sujeto.',can:'Sujeto + can + verbo base, sin -s con he, she, it. Negativa: can\'t. Pregunta: Can + sujeto + verbo.'};
+const B=[
+['Ella tiene un ordenador nuevo.','aff','She has a new computer','have'],
+['Ella no tiene un ordenador nuevo.','neg',"She doesn't have a new computer",'has'],
+['¿Ella tiene un ordenador nuevo?','q','Does she have a new computer','has'],
+['Ellos no usan guantes.','neg',"They don't use gloves",'doesn\'t'],
+['¿Ellos usan guantes?','q','Do they use gloves','does'],
+['Mi hermana envía muchos emails.','aff','My sister sends a lot of emails','send'],
+['¿Cómo funciona?','wh','How does it work','works'],
+['¿Qué conducen?','wh','What do they drive','does'],
+['Él no canta en un grupo.','neg',"He doesn't sing in a band",'sings'],
+['Ella compra pan todos los días.','aff','She buys bread every day','buy'],
+['Nosotros pagamos con tarjeta.','aff','We pay by credit card','pays'],
+['¿Dónde vivo?','wh','Where do I live','does'],
+['¿Por qué canta él en un grupo?','wh','Why does he sing in a band','sings'],
+['Mi madre no comete errores.','neg',"My mother doesn't make mistakes",'do'],
+['Estoy en casa.','be',"I'm at home",'is'],['Él es mi primo.','be','He is my cousin','are'],
+['Ellos no son diferentes.','be',"They aren't different","isn't"],['¿Dónde estamos?','be','Where are we','is'],
+['¿Ella es bailarina?','be','Is she a dancer','are'],['Puedo ir.','can','I can go','cans'],
+['Él sabe montar en bicicleta.','can','He can ride a bike','rides'],['Ella no sabe esquiar.','can',"She can't ski","doesn't"],
+['¿Puedes quedarte?','can','Can you stay','Do'],['Sara sabe hacer galletas.','can','Sara can make cookies','makes'],
+['Sabemos escribir informes.','can','We can write reports','writes']];
+const F=[
+["He ___ sing in a band.",["don't","doesn't"],1,"Con he, she, it se usa doesn't."],
+["___ she run a company?",["Do","Does"],1,"Con he, she, it se usa does."],
+["They ___ a 4x4.",["drive","drives"],0,"Con they no se añade -s."],
+["It ___ from China.",["come","comes"],1,"Con it el verbo lleva -s."],
+["She doesn't ___ bread.",["buy","buys"],0,"Después de doesn't el verbo va en forma base."],
+["___ you work for a big company?",["Do","Does"],0,"Con you se usa do."],
+["My sister ___ more than 100 emails a day.",["send","sends"],1,"My sister equivale a she: verbo + s."],
+["Does he ___ in NY?",["live","lives"],0,"Después de does el verbo va en forma base."],
+["We ___ pay by credit card.",["don't","doesn't"],0,"Con we se usa don't."],
+["She ___ in the library.",["study","studies"],1,"Consonante + y: la y cambia a -ies."],
+["The boy ___ bad.",["smell","smells"],1,"The boy equivale a he: verbo + s."],
+["What ___ they drive?",["do","does"],0,"Con they se usa do."],
+["She ___ a new computer.",["have","has"],1,"Con she, have cambia a has."],
+["He ___ his homework every day.",["do","does"],1,"Con he, do se convierte en does."],
+["She ___ a dancer.",["is","are"],0,"She usa is."],["We ___ friends.",["is","are"],1,"We usa are."],
+["___ they colleagues?",["Is","Are"],1,"They usa are."],["He ___ sing opera.",["cans","can"],1,"Can no cambia: sin -s con he, she, it."],
+["She ___ ski.",["can't","doesn't can"],0,"Con can no se usa do / does."],["___ you speak many languages?",["Can","Do"],0,"Con can la pregunta empieza por Can."]];
+const DM=[['___ homework',0,'hacer los deberes'],['___ a cake',1,'hacer una tarta'],['___ a mistake',1,'cometer un error'],['___ the dishes',0,'fregar los platos'],['___ the bed',1,'hacer la cama'],['___ exercise',0,'hacer ejercicio'],['___ a decision',1,'tomar una decisión'],['___ friends',1,'hacer amigos'],['___ business',0,'hacer negocios'],['___ a phone call',1,'hacer una llamada'],['___ noise',1,'hacer ruido'],['___ housework',0,'hacer las tareas del hogar']]
+.map(([s,c,es])=>[s,['do','make'],c,s.replace('___',['do','make'][c])+': '+es+'. Do es para actividades, make para crear algo.']);
+const RV='accept arrive ask call change cheat clap clean close cook cry dance dream enjoy enter fail finish hate help hope jump kill kiss laugh learn like listen live look love need open pass play remember share smile start stay stop study talk text travel try use wait walk want work'.split(' ');
+const RU={s:'Regla general: se añade -s.',es:'Acaba en -s, -sh, -ch, -x, -z u -o: se añade -es.',ies:'Consonante + y: la y cambia a -ies.',ys:'Vocal + y: se añade -s.',has:'have es irregular: has.'};
+const t3=v=>v=='have'?['has','has']:/(s|sh|ch|x|z|o)$/.test(v)?[v+'es','es']:/[^aeiou]y$/.test(v)?[v.slice(0,-1)+'ies','ies']:[v+'s',/y$/.test(v)?'ys':'s'];
+const TH=RV.concat('fly go do watch teach fix carry have'.split(' ')).map(v=>{const [a,r]=t3(v);return [v,a,RU[r]]});
+const IRR='be,was/were,been,ser/estar;become,became,become,convertirse;begin,began,begun,empezar;bring,brought,brought,traer;build,built,built,construir;buy,bought,bought,comprar;catch,caught,caught,atrapar;choose,chose,chosen,elegir;come,came,come,venir;cost,cost,cost,costar;do,did,done,hacer;drink,drank,drunk,beber;drive,drove,driven,conducir;eat,ate,eaten,comer;fall,fell,fallen,caer;feed,fed,fed,alimentar;find,found,found,encontrar;fly,flew,flown,volar;get,got,got,obtener;give,gave,given,dar;go,went,gone,ir;have,had,had,tener;hear,heard,heard,oír;keep,kept,kept,guardar;leave,left,left,salir / dejar;lend,lent,lent,prestar;lose,lost,lost,perder;make,made,made,hacer;meet,met,met,conocer;know,knew,known,saber;put,put,put,poner;read,read,read,leer;run,ran,run,correr;say,said,said,decir;see,saw,seen,ver;sell,sold,sold,vender;send,sent,sent,enviar;shoot,shot,shot,disparar;sleep,slept,slept,dormir;speak,spoke,spoken,hablar;spell,spelled,spelled,deletrear;spend,spent,spent,gastar;take,took,taken,tomar;tell,told,told,contar;think,thought,thought,pensar;understand,understood,understood,entender;wear,wore,worn,llevar puesto;win,won,won,ganar;write,wrote,written,escribir';
+const GUIDE=`<div class="card"><h2>Present Simple: estructura</h2><div class="tw"><table><tr><th>Tipo</th><th>Estructura</th></tr>
+<tr><td>Afirmativa</td><td>Sujeto + verbo (he, she, it: verbo + s)</td></tr>
+<tr><td>Negativa</td><td>Sujeto + do / does + not + verbo base</td></tr>
+<tr><td>Pregunta</td><td>Do / Does + sujeto + verbo base</td></tr>
+<tr><td>Wh-</td><td>Palabra + do / does + sujeto + verbo base</td></tr></table></div>
+<h2>Tercera persona (he, she, it)</h2><div class="tw"><table><tr><th>Regla</th><th>Ejemplos</th></tr>
+<tr><td>Casi todos: +s</td><td>work → works, kill → kills</td></tr>
+<tr><td>Acaba en -s, -sh, -ch, -x, -z, -o: +es</td><td>kiss → kisses, pass → passes, finish → finishes, watch → watches, fix → fixes, go → goes, do → does</td></tr>
+<tr><td>Consonante + y: -ies</td><td>fly → flies, study → studies, cry → cries, try → tries</td></tr>
+<tr><td>Vocal + y: +s</td><td>play → plays, enjoy → enjoys, stay → stays</td></tr>
+<tr><td>Irregular</td><td>have → has</td></tr></table></div>
+<h2>Verbo to be</h2><div class="tw"><table><tr><th>Sujeto</th><th>Afirmativa</th><th>Negativa</th><th>Pregunta</th></tr>
+<tr><td>I</td><td>I am (I'm)</td><td>I'm not</td><td>Am I?</td></tr>
+<tr><td>he, she, it</td><td>is (he's)</td><td>isn't, 's not</td><td>Is he?</td></tr>
+<tr><td>you, we, they</td><td>are (you're)</td><td>aren't, 're not</td><td>Are you?</td></tr></table></div>
+<p>Wh-: palabra + to be + sujeto. Where are we? How is she?</p>
+<h2>Verbo can</h2><p>Sirve para habilidad, capacidad, permiso y favores. Sujeto + can + verbo base, sin -s con he, she, it. Negativa: can't o cannot. Pregunta: Can + sujeto + verbo. Wh-: When can I go?</p>
+<h2>Colores para marcar errores</h2>
+<div class="mk"><i style="background:#F28C28"></i>Naranja: ortografía (spelling)</div>
+<div class="mk"><i style="background:#D93636"></i>Rojo: gramática (grammar)</div>
+<div class="mk"><i style="background:#2F6FDE"></i>Azul: vocabulario (vocabulary)</div>
+<div class="mk"><i style="background:#2E9B4F"></i>Verde: puntuación, o falta o sobra alguna palabra</div>
+<div class="mk"><i style="background:#F2C21B"></i>Amarillo: atención a las instrucciones del ejercicio</div></div>`;
+const M={guide:'Guía',build:'Construye la frase',fill:'Completa la frase',third:'Tercera persona',dm:'Do o make',irr:'Verbos irregulares'};
+const DATA={build:B,fill:F,dm:DM,third:TH};
+let mode='build',Q=[],i=0,ok=0,miss=[];
+const $=s=>document.querySelector(s);
+const sh=a=>{a=a.slice();for(let k=a.length;k>1;k--){const j=Math.floor(Math.random()*k);[a[k-1],a[j]]=[a[j],a[k-1]]}return a};
+function tabs(){$('#tabs').innerHTML=Object.entries(M).map(([k,v])=>`<button class="tab" aria-pressed="${k===mode}" data-m="${k}">${v}</button>`).join('')}
+$('#tabs').onclick=e=>{const b=e.target.closest('[data-m]');if(b)start(b.dataset.m)};
+function start(m,items){mode=m;tabs();
+  if(m==='guide'){$('#app').onclick=null;$('#app').innerHTML=GUIDE;return}
+  if(m==='irr')return irr();
+  Q=sh(items||DATA[m]);if(m==='third'&&!items)Q=Q.slice(0,15);i=0;ok=0;miss=[];draw()}
+function irr(){const R=IRR.split(';').map(r=>r.split(','));let cv=false;
+  const p=()=>{$('#app').innerHTML=`<div class="card"><p class="sub">Tapa las formas para comprobarte y toca una celda tapada para verla.</p><div class="row" style="margin-bottom:12px"><button class="btn" id="tg">${cv?'Mostrar todo':'Tapar las respuestas'}</button></div><div class="tw"><table><tr><th>Infinitivo</th><th>Past simple</th><th>Past participle</th><th>Traducción</th></tr>${R.map(r=>`<tr><td><b>${r[0]}</b></td><td class="${cv?'cv':''}">${r[1]}</td><td class="${cv?'cv':''}">${r[2]}</td><td>${r[3]}</td></tr>`).join('')}</table></div></div>`};
+  $('#app').onclick=e=>{if(e.target.closest('#tg')){cv=!cv;p()}else if(e.target.classList.contains('cv'))e.target.classList.remove('cv')};p()}
+function typed(){const [v,a,e]=Q[i];let res=null;
+  const go=()=>{const x=$('#ans').value.trim().toLowerCase();if(!x)return;res=x===a?'ok':'no';res==='ok'?ok++:miss.push(Q[i]);paint()};
+  const paint=()=>{shell(`<span class="badge">Tercera persona</span><p class="q">He / she / it: <b>${v}</b></p>${res?fb(res==='ok',(res==='ok'?'Correcto. ':'Era "'+a+'". ')+e):`<div class="row"><input id="ans" autocomplete="off" autocapitalize="none" aria-label="Tu respuesta"><button class="btn" id="chk">Comprobar</button></div>`}`);
+    const n=$('#ans')||$('#nx');n.focus();
+    $('#app').onclick=ev=>{if(next(ev))return;if(!res&&ev.target.closest('#chk'))go()};
+    $('#app').onkeydown=ev=>{if(ev.key==='Enter'&&!res&&ev.target.id==='ans')go()}};
+  paint()}
+function shell(inner){$('#app').innerHTML=`<div class="card"><div class="meta"><span>${i+1} de ${Q.length}</span><span>Aciertos: ${ok}</span></div><div class="bar"><i style="width:${i/Q.length*100}%"></i></div>${inner}</div>`}
+const fb=(good,t)=>`<div class="fb ${good?'':'no'}" role="status">${t}</div><div class="row" style="margin-top:12px"><button class="btn" id="nx">Siguiente</button></div>`;
+function next(e){if(e.target.closest('#nx')){i++;draw();return true}}
+function draw(){
+  if(i>=Q.length){
+    $('#app').innerHTML=`<div class="card"><p class="q">${ok} de ${Q.length} aciertos</p><p class="sub">${miss.length?'Repite los fallos para fijarlos.':'Sin fallos. Prueba otro ejercicio o repítelo.'}</p><div class="row">${miss.length?`<button class="btn" id="rp">Repetir los fallos (${miss.length})</button>`:''}<button class="btn ghost" id="ag">Empezar de nuevo</button></div></div>`;
+    $('#app').onclick=e=>{if(e.target.closest('#rp'))start(mode,miss);if(e.target.closest('#ag'))start(mode)};
+    return;
+  }
+  mode==='build'?build():mode==='third'?typed():fill();
+}
+function build(){
+  const [es,t,a,d]=Q[i];const w=sh(a.split(' ').concat(d));let sel=[],res=null;
+  const paint=()=>{
+    shell(`<span class="badge">${LAB[t]}</span><p class="q">${es}</p>
+    <div class="slot" aria-label="Tu frase">${sel.map(k=>`<button class="tile" data-s="${k}" ${res?'disabled':''}>${w[k]}</button>`).join('')}</div>
+    <div class="pool">${w.map((x,k)=>`<button class="tile" data-p="${k}" ${sel.includes(k)||res?'disabled':''}>${x}</button>`).join('')}</div>
+    ${res?fb(res==='ok',res==='ok'?'Correcto. '+TIPS[t]:'Era: '+a+'. '+TIPS[t]):`<div class="row"><button class="btn" id="chk" ${sel.length?'':'disabled'}>Comprobar</button><button class="btn ghost" id="clr">Borrar</button></div>`}`);
+    $('#app').onclick=e=>{
+      if(next(e))return;
+      const p=e.target.closest('[data-p]'),s=e.target.closest('[data-s]');
+      if(res)return;
+      if(p&&!p.disabled){sel.push(+p.dataset.p);paint()}
+      else if(s){sel=sel.filter(k=>k!==+s.dataset.s);paint()}
+      else if(e.target.closest('#clr')){sel=[];paint()}
+      else if(e.target.closest('#chk')){
+        const good=sel.map(k=>w[k]).join(' ').toLowerCase()===a.toLowerCase();
+        res=good?'ok':'no';good?ok++:miss.push(Q[i]);paint();
+      }
+    };
+  };
+  paint();
+}
+function fill(){
+  const [s,o,c,e]=Q[i];let pick=null;
+  const paint=()=>{
+    shell(`<p class="q">${s.replace('___','<b>_____</b>')}</p>
+    <div class="opts">${o.map((x,k)=>`<button class="opt ${pick===null?'':k===c?'ok':k===pick?'no':''}" data-o="${k}" ${pick===null?'':'disabled'}>${x}</button>`).join('')}</div>
+    ${pick===null?'':fb(pick===c,(pick===c?'Correcto. ':'Era "'+o[c]+'". ')+e)}`);
+    $('#app').onclick=ev=>{
+      if(next(ev))return;
+      const b=ev.target.closest('[data-o]');
+      if(b&&pick===null){pick=+b.dataset.o;pick===c?ok++:miss.push(Q[i]);paint()}
+    };
+  };
+  paint();
+}
+start('guide');
+</script></body></html>
