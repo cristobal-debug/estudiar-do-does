@@ -47,6 +47,10 @@ th{color:var(--mute)}.tw{overflow-x:auto}
 td.cv{color:transparent;background:var(--line);cursor:pointer;user-select:none}
 .mk{display:flex;gap:10px;align-items:center;margin:6px 0}.mk i{width:16px;height:16px;border-radius:4px;flex:none}
 input{font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px;padding:8px 12px;flex:1;min-width:0}
+.pista{background:var(--accbg);border-radius:10px;padding:10px 14px;margin:8px 0 14px}.pista div{margin-top:2px}
+.ln{margin:8px 0}.ln input{width:100%;box-sizing:border-box}
+.ln small{display:block;min-height:1.3em;font-size:.85rem;color:var(--mute)}.ln small.ok{color:var(--ok)}.ln small.no{color:var(--bad)}
+.sum{font-weight:700;margin:12px 0 0}
 </style></head>
 <body><div class="wrap">
 <h1>Inglés: guía y práctica</h1>
@@ -120,14 +124,53 @@ const GUIDE=`<div class="card"><h2>Present Simple: estructura</h2><div class="tw
 <tr><td>you, we, they</td><td>are (you're)</td><td>aren't, 're not</td><td>Are you?</td></tr></table></div>
 <p>Wh-: palabra + to be + sujeto. Where are we? How is she?</p>
 <h2>Verbo can</h2><p>Sirve para habilidad, capacidad, permiso y favores. Sujeto + can + verbo base, sin -s con he, she, it. Negativa: can't o cannot. Pregunta: Can + sujeto + verbo. Wh-: When can I go?</p>
+<h2>Mayúsculas y punto final</h2><div class="tw"><table><tr><th>Se escribe con mayúscula</th><th>Ejemplos</th></tr>
+<tr><td>Idiomas</td><td>English, Spanish</td></tr>
+<tr><td>Nacionalidades</td><td>British, American</td></tr>
+<tr><td>Días de la semana</td><td>Monday, Tuesday</td></tr>
+<tr><td>Meses</td><td>January, February</td></tr>
+<tr><td>El pronombre I, esté donde esté en la frase</td><td>Yesterday I went home.</td></tr>
+<tr><td>Siglas</td><td>TV, CD, DVD, NASA, NBA, ASAP, OK, LOL</td></tr></table></div>
+<p>Pon un punto al final de cada frase, salvo que termine en signo de interrogación o de exclamación.</p>
 <h2>Colores para marcar errores</h2>
 <div class="mk"><i style="background:#F28C28"></i>Naranja: ortografía (spelling)</div>
 <div class="mk"><i style="background:#D93636"></i>Rojo: gramática (grammar)</div>
 <div class="mk"><i style="background:#2F6FDE"></i>Azul: vocabulario (vocabulary)</div>
 <div class="mk"><i style="background:#2E9B4F"></i>Verde: puntuación, o falta o sobra alguna palabra</div>
 <div class="mk"><i style="background:#F2C21B"></i>Amarillo: atención a las instrucciones del ejercicio</div></div>`;
-const M={guide:'Guía',build:'Construye la frase',fill:'Completa la frase',third:'Tercera persona',dm:'Do o make',irr:'Verbos irregulares'};
-const DATA={build:B,fill:F,dm:DM,third:TH};
+const M={guide:'Guía',tareas:'Tareas',build:'Construye la frase',fill:'Completa la frase',third:'Tercera persona',dm:'Do o make',may:'Mayúsculas',clase:'Tus frases',reg:'Verbos regulares',irr:'Verbos irregulares'};
+const CL=[
+['Pasa a negativa: My English teacher is a professional.','be',"My English teacher isn't a professional","aren't"],
+['Pasa a pregunta: The dog is soft.','be','Is the dog soft','Are'],
+['Pasa a negativa: We are a good class.','be',"We aren't a good class","isn't"],
+['Pasa a pregunta: She is a singer.','be','Is she a singer','Are'],
+['Pasa a negativa: Spain is a world champion.','be',"Spain isn't a world champion","aren't"],
+['Pasa a afirmativa: You are not beautiful.','be','You are beautiful','is'],
+['Pasa a pregunta: She is not jealous.','be','Is she jealous','Are'],
+['Pasa a afirmativa: They are not bad people.','be','They are bad people','is'],
+['Pasa a pregunta: My dad is not an old man.','be','Is my dad an old man','Are'],
+['Pasa a negativa: She plays guitar.','neg',"She doesn't play guitar",'plays'],
+['Pasa a pregunta: They work very hard.','q','Do they work very hard','Does'],
+['Pasa a negativa: My mom remembers me.','neg',"My mom doesn't remember me",'remembers'],
+['Pasa a pregunta: Charles pays the bill.','q','Does Charles pay the bill','pays'],
+['Pasa a negativa: My dad runs every day.','neg',"My dad doesn't run every day",'do'],
+['Pasa a pregunta: We wait for you.','q','Do we wait for you','Does'],
+['Pasa a negativa: Juan smiles when he sees Alejandra.','neg',"Juan doesn't smile when he sees Alejandra",'smiles']];
+const MY=[
+["My friends speak ___.",["spanish","Spanish"],1,"Los idiomas llevan mayúscula."],
+["She is ___.",["british","British"],1,"Las nacionalidades llevan mayúscula."],
+["My teacher is ___.",["american","American"],1,"Las nacionalidades llevan mayúscula."],
+["They study ___ at school.",["english","English"],1,"Los idiomas llevan mayúscula."],
+["We have class on ___.",["monday","Monday"],1,"Los días de la semana llevan mayúscula."],
+["My birthday is in ___.",["september","September"],1,"Los meses llevan mayúscula."],
+["The course starts in ___.",["january","January"],1,"Los meses llevan mayúscula."],
+["Yesterday ___ went to the park.",["i","I"],1,"El pronombre I siempre lleva mayúscula."],
+["We watch ___ every night.",["tv","TV"],1,"Las siglas van en mayúsculas."],
+["He loves the ___.",["nba","NBA"],1,"Las siglas van en mayúsculas."],
+["Send me the file ___.",["asap","ASAP"],1,"Las siglas van en mayúsculas."],
+["I live in Spain___",[".","?"],0,"Una frase afirmativa termina en punto."],
+["Where do you live___",[".","?"],1,"Una pregunta termina en signo de interrogación, no en punto."]];
+const DATA={build:B,fill:F,dm:DM,third:TH,clase:CL,may:MY};
 let mode='build',Q=[],i=0,ok=0,miss=[];
 const $=s=>document.querySelector(s);
 const sh=a=>{a=a.slice();for(let k=a.length;k>1;k--){const j=Math.floor(Math.random()*k);[a[k-1],a[j]]=[a[j],a[k-1]]}return a};
@@ -135,11 +178,45 @@ function tabs(){$('#tabs').innerHTML=Object.entries(M).map(([k,v])=>`<button cla
 $('#tabs').onclick=e=>{const b=e.target.closest('[data-m]');if(b)start(b.dataset.m)};
 function start(m,items){mode=m;tabs();
   if(m==='guide'){$('#app').onclick=null;$('#app').innerHTML=GUIDE;return}
+  if(m==='tareas')return tareas();
   if(m==='irr')return irr();
+  if(m==='reg')return reg();
   Q=sh(items||DATA[m]);if(m==='third'&&!items)Q=Q.slice(0,15);i=0;ok=0;miss=[];draw()}
-function irr(){const R=IRR.split(';').map(r=>r.split(','));let cv=false;
-  const p=()=>{$('#app').innerHTML=`<div class="card"><p class="sub">Tapa las formas para comprobarte y toca una celda tapada para verla.</p><div class="row" style="margin-bottom:12px"><button class="btn" id="tg">${cv?'Mostrar todo':'Tapar las respuestas'}</button></div><div class="tw"><table><tr><th>Infinitivo</th><th>Past simple</th><th>Past participle</th><th>Traducción</th></tr>${R.map(r=>`<tr><td><b>${r[0]}</b></td><td class="${cv?'cv':''}">${r[1]}</td><td class="${cv?'cv':''}">${r[2]}</td><td>${r[3]}</td></tr>`).join('')}</table></div></div>`};
+function tab(R,H,C,note){let cv=false;
+  const p=()=>{$('#app').innerHTML=`<div class="card"><p class="sub">${note}</p><div class="row" style="margin-bottom:12px"><button class="btn" id="tg">${cv?'Mostrar todo':'Tapar las respuestas'}</button></div><div class="tw"><table><tr>${H.map(h=>`<th>${h}</th>`).join('')}</tr>${R.map(r=>`<tr>${r.map((c,k)=>`<td class="${cv&&C.includes(k)?'cv':''}">${k?c:'<b>'+c+'</b>'}</td>`).join('')}</tr>`).join('')}</table></div></div>`};
   $('#app').onclick=e=>{if(e.target.closest('#tg')){cv=!cv;p()}else if(e.target.classList.contains('cv'))e.target.classList.remove('cv')};p()}
+const irr=()=>tab(IRR.split(';').map(r=>r.split(',')),['Infinitivo','Past simple','Past participle','Traducción'],[1,2],'Tapa las formas para comprobarte y toca una celda tapada para verla.');
+const reg=()=>tab(TH.slice(0,RV.length).map(([v,a,r])=>[({enter:'enter (a place)',listen:'listen (to something)'})[v]||v,a,r]),['Infinitivo','He / she / it','Regla'],[1],'Los 50 verbos regulares de clase. Tapa la columna del medio y comprueba la tercera persona.');
+const TK=[
+{t:'10 preguntas en Present Simple',n:'No uses be ni can. Cada frase con un sujeto distinto y un verbo distinto. Cuatro deben ser preguntas Wh-.',h:['Yes/No: Do / Does + sujeto + verbo base ?','Wh-: palabra interrogativa + do / does + sujeto + verbo base ?'],ex:'Does she run a company? / Where do I live?',k:'q',w:4},
+{t:'10 frases negativas en Present Simple',n:'No uses be ni can. Cada frase con un sujeto distinto y un verbo distinto.',h:['Sujeto + do / does + not + verbo base','Forma corta: don\'t / doesn\'t'],ex:'She doesn\'t run a company.',k:'neg'},
+{t:'10 frases afirmativas en Present Simple',n:'No uses be ni can. Cada frase con un sujeto distinto y un verbo distinto.',h:['Sujeto + verbo (he, she, it: verbo + s / es / ies)'],ex:'She runs a company.',k:'aff'},
+{t:'10 preguntas con can',n:'Cada frase con un sujeto distinto. No repitas el verbo que va después de can. Cuatro deben ser preguntas Wh-.',h:['Yes/No: Can + sujeto + verbo base ?','Wh-: palabra interrogativa + can + sujeto + verbo base ?'],ex:'Can he sing opera? / When can I go?',k:'can',w:4},
+{t:'10 frases negativas con can',n:'Cada frase con un sujeto distinto. No repitas el verbo que va después de can.',h:['Sujeto + can\'t (o cannot) + verbo base'],ex:'She can\'t skate.',k:'cn'},
+{t:'10 frases afirmativas con can',n:'Cada frase con un sujeto distinto. No repitas el verbo que va después de can.',h:['Sujeto + can + verbo base (sin -s con he, she, it)'],ex:'He can sing opera.',k:'ca'},
+{t:'10 preguntas con el verbo to be',n:'Cada frase con un sujeto distinto. Cuatro deben ser preguntas Wh-.',h:['Yes/No: Am / Is / Are + sujeto ... ?','Wh-: palabra interrogativa + am / is / are + sujeto ... ?'],ex:'Is she married? / Where are we?',k:'bq',w:4}];
+const BEN=/\b(am|is|are|isn't|aren't)\b/i,CAN=/\bcan(not|'t)?\b/i,WHR=/^(what|where|when|why|who|how|which|whose)\b/i;
+function chk(k,x){x=x.trim().replace(/’/g,"'");if(!x)return['',''];
+  if(!/^[A-Z]/.test(x))return['no','Empieza con mayúscula.'];
+  if(k!=='bq'&&BEN.test(x))return['no','No uses be.'];
+  if(k[0]!=='c'&&CAN.test(x))return['no','No uses can.'];
+  const wh=WHR.test(x);
+  if(k==='aff'){if(/\b(don't|doesn't|not)\b/i.test(x))return['no','Es afirmativa: sin not.'];return /\.$/.test(x)?['ok','']:['no','Falta el punto final.']}
+  if(k==='neg'){if(!/\b(don't|doesn't|do not|does not)\b/i.test(x))return['no','Falta don\'t / doesn\'t (o do not / does not).'];return /\.$/.test(x)?['ok','']:['no','Falta el punto final.']}
+  if(k==='cn'){if(/\b(don't|doesn't)\b/i.test(x))return['no','Con can no se usa don\'t / doesn\'t.'];if(!/\b(can't|cannot|can not)\b/i.test(x))return['no','Falta can\'t o cannot.'];return /\.$/.test(x)?['ok','']:['no','Falta el punto final.']}
+  if(k==='ca'){if(/\b(can't|cannot|not)\b/i.test(x))return['no','Es afirmativa: sin not.'];if(!/\bcan\b/i.test(x))return['no','Falta can.'];return /\.$/.test(x)?['ok','']:['no','Falta el punto final.']}
+  if(!/\?$/.test(x))return['no','Falta el signo ?.'];
+  if(k==='q')return /^(do|does)\b/i.test(x)||wh&&/\b(do|does)\b/i.test(x)?['ok',wh?'Wh-':'Yes/No']:['no','Empieza con Do / Does, o con una palabra Wh- y luego do / does.'];
+  if(k==='bq')return /^(am|is|are)\b/i.test(x)||wh&&/\b(am|is|are)\b/i.test(x)?['ok',wh?'Wh-':'Yes/No']:['no','Empieza con Am / Is / Are, o con una palabra Wh- y luego am / is / are.'];
+  return /^can\b/i.test(x)||wh&&/\bcan\b/i.test(x)?['ok',wh?'Wh-':'Yes/No']:['no','Empieza con Can, o con una palabra Wh- y luego can.']}
+function tareas(){let sv={};try{sv=JSON.parse(localStorage.getItem('tareas')||'{}')}catch(_){}
+  const a=$('#app');a.onclick=null;a.onkeydown=null;
+  a.innerHTML=TK.map((T,j)=>`<div class="card" style="margin-bottom:16px"><h2>${T.t}</h2><p>${T.n}</p><div class="pista"><b>Pista: estructura</b>${T.h.map(h=>`<div>${h}</div>`).join('')}<div>Ejemplo de clase: ${T.ex}</div></div>${[...Array(10)].map((_,i)=>`<div class="ln"><input data-j="${j}" data-i="${i}" autocomplete="off" aria-label="Frase ${i+1}" placeholder="${i+1}." value="${(sv[j+'-'+i]||'').replace(/"/g,'&quot;')}"><small></small></div>`).join('')}<p class="sum" aria-live="polite"></p></div>`).join('');
+  const upd=j=>{const T=TK[j];let g=0,w=0;const L=[...document.querySelectorAll(`input[data-j="${j}"]`)];
+    L.forEach(x=>{const [st,m]=chk(T.k,x.value),sm=x.nextElementSibling;sm.className=st;sm.textContent=st==='ok'?'Correcto'+(m?' ('+m+')':''):m;if(st==='ok'){g++;if(m==='Wh-')w++}});
+    L[0].closest('.card').querySelector('.sum').textContent=`Frases correctas: ${g} de 10.`+(T.w?` Preguntas Wh-: ${w} de ${T.w}.`:'')+' Comprueba tú que cada sujeto y cada verbo sean distintos.'};
+  a.oninput=e=>{const t=e.target;if(t.dataset.j===undefined)return;upd(+t.dataset.j);try{sv[t.dataset.j+'-'+t.dataset.i]=t.value;localStorage.setItem('tareas',JSON.stringify(sv))}catch(_){}};
+  TK.forEach((_,j)=>upd(j))}
 function typed(){const [v,a,e]=Q[i];let res=null;
   const go=()=>{const x=$('#ans').value.trim().toLowerCase();if(!x)return;res=x===a?'ok':'no';res==='ok'?ok++:miss.push(Q[i]);paint()};
   const paint=()=>{shell(`<span class="badge">Tercera persona</span><p class="q">He / she / it: <b>${v}</b></p>${res?fb(res==='ok',(res==='ok'?'Correcto. ':'Era "'+a+'". ')+e):`<div class="row"><input id="ans" autocomplete="off" autocapitalize="none" aria-label="Tu respuesta"><button class="btn" id="chk">Comprobar</button></div>`}`);
@@ -156,7 +233,7 @@ function draw(){
     $('#app').onclick=e=>{if(e.target.closest('#rp'))start(mode,miss);if(e.target.closest('#ag'))start(mode)};
     return;
   }
-  mode==='build'?build():mode==='third'?typed():fill();
+  mode==='build'||mode==='clase'?build():mode==='third'?typed():fill();
 }
 function build(){
   const [es,t,a,d]=Q[i];const w=sh(a.split(' ').concat(d));let sel=[],res=null;
