@@ -98,7 +98,7 @@ let prefetch = null;
 let mode = 'synth';  // what is playing right now: 'ai' | 'synth'
 export const aiActive = () => !!player && cfg.aiVoice && !aiOff;
 // Pre-generated file first (scripts/generate-tts.mjs), then the live endpoint for anything else.
-const aiStatic = text => `/assets/tts/${ttsHash(text)}.mp3`;
+const aiStatic = text => `/assets/voice/${ttsHash(text)}.mp3`;
 const aiLive = text => `/api/tts/?t=${encodeURIComponent(ttsNorm(text))}`;
 const useAI = o => aiActive() && !norm(o.lang || '').startsWith('es') && String(o.text).length <= 500;
 function quietPlayer() { if (!player) return; player.onended = player.onerror = null; player.pause(); }

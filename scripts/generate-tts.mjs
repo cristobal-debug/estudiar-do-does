@@ -1,12 +1,13 @@
 // Pre-generates Ana's voice (OpenAI TTS) for every fixed English text in the app, as static MP3s
-// in assets/tts/<hash>.mp3. The app plays these first, so they are paid for only once; texts not
+// in assets/voice/<hash>.mp3. The app plays these first, so they are paid for only once; texts not
 // found here (answers built on the fly, new content) go through /api/tts/.
 //
 //   node scripts/generate-tts.mjs --dry     count texts and estimate the cost, generate nothing
 //   node scripts/generate-tts.mjs           generate what is missing (skips existing files)
 //
 // Needs OPENAI_API_KEY in .env.local (never committed). Voice settings must match api/tts.js.
-// With ffmpeg installed (or FFMPEG=path), files are re-encoded to 48 kbps mono: ~1/3 the size, same clarity.
+// Needs ffmpeg (or FFMPEG=path): files are re-encoded to 48 kbps mono (~1/3 the size, same clarity) and
+// get a fixed 0.3 s lead-in, because speakers/Bluetooth swallow the first sound of audio that starts at once.
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, unlinkSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
@@ -22,7 +23,7 @@ import { MISTAKES } from '../js/data/mistakes.js';
 import { PLACEMENT } from '../js/data/placement.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = join(ROOT, 'assets', 'tts');
+const OUT = join(ROOT, 'assets', 'voice');
 const DRY = process.argv.includes('--dry');
 const VOICE = 'coral';
 const INSTRUCTIONS = 'You are Ana, a friendly female English teacher. Speak in clear, standard American English for language learners. Natural pace, careful pronunciation.';
@@ -79,12 +80,11 @@ function findFfmpeg() {
   return null;
 }
 const FFMPEG = findFfmpeg();
-console.log(FFMPEG ? 'Compressing with ffmpeg (48 kbps mono).' : 'ffmpeg not found: saving the original MP3s.');
+if (!FFMPEG) { console.error('ffmpeg not found (install it or set FFMPEG=path).'); process.exit(1); }
 function compress(buf, name) {
-  if (!FFMPEG) return buf;
   const src = join(tmpdir(), `tts-${name}-in.mp3`), dst = join(tmpdir(), `tts-${name}-out.mp3`);
   writeFileSync(src, buf);
-  const r = spawnSync(FFMPEG, ['-v', 'error', '-y', '-i', src, '-ac', '1', '-ar', '24000', '-b:a', '48k', dst]);
+  const r = spawnSync(FFMPEG, ['-v', 'error', '-y', '-i', src, '-af', 'silenceremove=start_periods=1:start_threshold=-50dB,adelay=300:all=1', '-ac', '1', '-ar', '24000', '-b:a', '48k', dst]);
   const out = r.status === 0 ? readFileSync(dst) : buf;
   try { unlinkSync(src); unlinkSync(dst); } catch (_) {}
   return out;

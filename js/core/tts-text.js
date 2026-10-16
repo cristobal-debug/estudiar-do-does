@@ -1,5 +1,5 @@
 // Text helpers shared by speech.js and scripts/generate-tts.mjs, so the app looks up exactly
-// the MP3 file the generator wrote (assets/tts/<ttsHash(text)>.mp3).
+// the MP3 file the generator wrote (assets/voice/<ttsHash(text)>.mp3).
 export const ttsNorm = t => String(t || '').replace(/\s+/g, ' ').trim();
 
 // cyrb53: fast 53-bit string hash, as base 36 (collisions are negligible for a few thousand texts).
