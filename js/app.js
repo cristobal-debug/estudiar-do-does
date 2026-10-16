@@ -10,6 +10,8 @@ import { checkAchievements } from './core/gamification.js';
 import { search, TYPE_LABEL } from './core/search.js';
 import { applyTheme } from './core/theme.js';
 import { toast } from './views/ui.js';
+import { initCloud } from './core/cloud.js';
+import { initAccountUI } from './views/account.js';
 
 import dashboard from './views/dashboard.js';
 import { learn, unit } from './views/learn.js';
@@ -187,6 +189,8 @@ const afterChange = debounce(() => {
 onChange(afterChange);
 
 applyTheme();
+initAccountUI();
+initCloud();
 route();
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') {

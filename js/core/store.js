@@ -1,12 +1,12 @@
-// Learner state: one JSON document in localStorage. Every write goes through here,
-// so a future sync backend only needs to replace load()/persist().
+// Learner state: one JSON document in localStorage. Every write goes through here;
+// cloud.js mirrors it to the learner's account (Firebase) when they sign in.
 import { dayKey, debounce, addDays } from './util.js';
 
 const KEY = 'doable:v1';
 export const SKILLS = ['vocabulary', 'grammar', 'listening', 'reading', 'writing', 'speaking'];
 
 const fresh = () => ({
-  v: 1, created: Date.now(),
+  v: 1, created: Date.now(), updated: 0, resetAt: 0,
   name: '', level: 'a1', placed: null, onboarded: false,
   goal: 10, lang: 'auto', theme: 'system',   // audio settings live in speech.js
   xp: 0,
@@ -35,7 +35,7 @@ export let S = load();
 const listeners = new Set();
 const persist = debounce(() => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (_) {} }, 150);
 
-export function save() { persist(); listeners.forEach(f => f()); }
+export function save() { S.updated = Date.now(); persist(); listeners.forEach(f => f()); }
 export const onChange = f => { listeners.add(f); return () => listeners.delete(f); };
 export function flush() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (_) {} }
 addEventListener('pagehide', flush);
@@ -105,7 +105,9 @@ export function bestStreak() {
   return best;
 }
 
-export function reset() { localStorage.removeItem(KEY); S = fresh(); save(); }
+export function reset() { localStorage.removeItem(KEY); S = fresh(); S.resetAt = Date.now(); save(); }
+// Swap in a state merged with the cloud copy (keeps its own `updated`, so it is not a new edit).
+export function replaceState(data) { S = Object.assign(fresh(), data); flush(); listeners.forEach(f => f()); }
 export const exportState = () => JSON.stringify(S, null, 1);
 export function importState(json) {
   const data = JSON.parse(json);

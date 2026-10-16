@@ -8,6 +8,7 @@ import { areas, skillProgress, SKILL_META, currentUnit, nextLesson, wordsLearned
 import { LEVELS, LEVEL } from '../data/index.js';
 import { h1 } from './ui.js';
 import { applyTheme } from '../core/theme.js';
+import { accountPanel } from './account.js';
 
 export default function profile(root) {
   const lv = LEVEL[S.level];
@@ -21,6 +22,7 @@ export default function profile(root) {
     <div class="grow"><label class="field"><span>${L('Your name', 'Tu nombre')}</span><input id="name" value="${esc(S.name)}" maxlength="30" autocomplete="given-name"></label>
       <p class="muted">${lv.code} · ${esc(L(lv.name, lv.es))} · ${streak()} ${L('day streak', 'días de racha')} · ${S.xp} XP · ${Object.keys(S.lessons).length} ${L('lessons', 'lecciones')} · ${wordsLearned()} ${L('words', 'palabras')}</p></div>
   </section>
+  <section class="panel account" id="account" aria-live="polite"></section>
 
   <div class="dash-cols">
     <div class="col-main">
@@ -66,6 +68,7 @@ export default function profile(root) {
     if (r.name === 'lang' || r.name === 'level') profile(root);
   }));
   audioSettings($('#audio-settings'));
+  accountPanel($('#account'));
   $('#export').addEventListener('click', () => {
     const box = $('#export-box'); box.hidden = false; box.value = exportState(); box.select();
     navigator.clipboard?.writeText(box.value).then(() => { $('#data-msg').textContent = L('Copied to the clipboard. Save it somewhere safe.', 'Copiado al portapapeles. Guárdalo en un lugar seguro.'); }, () => { $('#data-msg').textContent = L('Copy the text above and save it.', 'Copia el texto de arriba y guárdalo.'); });

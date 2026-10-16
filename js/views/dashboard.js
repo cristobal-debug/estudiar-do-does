@@ -6,6 +6,7 @@ import { dueCount } from '../core/srs.js';
 import { currentUnit, nextLesson, todayPlan, skillProgress, topMistakes, levelRatio, SKILL_META, lessonDone, wordsLearned } from '../core/path.js';
 import { LEVEL, WORDS, TIPS, UNITS } from '../data/index.js';
 import { audioBtn } from '../core/audio.js';
+import { accountNudge } from './account.js';
 import { bar, skillMeters } from './ui.js';
 
 function greeting() {
@@ -66,6 +67,7 @@ export default function dashboard(root) {
       <span class="lc-code">${lv.code}</span><span class="lc-txt"><small>${L('Your level', 'Tu nivel')}${S.placed ? '' : ''}</small><b>${esc(L(lv.name, lv.es))}</b>${bar(levelRatio(), L('Level progress', 'Progreso del nivel'))}</span>
     </a>
   </header>
+  ${accountNudge()}
 
   <div class="dash-grid">
     <section class="panel hero" aria-labelledby="pa-title">

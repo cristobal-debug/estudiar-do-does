@@ -8,6 +8,8 @@ import { stop as stopSpeaking } from '../core/speech.js';
 import { canSpeak, listenPanel } from '../core/audio.js';
 import { PLACEMENT, PLACEMENT_LEVELS } from '../data/placement.js';
 import { LEVEL, unitsOf } from '../data/index.js';
+import { googleBtn } from './account.js';
+import { prepare } from '../core/cloud.js';
 import { h1 } from './ui.js';
 
 const PER_BLOCK = 3;
@@ -26,7 +28,9 @@ export function welcome(root) {
         <button type="submit" class="choice primary" name="go" value="test">${icon('compass')}<b>${L('Find my level', 'Descubrir mi nivel')}</b><span>${L('Adaptive test · 5 minutes', 'Test adaptativo · 5 minutos')}</span></button>
         <button type="submit" class="choice" name="go" value="zero">${icon('flag')}<b>${L('Start from zero', 'Empezar desde cero')}</b><span>A1 · ${L('Beginner', 'Principiante')}</span></button>
       </div>
-    </form></section>`;
+    </form>
+    <div class="ob-account"><p class="muted">${L('Already studying with us?', '¿Ya estudias con nosotros?')}</p>${googleBtn(L('Sign in with Google and continue', 'Entra con Google y continúa'))}</div></section>`;
+  prepare().catch(() => {});
   const form = root.querySelector('#ob');
   form.addEventListener('submit', e => {
     e.preventDefault();
