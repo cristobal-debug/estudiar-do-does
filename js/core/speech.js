@@ -9,7 +9,7 @@
 //  getVoices() englishVoices() availableAccents() selectVoice() setAccent()
 //  setRate() setSpeed() setPitch() setVolume() settings()
 //  subscribe(fn)              state changes: { status: 'idle'|'playing'|'paused', key, part }
-//  setAI(on) setAIGender(g)   natural AI voice (OpenAI TTS via /api/tts/); falls back to the device voice
+//  setAI(on)                  Ana, the AI teacher voice (OpenAI TTS via /api/tts/); falls back to the device voice
 
 const synth = globalThis.speechSynthesis;
 export const canSpeak = !!synth && typeof globalThis.SpeechSynthesisUtterance === 'function';
@@ -26,12 +26,9 @@ export const ACCENTS = {
   'en-US': { flag: '🇺🇸', en: 'American English', es: 'Inglés americano' },
   'en-GB': { flag: '🇬🇧', en: 'British English', es: 'Inglés británico' },
 };
-const DEFAULTS = { preferredAccent: 'en-US', preferredVoice: '', speechSpeed: 'normal', speechRate: 1, speechVolume: 1, speechPitch: 1, aiVoice: true, aiGender: 'female' };
-// AI voices allowed by api/tts.js (OpenAI; the accent is set server-side).
-export const AI_VOICES = {
-  'en-US': { female: 'us-female', male: 'us-male' },
-  'en-GB': { female: 'gb-female', male: 'gb-male' },
-};
+const DEFAULTS = { preferredAccent: 'en-US', preferredVoice: '', speechSpeed: 'normal', speechRate: 1, speechVolume: 1, speechPitch: 1, aiVoice: true };
+// Ana: the app's one AI teacher voice (American English), defined in api/tts.js.
+export const AI_TEACHER = 'Ana';
 let cfg = { ...DEFAULTS };
 try { Object.assign(cfg, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (_) {}
 const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(cfg)); } catch (_) {} };
@@ -90,7 +87,6 @@ export function setPitch(p) { cfg.speechPitch = Math.min(1.5, Math.max(0.5, +p |
 export function setVolume(v) { cfg.speechVolume = Math.min(1, Math.max(0, +v)); persist(); emit(); }
 export const currentRate = () => cfg.speechRate;
 export function setAI(on) { cfg.aiVoice = !!on; aiOff = false; aiFails = 0; persist(); emit(); }
-export function setAIGender(g) { if (g === 'female' || g === 'male') { cfg.aiGender = g; persist(); emit(); } }
 
 // ——— AI voice: one shared <audio> element (once unlocked by a tap, iOS lets it keep playing) ———
 const player = typeof Audio === 'function' ? new Audio() : null;
@@ -98,10 +94,8 @@ let aiOff = false;   // set after repeated failures (offline, endpoint not confi
 let aiFails = 0;
 let prefetch = null;
 let mode = 'synth';  // what is playing right now: 'ai' | 'synth'
-const aiVoiceFor = lang => (AI_VOICES[lang] || AI_VOICES[cfg.preferredAccent] || AI_VOICES['en-US'])[cfg.aiGender] || AI_VOICES['en-US'].female;
 export const aiActive = () => !!player && cfg.aiVoice && !aiOff;
-export const aiVoiceName = (lang = cfg.preferredAccent) => aiVoiceFor(lang);
-const aiUrl = (text, lang) => `/api/tts/?v=${encodeURIComponent(aiVoiceFor(lang))}&t=${encodeURIComponent(String(text).replace(/\s+/g, ' ').trim())}`;
+const aiUrl = text => `/api/tts/?t=${encodeURIComponent(String(text).replace(/\s+/g, ' ').trim())}`;
 const useAI = o => aiActive() && !norm(o.lang || '').startsWith('es') && String(o.text).length <= 500;
 function quietPlayer() { if (!player) return; player.onended = player.onerror = null; player.pause(); }
 
@@ -130,16 +124,15 @@ function clean(u) { if (u) u.onend = u.onerror = u.onstart = u.onpause = u.onres
 
 function playAI(i, my) {
   mode = 'ai';
-  const lang = opts.lang || cfg.preferredAccent;
   const fallback = () => { if (my !== token) return; if (++aiFails >= 2) aiOff = true; playPart(i, my, false, true); };
   player.onended = () => { if (my === token) { aiFails = 0; playPart(i + 1, my); } };
   player.onerror = fallback;
-  player.src = aiUrl(queue[i], lang);
+  player.src = aiUrl(queue[i]);
   player.playbackRate = player.defaultPlaybackRate = opts.rate ?? cfg.speechRate;
   player.volume = cfg.speechVolume;
   player.play().catch(e => { if (e?.name !== 'AbortError') fallback(); });
   // Warm the cache for the next sentence so long texts flow without gaps.
-  if (queue[i + 1] && String(queue[i + 1]).length <= 500) { prefetch = new Audio(); prefetch.preload = 'auto'; prefetch.src = aiUrl(queue[i + 1], lang); }
+  if (queue[i + 1] && String(queue[i + 1]).length <= 500) { prefetch = new Audio(); prefetch.preload = 'auto'; prefetch.src = aiUrl(queue[i + 1]); }
 }
 
 function playPart(i, my, retried = false, noAI = false) {

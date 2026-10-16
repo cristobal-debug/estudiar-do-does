@@ -86,33 +86,30 @@ function audioSettings(box) {
   const paint = () => {
     const c = speech.settings();
     const ai = c.aiVoice;
-    // The AI voice has both accents everywhere; the device voice only what is installed.
-    const accents = ai ? Object.keys(speech.ACCENTS) : speech.availableAccents();
+    const accents = speech.availableAccents();
     const voices = accents.includes(c.preferredAccent) ? speech.voicesFor(c.preferredAccent) : speech.englishVoices();
     const active = speech.resolveVoice();
     box.innerHTML = `<h2 id="as-t">${icon('volume')} ${L('Audio & Pronunciation', 'Audio y pronunciación')}</h2>
     ${!speech.canSpeak ? audioNote() : `
       <fieldset><legend>${L('Voice type', 'Tipo de voz')}</legend>
-        <div class="seg">${[[1, 'AI voice (natural)', 'Voz IA (natural)'], [0, 'Device voice', 'Voz del dispositivo']].map(([v, en, es]) => `<label><input type="radio" name="ai" value="${v}" ${+ai === v ? 'checked' : ''}><span>${L(en, es)}</span></label>`).join('')}</div>
-        <p class="small muted">${ai ? L('Natural native pronunciation (AI). Needs internet the first time each sentence is played.', 'Pronunciación nativa y natural (IA). Necesita internet la primera vez que suena cada frase.') : L('Uses the voices installed on this device. Works offline.', 'Usa las voces instaladas en este dispositivo. Funciona sin internet.')}</p>
+        <div class="seg">${[[1, `${speech.AI_TEACHER}, your AI teacher`, `${speech.AI_TEACHER}, tu profesora IA`], [0, 'Device voice', 'Voz del dispositivo']].map(([v, en, es]) => `<label><input type="radio" name="ai" value="${v}" ${+ai === v ? 'checked' : ''}><span>${L(en, es)}</span></label>`).join('')}</div>
+        <p class="small muted">${ai ? L(`${speech.AI_TEACHER} speaks natural American English. Needs internet the first time each sentence is played.`, `${speech.AI_TEACHER} habla inglés americano nativo y natural. Necesita internet la primera vez que suena cada frase.`) : L('Uses the voices installed on this device. Works offline.', 'Usa las voces instaladas en este dispositivo. Funciona sin internet.')}</p>
       </fieldset>
-      ${ai ? `<fieldset><legend>${L('Voice', 'Voz')}</legend><div class="seg">${[['female', 'Female', 'Mujer'], ['male', 'Male', 'Hombre']].map(([v, en, es]) => `<label><input type="radio" name="gender" value="${v}" ${c.aiGender === v ? 'checked' : ''}><span>${L(en, es)}</span></label>`).join('')}</div></fieldset>` : ''}
-      <fieldset><legend>${L('English pronunciation', 'Pronunciación del inglés')}</legend>
+      ${ai ? '' : `<fieldset><legend>${L('English pronunciation', 'Pronunciación del inglés')}</legend>
         ${accents.length ? `<div class="seg">${accents.map(a => `<label><input type="radio" name="accent" value="${a}" ${c.preferredAccent === a || (accents.length === 1) ? 'checked' : ''}><span>${speech.ACCENTS[a].flag} ${L(speech.ACCENTS[a].en, speech.ACCENTS[a].es)}</span></label>`).join('')}</div>
-          ${accents.length < 2 && !ai ? `<p class="small muted">${L('Only this accent has a voice installed on this device.', 'En este dispositivo solo hay voz instalada para este acento.')}</p>` : ''}`
+          ${accents.length < 2 ? `<p class="small muted">${L('Only this accent has a voice installed on this device.', 'En este dispositivo solo hay voz instalada para este acento.')}</p>` : ''}`
         : `<p class="small muted">${speech.getVoices().length ? L('No American or British voice was found on this device; another available voice will be used.', 'No hay voz americana ni británica en este dispositivo; se usará otra voz disponible.') : L('Loading voices…', 'Cargando voces…')}</p>`}
-      </fieldset>
+      </fieldset>`}
       ${!ai && voices.length > 1 ? `<fieldset><legend>${L('Voice', 'Voz')}</legend><label class="field"><span class="sr">${L('Voice', 'Voz')}</span><select id="voice"><option value="">${L('Automatic (best available)', 'Automática (la mejor disponible)')}</option>${voices.map(v => `<option value="${esc(v.voiceURI)}" ${c.preferredVoice === v.voiceURI ? 'selected' : ''}>${esc(v.name)} · ${esc(v.lang)}</option>`).join('')}</select></label></fieldset>` : ''}
       <fieldset><legend>${L('Speaking speed', 'Velocidad de lectura')}</legend>
         <div class="seg">${[['slow', 'turtle', 'Slow', 'Lento'], ['normal', 'play', 'Normal', 'Normal'], ['fast', 'bolt', 'Fast', 'Rápido']].map(([v, ic, en, es]) => `<label><input type="radio" name="speed" value="${v}" ${c.speechSpeed === v ? 'checked' : ''}><span>${icon(ic)} ${L(en, es)}</span></label>`).join('')}</div>
         <label class="field"><span>${L('Fine-tune', 'Ajuste fino')}: <output id="rate-o">${c.speechRate.toFixed(2)}×</output></span><input type="range" id="rate" min="0.5" max="1.3" step="0.05" value="${c.speechRate}"></label>
         <p class="small muted">${L('Slow is ideal for new words and dictation. Pronunciation is not changed, only the speed.', 'Lento es ideal para palabras nuevas y dictados. No cambia la pronunciación, solo la velocidad.')}</p></fieldset>
       <fieldset><legend>${L('Volume', 'Volumen')}</legend><label class="field"><span class="sr">${L('Volume', 'Volumen')}</span><input type="range" id="vol" min="0" max="1" step="0.05" value="${c.speechVolume}"></label></fieldset>
-      <div class="row">${audioBtn(SAMPLE, { variant: 'label', kind: 'sentence', label: L('Test voice', 'Probar voz') })}<span class="small muted">${ai ? `${L('AI voice', 'Voz IA')} · ${speech.ACCENTS[c.preferredAccent]?.flag || ''}` : active ? `${esc(active.name)} · ${esc(active.lang)}` : ''}</span></div>`}`;
+      <div class="row">${audioBtn(SAMPLE, { variant: 'label', kind: 'sentence', label: L('Test voice', 'Probar voz') })}<span class="small muted">${ai ? `${esc(speech.AI_TEACHER)} · 🇺🇸` : active ? `${esc(active.name)} · ${esc(active.lang)}` : ''}</span></div>`}`;
     const $ = s => box.querySelector(s);
     box.querySelectorAll('input[name=accent]').forEach(r => r.addEventListener('change', () => { speech.stop(); speech.setAccent(r.value); paint(); }));
     box.querySelectorAll('input[name=ai]').forEach(r => r.addEventListener('change', () => { speech.stop(); speech.setAI(r.value === '1'); paint(); }));
-    box.querySelectorAll('input[name=gender]').forEach(r => r.addEventListener('change', () => { speech.stop(); speech.setAIGender(r.value); paint(); }));
     box.querySelectorAll('input[name=speed]').forEach(r => r.addEventListener('change', () => { speech.setSpeed(r.value); paint(); }));
     $('#voice')?.addEventListener('change', e => { speech.stop(); speech.selectVoice(e.target.value); paint(); });
     $('#rate')?.addEventListener('input', e => { speech.setRate(e.target.value); $('#rate-o').textContent = `${(+e.target.value).toFixed(2)}×`; box.querySelectorAll('input[name=speed]').forEach(r => { r.checked = r.value === speech.settings().speechSpeed; }); });
