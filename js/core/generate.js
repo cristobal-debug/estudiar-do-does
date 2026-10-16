@@ -7,6 +7,7 @@ import { S } from './store.js';
 import { strength, dueIds } from './srs.js';
 import { UNIT, UNITS, TOPICS, WORDS, WORD, LESSON, LEVEL_IDS, unitsOf, topicsOf, MISTAKES } from '../data/index.js';
 import { currentUnit, unitState } from './path.js';
+import { canAccess } from './premium.js';
 
 // ——— Vocabulary exercises generated from word data ———
 function distractors(w, field, n, rnd) {
@@ -162,8 +163,8 @@ export function buildLesson(lessonId) {
 // ——— Practice pools for the learner's reachable content ———
 function reachUnits() {
   const cur = currentUnit();
-  const upTo = UNITS.slice(0, UNITS.indexOf(cur) + 1).filter(u => unitState(u) !== 'locked');
-  return upTo.length ? upTo : [cur];
+  const upTo = UNITS.slice(0, UNITS.indexOf(cur) + 1).filter(u => unitState(u) !== 'locked' && canAccess(u.level));
+  return upTo.length ? upTo : [canAccess(cur.level) ? cur : UNITS[0]];
 }
 const reachTopics = () => [...new Set(reachUnits().flatMap(u => u.grammar))];
 const reachWords = () => {

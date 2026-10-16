@@ -26,6 +26,9 @@ import profile from './views/profile.js';
 import { placement } from './views/placement.js';
 import home from './views/home.js';
 import mistakes from './views/mistakes.js';
+import premium from './views/premium.js';
+import { canAccess, initPremium } from './core/premium.js';
+import { LESSON, UNIT, TOPICS, WORD } from './data/index.js';
 import { classicHome, classic } from './views/classic.js';
 
 export { applyTheme };
@@ -67,6 +70,8 @@ const ROUTES = [
   ['progress', progress, ['Progress', 'Progreso']],
   ['profile', profile, ['Profile', 'Perfil']],
   ['mistakes', mistakes, ['My mistakes', 'Mis errores']],
+  ['premium', premium, ['Full course', 'Curso completo']],
+  ['premium/:state', premium, ['Full course', 'Curso completo']],
   ['classic', classicHome, ['Class exercises', 'Ejercicios de clase']],
   ['classic/:mode', classic, ['Class exercises', 'Ejercicios de clase']],
 ].map(([pat, fn, title]) => {
@@ -107,6 +112,16 @@ function renderChrome(path) {
     <a href="#/progress" class="stat-chip xp" title="XP">${icon('bolt')}<b>${S.xp}</b><span class="sr">XP</span></a>`;
   finishChrome();
 }
+// CEFR level of the content a route shows (A2–C1 need the full course; see core/premium.js).
+function routeLevel(pat, p) {
+  if (p.level) return pat === 'vocabulary/level/:level' ? p.level : null;   // level overviews stay open as a preview
+  if (pat === 'unit/:id' || /^(listening|reading|writing|speaking)\/:id$/.test(pat)) return UNIT[p.id]?.level;
+  if (pat === 'lesson/:id') return UNIT[LESSON[p.id]?.unit]?.level;
+  if (pat.startsWith('grammar/:id')) return TOPICS[p.id]?.level;
+  if (pat === 'vocabulary/word/:id') return WORD[p.id]?.level;
+  return null;
+}
+
 function finishChrome() {
   document.getElementById('search-btn').setAttribute('aria-label', L('Search', 'Buscar'));
   document.getElementById('search-btn').querySelector('span').textContent = L('Search', 'Buscar');
@@ -130,9 +145,11 @@ function route() {
   footer.className = 'site-footer';
   footer.innerHTML = `${L('Developed by', 'Desarrollado por')} <a href="https://cristobaljeldrez.com" target="_blank" rel="noopener">cristobaljeldrez.com</a>`;
   view.replaceChildren(root, footer);
-  try { r.fn(root, params); }
+  const lvl = routeLevel(r.pat, params);
+  const locked = !canAccess(lvl);
+  try { locked ? premium(root, { level: lvl }) : r.fn(root, params); }
   catch (err) { console.error(err); root.innerHTML = `<div class="panel notice">${icon('alert')}<p>${L('Something went wrong loading this page.', 'Algo ha fallado al cargar esta página.')} <a href="#/">${L('Go home', 'Ir al inicio')}</a></p></div>`; }
-  document.title = `${L(...r.title)} · Doable English`;
+  document.title = `${locked ? L('Full course', 'Curso completo') : L(...r.title)} · Doable English`;
   if (path !== current) {
     window.scrollTo(0, 0);
     (root.querySelector('h1[tabindex]') || root.querySelector('.session .ses-body') || root).focus?.({ preventScroll: true });
@@ -203,6 +220,7 @@ onChange(afterChange);
 applyTheme();
 initAccountUI();
 initCloud();
+initPremium();
 route();
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') {

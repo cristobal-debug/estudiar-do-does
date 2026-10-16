@@ -105,7 +105,8 @@ export function bestStreak() {
   return best;
 }
 
-export function reset() { localStorage.removeItem(KEY); S = fresh(); S.resetAt = Date.now(); save(); }
+// The purchase (license) and the account it belongs to survive a progress reset.
+export function reset() { const { license, owner } = S; localStorage.removeItem(KEY); S = Object.assign(fresh(), license ? { license, owner } : {}); S.resetAt = Date.now(); save(); }
 // Swap in a state merged with the cloud copy (keeps its own `updated`, so it is not a new edit).
 export function replaceState(data) { S = Object.assign(fresh(), data); flush(); listeners.forEach(f => f()); }
 export const exportState = () => JSON.stringify(S, null, 1);

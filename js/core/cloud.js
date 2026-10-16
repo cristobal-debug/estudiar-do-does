@@ -7,6 +7,7 @@
 //  signIn() signOut()
 //  cloudState()         { status: 'off'|'loading'|'syncing'|'synced'|'error', user, last }
 //  onCloud(fn)          subscribe to changes of cloudState()
+//  idToken()            the signed-in learner's Firebase ID token (for /api/ calls), or null
 //
 // Firestore is used through its REST API (with the user's ID token) to avoid loading the big SDK.
 import { S, onChange, replaceState } from './store.js';
@@ -28,6 +29,7 @@ const subs = new Set();
 const set = next => { state = { ...state, ...next }; subs.forEach(f => { try { f(state); } catch (_) {} }); };
 export const cloudState = () => state;
 export const onCloud = fn => { subs.add(fn); return () => subs.delete(fn); };
+export const idToken = () => auth?.currentUser?.getIdToken() ?? Promise.resolve(null);
 const flag = on => { try { on ? localStorage.setItem(FLAG, '1') : localStorage.removeItem(FLAG); } catch (_) {} };
 
 export function prepare() {

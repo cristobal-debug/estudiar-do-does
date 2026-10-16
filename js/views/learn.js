@@ -5,6 +5,7 @@ import { S } from '../core/store.js';
 import { unitState, unitRatio, lessonDone, levelRatio, currentUnit, forceOpen, nextLesson, skillProgress } from '../core/path.js';
 import { LEVELS, LEVEL, UNIT, unitsOf, TOPICS } from '../data/index.js';
 import { h1, bar, skillMeters } from './ui.js';
+import { canAccess, PRICE } from '../core/premium.js';
 
 const STATE = {
   done: ['check', 'Completed', 'Completada'], current: ['arrow', 'Current', 'Actual'],
@@ -28,6 +29,7 @@ export function learn(root, { level }) {
     <a class="link" href="#/grammar/level/${lv.id}">${icon('grammar')} ${L('Grammar of this level', 'Gramática de este nivel')}</a>
     <a class="link" href="#/vocabulary/level/${lv.id}">${icon('vocab')} ${L('Vocabulary of this level', 'Vocabulario de este nivel')}</a></div>
   </section>
+  ${canAccess(lv.id) ? '' : `<section class="panel prem-banner">${icon('lock')}<p class="grow"><b>${L(`${lv.code} is part of the full course`, `${lv.code} es parte del curso completo`)}</b><span class="small muted">${L(`A1 is free. Unlock A2 to C1 with a one-time payment of ${PRICE.usd} USD.`, `El A1 es gratis. Desbloquea de A2 a C1 con un pago único de ${PRICE.usd} USD.`)}</span></p><a class="btn primary" href="#/premium">${L('See the full course', 'Ver el curso completo')}</a></section>`}
 
   <ol class="path" aria-label="${L('Units', 'Unidades')} ${lv.code}">
     ${units.map(u => {
