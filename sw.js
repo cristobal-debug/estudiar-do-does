@@ -1,6 +1,6 @@
 // Offline support: app files are served from cache and refreshed in the background
 // (stale-while-revalidate), so a new deploy is picked up on the next visit.
-const CACHE = 'doable-v4';
+const CACHE = 'doable-v5';
 const CORE = ['./', 'index.html', 'css/app.css', 'js/app.js', 'manifest.webmanifest', 'assets/icon.svg', 'assets/icon-192.png'];
 
 self.addEventListener('install', e => {
@@ -17,7 +17,9 @@ self.addEventListener('fetch', e => {
   const fonts = /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
   if (!sameOrigin && !fonts) return;
   e.respondWith(caches.open(CACHE).then(async cache => {
-    const cached = await cache.match(req, { ignoreSearch: sameOrigin });
+    const api = url.pathname.startsWith('/api/');   // AI voice audio: unique per URL and immutable
+    const cached = await cache.match(req, { ignoreSearch: sameOrigin && !api });
+    if (api && cached) return cached;
     const fresh = fetch(req).then(res => { if (res.ok || res.type === 'opaque') cache.put(req, res.clone()); return res; }).catch(() => null);
     if (req.mode === 'navigate') return (await fresh) || cached || cache.match('index.html');
     return cached || (await fresh) || new Response('', { status: 504 });

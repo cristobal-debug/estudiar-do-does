@@ -9,6 +9,7 @@
 //  getVoices() englishVoices() availableAccents() selectVoice() setAccent()
 //  setRate() setSpeed() setPitch() setVolume() settings()
 //  subscribe(fn)              state changes: { status: 'idle'|'playing'|'paused', key, part }
+//  setAI(on) setAIGender(g)   natural AI voice (Google Cloud TTS via /api/tts/); falls back to the device voice
 
 const synth = globalThis.speechSynthesis;
 export const canSpeak = !!synth && typeof globalThis.SpeechSynthesisUtterance === 'function';
@@ -25,7 +26,12 @@ export const ACCENTS = {
   'en-US': { flag: '🇺🇸', en: 'American English', es: 'Inglés americano' },
   'en-GB': { flag: '🇬🇧', en: 'British English', es: 'Inglés británico' },
 };
-const DEFAULTS = { preferredAccent: 'en-US', preferredVoice: '', speechSpeed: 'normal', speechRate: 1, speechVolume: 1, speechPitch: 1 };
+const DEFAULTS = { preferredAccent: 'en-US', preferredVoice: '', speechSpeed: 'normal', speechRate: 1, speechVolume: 1, speechPitch: 1, aiVoice: true, aiGender: 'female' };
+// Google Cloud voices allowed by api/tts.js.
+export const AI_VOICES = {
+  'en-US': { female: 'en-US-Neural2-F', male: 'en-US-Neural2-D' },
+  'en-GB': { female: 'en-GB-Neural2-A', male: 'en-GB-Neural2-B' },
+};
 let cfg = { ...DEFAULTS };
 try { Object.assign(cfg, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (_) {}
 const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(cfg)); } catch (_) {} };
@@ -83,6 +89,21 @@ export function setRate(r) { cfg.speechRate = Math.min(1.3, Math.max(0.5, +r || 
 export function setPitch(p) { cfg.speechPitch = Math.min(1.5, Math.max(0.5, +p || 1)); persist(); }
 export function setVolume(v) { cfg.speechVolume = Math.min(1, Math.max(0, +v)); persist(); emit(); }
 export const currentRate = () => cfg.speechRate;
+export function setAI(on) { cfg.aiVoice = !!on; aiOff = false; aiFails = 0; persist(); emit(); }
+export function setAIGender(g) { if (g === 'female' || g === 'male') { cfg.aiGender = g; persist(); emit(); } }
+
+// ——— AI voice: one shared <audio> element (once unlocked by a tap, iOS lets it keep playing) ———
+const player = typeof Audio === 'function' ? new Audio() : null;
+let aiOff = false;   // set after repeated failures (offline, endpoint not configured): device voice for this visit
+let aiFails = 0;
+let prefetch = null;
+let mode = 'synth';  // what is playing right now: 'ai' | 'synth'
+const aiVoiceFor = lang => (AI_VOICES[lang] || AI_VOICES[cfg.preferredAccent] || AI_VOICES['en-US'])[cfg.aiGender] || AI_VOICES['en-US'].female;
+export const aiActive = () => !!player && cfg.aiVoice && !aiOff;
+export const aiVoiceName = (lang = cfg.preferredAccent) => aiVoiceFor(lang);
+const aiUrl = (text, lang) => `/api/tts/?v=${encodeURIComponent(aiVoiceFor(lang))}&t=${encodeURIComponent(String(text).replace(/\s+/g, ' ').trim())}`;
+const useAI = o => aiActive() && !norm(o.lang || '').startsWith('es') && String(o.text).length <= 500;
+function quietPlayer() { if (!player) return; player.onended = player.onerror = null; player.pause(); }
 
 // ——— Playback state ———
 export const subscribe = fn => { subs.add(fn); return () => subs.delete(fn); };
@@ -107,11 +128,28 @@ function makeUtterance(text, o) {
 }
 function clean(u) { if (u) u.onend = u.onerror = u.onstart = u.onpause = u.onresume = null; }
 
-function playPart(i, my, retried = false) {
+function playAI(i, my) {
+  mode = 'ai';
+  const lang = opts.lang || cfg.preferredAccent;
+  const fallback = () => { if (my !== token) return; if (++aiFails >= 2) aiOff = true; playPart(i, my, false, true); };
+  player.onended = () => { if (my === token) { aiFails = 0; playPart(i + 1, my); } };
+  player.onerror = fallback;
+  player.src = aiUrl(queue[i], lang);
+  player.playbackRate = player.defaultPlaybackRate = opts.rate ?? cfg.speechRate;
+  player.volume = cfg.speechVolume;
+  player.play().catch(e => { if (e?.name !== 'AbortError') fallback(); });
+  // Warm the cache for the next sentence so long texts flow without gaps.
+  if (queue[i + 1] && String(queue[i + 1]).length <= 500) { prefetch = new Audio(); prefetch.preload = 'auto'; prefetch.src = aiUrl(queue[i + 1], lang); }
+}
+
+function playPart(i, my, retried = false, noAI = false) {
   if (my !== token) return;
   if (i >= queue.length) { finish(my); return; }
   set({ status: 'playing', part: i });
   opts.onpart?.(i);
+  if (!noAI && useAI({ ...opts, text: queue[i] })) return playAI(i, my);
+  mode = 'synth';
+  quietPlayer();
   const u = makeUtterance(queue[i], { ...opts, noVoice: retried });
   clean(current); current = u;
   u.onend = () => { clean(u); if (my === token) playPart(i + 1, my); };
@@ -128,7 +166,7 @@ function playPart(i, my, retried = false) {
 function finish(my, failed = false) {
   if (my !== token) return;
   const done = opts.onend;
-  queue = []; clean(current); current = null;
+  queue = []; clean(current); current = null; quietPlayer();
   set({ status: 'idle', key: null, part: -1, failed: failed ? state.key : null });
   done?.(failed);
 }
@@ -139,11 +177,12 @@ export const splitSentences = text => String(text).replace(/\s+/g, ' ').trim().m
 export function speakSequence(parts, o = {}) {
   if (!canSpeak || !parts?.length) return false;
   const my = ++token;
-  synth.cancel();                       // never two voices at once
+  synth.cancel(); quietPlayer();        // never two voices at once
   queue = parts.filter(p => String(p).trim()); opts = o;
   set({ status: 'playing', key: o.key ?? null, part: 0, failed: null });
-  // Safari needs a tick after cancel() before speaking again.
-  setTimeout(() => playPart(0, my), 30);
+  // The AI voice must start inside the tap (autoplay rules); Safari's synth needs a tick after cancel().
+  if (useAI({ ...o, text: queue[0] || '' })) playPart(0, my);
+  else setTimeout(() => playPart(0, my), 30);
   return true;
 }
 export const speak = (text, o = {}) => speakSequence(String(text).length > 220 ? splitSentences(text) : [text], o);
@@ -151,18 +190,19 @@ export const speak = (text, o = {}) => speakSequence(String(text).length > 220 ?
 export function stop() {
   if (!canSpeak) return;
   token++; queue = []; clean(current); current = null;
-  synth.cancel();
+  synth.cancel(); quietPlayer();
   if (state.status !== 'idle') set({ status: 'idle', key: null, part: -1 });
 }
 export function pause() {
   if (!canSpeak || state.status !== 'playing') return;
-  synth.pause();
+  if (mode === 'ai') player.pause(); else synth.pause();
   set({ status: 'paused' });
 }
 export function resume() {
   if (!canSpeak || state.status !== 'paused') return;
   const my = token, part = state.part;
   set({ status: 'playing' });
+  if (mode === 'ai') { player.play().catch(() => playPart(part, my, false, true)); return; }
   synth.resume();
   // Some engines (Chrome with network voices, Android) drop paused speech: restart the sentence.
   setTimeout(() => { if (my === token && state.status === 'playing' && !synth.speaking) playPart(part, my); }, 350);
