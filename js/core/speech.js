@@ -11,6 +11,8 @@
 //  subscribe(fn)              state changes: { status: 'idle'|'playing'|'paused', key, part }
 //  setAI(on)                  Ana, the AI teacher voice (OpenAI TTS via /api/tts/); falls back to the device voice
 
+import { ttsHash, ttsNorm, splitSentences } from './tts-text.js';
+
 const synth = globalThis.speechSynthesis;
 export const canSpeak = !!synth && typeof globalThis.SpeechSynthesisUtterance === 'function';
 
@@ -95,7 +97,9 @@ let aiFails = 0;
 let prefetch = null;
 let mode = 'synth';  // what is playing right now: 'ai' | 'synth'
 export const aiActive = () => !!player && cfg.aiVoice && !aiOff;
-const aiUrl = text => `/api/tts/?t=${encodeURIComponent(String(text).replace(/\s+/g, ' ').trim())}`;
+// Pre-generated file first (scripts/generate-tts.mjs), then the live endpoint for anything else.
+const aiStatic = text => `/assets/tts/${ttsHash(text)}.mp3`;
+const aiLive = text => `/api/tts/?t=${encodeURIComponent(ttsNorm(text))}`;
 const useAI = o => aiActive() && !norm(o.lang || '').startsWith('es') && String(o.text).length <= 500;
 function quietPlayer() { if (!player) return; player.onended = player.onerror = null; player.pause(); }
 
@@ -126,13 +130,17 @@ function playAI(i, my) {
   mode = 'ai';
   const fallback = () => { if (my !== token) return; if (++aiFails >= 2) aiOff = true; playPart(i, my, false, true); };
   player.onended = () => { if (my === token) { aiFails = 0; playPart(i + 1, my); } };
-  player.onerror = fallback;
-  player.src = aiUrl(queue[i]);
+  player.onerror = () => {
+    if (my !== token) return;
+    if (!player.src.includes('/api/tts/')) { player.src = aiLive(queue[i]); player.play().catch(e => { if (e?.name === 'NotAllowedError') fallback(); }); }
+    else fallback();
+  };
+  player.src = aiStatic(queue[i]);
   player.playbackRate = player.defaultPlaybackRate = opts.rate ?? cfg.speechRate;
   player.volume = cfg.speechVolume;
-  player.play().catch(e => { if (e?.name !== 'AbortError') fallback(); });
+  player.play().catch(e => { if (e?.name === 'NotAllowedError') fallback(); });
   // Warm the cache for the next sentence so long texts flow without gaps.
-  if (queue[i + 1] && String(queue[i + 1]).length <= 500) { prefetch = new Audio(); prefetch.preload = 'auto'; prefetch.src = aiUrl(queue[i + 1]); }
+  if (queue[i + 1] && String(queue[i + 1]).length <= 500) { prefetch = new Audio(); prefetch.preload = 'auto'; prefetch.src = aiStatic(queue[i + 1]); }
 }
 
 function playPart(i, my, retried = false, noAI = false) {
@@ -164,8 +172,7 @@ function finish(my, failed = false) {
   done?.(failed);
 }
 
-// Split long texts into sentences: better control, pausing, and no Chrome cut-offs on long utterances.
-export const splitSentences = text => String(text).replace(/\s+/g, ' ').trim().match(/[^.!?…]+(?:[.!?…]+["”’)]?|$)/g)?.map(s => s.trim()).filter(Boolean) || [];
+export { splitSentences };
 
 export function speakSequence(parts, o = {}) {
   if (!canSpeak || !parts?.length) return false;
