@@ -76,7 +76,7 @@ export function flashcards(root, { ids, title, back = '#/', learning = false, to
         </div>
       </div>
       <footer class="fc-foot">${shown
-        ? `<p class="small muted center">${L('How well did you know it?', '¿Qué tal la sabías?')}</p><div class="grades">${GRADES.map(g => `<button type="button" class="grade ${g.cls}" data-g="${g.g}"><span aria-hidden="true">${g.emo}</span><b>${L(g.en, g.es)}</b><small>${intervalLabel(w.id, g.g, lang())}</small><kbd aria-hidden="true">${g.g + 1}</kbd></button>`).join('')}</div>`
+        ? `<p class="small muted center">${L('How well did you know it?', '¿Qué tal la sabías?')}</p><div class="grades">${GRADES.map(g => `<button type="button" class="grade ${g.cls}" data-g="${g.g}"><b>${L(g.en, g.es)}</b><small>${intervalLabel(w.id, g.g, lang())}</small><kbd aria-hidden="true">${g.g + 1}</kbd></button>`).join('')}</div>`
         : `<button type="button" class="btn primary lg" id="reveal">${icon('eye')} ${L('Show answer', 'Mostrar respuesta')} <kbd aria-hidden="true">␣</kbd></button>`}</footer>
     </section>`;
     root.querySelector('#reveal')?.addEventListener('click', reveal);
@@ -98,7 +98,7 @@ export function flashcards(root, { ids, title, back = '#/', learning = false, to
     root.innerHTML = `<section class="result"><div class="res-burst" aria-hidden="true">${icon('review')}</div>
       <h1 tabindex="-1">${L('Review complete!', '¡Repaso completado!')}</h1>
       <p class="lead">${L(`${n} cards in ${Math.max(1, Math.round((Date.now() - start) / 60000))} min.`, `${n} tarjetas en ${Math.max(1, Math.round((Date.now() - start) / 60000))} min.`)} ${counts[0] ? L('Missed words will come back soon.', 'Las palabras falladas volverán pronto.') : L('Great memory!', '¡Qué memoria!')}</p>
-      <ul class="grade-sum">${GRADES.map(g => `<li class="${g.cls}"><span aria-hidden="true">${g.emo}</span> ${L(g.en, g.es)} <b>${counts[g.g]}</b></li>`).join('')}</ul>
+      <ul class="grade-sum">${GRADES.map(g => `<li class="${g.cls}">${L(g.en, g.es)} <b>${counts[g.g]}</b></li>`).join('')}</ul>
       <p class="muted">+${n} XP · ${L('Tomorrow', 'Mañana')}: ${dueTomorrow()} ${L('cards', 'tarjetas')}</p>
       <div class="res-actions">${next ? `<a class="btn ghost" href="#/review">${L(`Review ${next} more`, `Repasar ${next} más`)}</a>` : ''}<a class="btn primary" href="#/">${L('Continue', 'Continuar')} ${icon('arrow')}</a></div></section>`;
     root.querySelector('h1').focus();

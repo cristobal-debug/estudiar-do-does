@@ -23,7 +23,8 @@ import * as prac from './views/practice.js';
 import * as skills from './views/skills.js';
 import progress from './views/progress.js';
 import profile from './views/profile.js';
-import { welcome, placement } from './views/placement.js';
+import { placement } from './views/placement.js';
+import home from './views/home.js';
 import mistakes from './views/mistakes.js';
 import { classicHome, classic } from './views/classic.js';
 
@@ -31,7 +32,7 @@ export { applyTheme };
 
 const ROUTES = [
   ['', dashboard, ['Dashboard', 'Inicio']],
-  ['welcome', welcome, ['Welcome', 'Bienvenida']],
+  ['welcome', home, ['Learn English, step by step', 'Del «lo entiendo» al «lo hablo»']],
   ['placement', placement, ['Level test', 'Test de nivel']],
   ['learn', learn, ['Learn', 'Aprender']],
   ['learn/:level', learn, ['Learn', 'Aprender']],
@@ -94,8 +95,19 @@ function renderChrome(path) {
     <a class="side-profile" href="#/profile"${active('profile')}>${icon('profile')}<span>${esc(S.name || L('Profile', 'Perfil'))}</span></a>`;
   document.getElementById('bottom-nav').innerHTML = MOBILE.map(([k, ic, en, es]) => `<a href="#/${k}"${active(k)}>${icon(ic)}<span>${L(en, es)}</span>${badge(k)}</a>`).join('');
   const st = streak();
+  // Before onboarding the header is the home page's: its sections and the level test.
+  if (!S.onboarded) {
+    document.getElementById('top-stats').innerHTML = sec === 'welcome'
+      ? `<nav class="land-nav" aria-label="Secciones">${[['ruta', 'Ruta'], ['leccion', 'Lecciones'], ['practica', 'Práctica'], ['metodo', 'Método']].map(([id, t]) => `<button type="button" data-scroll="${id}">${t}</button>`).join('')}</nav>
+        <a class="btn primary sm" href="#/placement">${L('Find my level', 'Descubrir mi nivel')}</a>`
+      : '';
+    return finishChrome();
+  }
   document.getElementById('top-stats').innerHTML = `<a href="#/progress" class="stat-chip${st ? ' on' : ''}" title="${L('Streak', 'Racha')}">${icon('flame')}<b>${st}</b><span class="sr">${L('day streak', 'días de racha')}</span></a>
     <a href="#/progress" class="stat-chip xp" title="XP">${icon('bolt')}<b>${S.xp}</b><span class="sr">XP</span></a>`;
+  finishChrome();
+}
+function finishChrome() {
   document.getElementById('search-btn').setAttribute('aria-label', L('Search', 'Buscar'));
   document.getElementById('search-btn').querySelector('span').textContent = L('Search', 'Buscar');
   document.getElementById('theme-btn').setAttribute('aria-label', L('Switch light / dark theme', 'Cambiar tema claro / oscuro'));

@@ -99,7 +99,7 @@ function audioSettings(box) {
         <p class="small muted">${ai ? L(`${speech.AI_TEACHER} speaks natural American English. Needs internet the first time each sentence is played.`, `${speech.AI_TEACHER} habla inglés americano nativo y natural. Necesita internet la primera vez que suena cada frase.`) : L('Uses the voices installed on this device. Works offline.', 'Usa las voces instaladas en este dispositivo. Funciona sin internet.')}</p>
       </fieldset>
       ${ai ? '' : `<fieldset><legend>${L('English pronunciation', 'Pronunciación del inglés')}</legend>
-        ${accents.length ? `<div class="seg">${accents.map(a => `<label><input type="radio" name="accent" value="${a}" ${c.preferredAccent === a || (accents.length === 1) ? 'checked' : ''}><span>${speech.ACCENTS[a].flag} ${L(speech.ACCENTS[a].en, speech.ACCENTS[a].es)}</span></label>`).join('')}</div>
+        ${accents.length ? `<div class="seg">${accents.map(a => `<label><input type="radio" name="accent" value="${a}" ${c.preferredAccent === a || (accents.length === 1) ? 'checked' : ''}><span>${L(speech.ACCENTS[a].en, speech.ACCENTS[a].es)}</span></label>`).join('')}</div>
           ${accents.length < 2 ? `<p class="small muted">${L('Only this accent has a voice installed on this device.', 'En este dispositivo solo hay voz instalada para este acento.')}</p>` : ''}`
         : `<p class="small muted">${speech.getVoices().length ? L('No American or British voice was found on this device; another available voice will be used.', 'No hay voz americana ni británica en este dispositivo; se usará otra voz disponible.') : L('Loading voices…', 'Cargando voces…')}</p>`}
       </fieldset>`}
@@ -109,7 +109,7 @@ function audioSettings(box) {
         <label class="field"><span>${L('Fine-tune', 'Ajuste fino')}: <output id="rate-o">${c.speechRate.toFixed(2)}×</output></span><input type="range" id="rate" min="0.5" max="1.3" step="0.05" value="${c.speechRate}"></label>
         <p class="small muted">${L('Slow is ideal for new words and dictation. Pronunciation is not changed, only the speed.', 'Lento es ideal para palabras nuevas y dictados. No cambia la pronunciación, solo la velocidad.')}</p></fieldset>
       <fieldset><legend>${L('Volume', 'Volumen')}</legend><label class="field"><span class="sr">${L('Volume', 'Volumen')}</span><input type="range" id="vol" min="0" max="1" step="0.05" value="${c.speechVolume}"></label></fieldset>
-      <div class="row">${audioBtn(SAMPLE, { variant: 'label', kind: 'sentence', label: L('Test voice', 'Probar voz') })}<span class="small muted">${ai ? `${esc(speech.AI_TEACHER)} · 🇺🇸` : active ? `${esc(active.name)} · ${esc(active.lang)}` : ''}</span></div>`}`;
+      <div class="row">${audioBtn(SAMPLE, { variant: 'label', kind: 'sentence', label: L('Test voice', 'Probar voz') })}<span class="small muted">${ai ? `${esc(speech.AI_TEACHER)} · ${L('American English', 'inglés americano')}` : active ? `${esc(active.name)} · ${esc(active.lang)}` : ''}</span></div>`}`;
     const $ = s => box.querySelector(s);
     box.querySelectorAll('input[name=accent]').forEach(r => r.addEventListener('change', () => { speech.stop(); speech.setAccent(r.value); paint(); }));
     box.querySelectorAll('input[name=ai]').forEach(r => r.addEventListener('change', () => { speech.stop(); speech.setAI(r.value === '1'); paint(); }));

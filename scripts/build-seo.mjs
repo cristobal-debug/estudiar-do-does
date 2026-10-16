@@ -19,11 +19,11 @@ for (const lv of levels) {
 <link rel="canonical" href="${SITE}/${slug}/">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:image" content="${SITE}/assets/og.png"><meta property="og:url" content="${SITE}/${slug}/">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:opsz,wght@9..144,650&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@1&family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/app.css">
 <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Course', name: `Inglés ${lv.code} · ${lv.name}`, description: desc, inLanguage: 'en', educationalLevel: `${lv.code} (CEFR)`, isAccessibleForFree: true, provider: { '@type': 'Organization', name: 'Doable English', url: SITE } })}</script>
 </head><body>
-<header class="topbar"><a class="brand" href="../"><svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--brand)"/><path d="M9 21.5c3.5 0 4-11 7.5-11s3.5 11 7 11" fill="none" stroke="var(--on-brand)" stroke-width="2.6" stroke-linecap="round"/><circle cx="9" cy="21.5" r="2.2" fill="var(--accent)"/></svg><span>Doable <b>English</b></span></a>
+<header class="topbar"><a class="brand" href="../"><span class="wm-d">doable</span><span class="wm-e">english</span></a>
 <a class="btn primary sm" href="../#/learn/${lv.id}">Empezar gratis</a></header>
 <main><div class="view-inner">
 <nav class="level-tabs" aria-label="Niveles">${levels.map(l => `<a class="lt${l.id === lv.id ? ' on' : ''}" href="../english-${l.id}/"${l.id === lv.id ? ' aria-current="page"' : ''}><b>${l.code}</b><small>${esc(l.es)}</small></a>`).join('')}</nav>
@@ -31,7 +31,7 @@ for (const lv of levels) {
 <p class="lead">${esc(desc)}</p><a class="btn primary lg" href="../#/learn/${lv.id}">Empezar el nivel ${lv.code}</a> <a class="btn ghost lg" href="../#/placement">Descubrir mi nivel</a></header>
 <section class="panel"><h2>Al terminar el nivel ${lv.code} podrás…</h2><ul class="can">${lv.goals.map(g => `<li>✓ ${esc(g)}</li>`).join('')}</ul></section>
 <h2>Unidades</h2>
-${units.map(u => `<section class="panel"><h3>${u.icon} Unidad ${u.n}: ${esc(u.title)}${u.es ? ` · ${esc(u.es)}` : ''}</h3>
+${units.map(u => `<section class="panel"><h3>Unidad ${u.n}: ${esc(u.title)}${u.es ? ` · ${esc(u.es)}` : ''}</h3>
 <ul class="can">${u.can.map(c => `<li>✓ ${esc(c)}</li>`).join('')}</ul>
 <p class="small"><b>Vocabulario:</b> ${u.words.map(w => `${esc(w.en)} (${esc(w.es)})`).join(', ')}.</p>
 <p class="small"><b>Lectura:</b> ${esc(u.reading.title)} · <b>Writing:</b> ${esc(u.writing.p)}</p></section>`).join('')}

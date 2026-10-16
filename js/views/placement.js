@@ -8,38 +8,9 @@ import { stop as stopSpeaking } from '../core/speech.js';
 import { canSpeak, listenPanel } from '../core/audio.js';
 import { PLACEMENT, PLACEMENT_LEVELS } from '../data/placement.js';
 import { LEVEL, unitsOf } from '../data/index.js';
-import { googleBtn } from './account.js';
-import { prepare } from '../core/cloud.js';
 import { h1 } from './ui.js';
 
 const PER_BLOCK = 3;
-
-export function welcome(root) {
-  root.innerHTML = `<section class="welcome">
-    <div class="brand-big" aria-hidden="true">${icon('learn')}</div>
-    <p class="eyebrow">Doable English</p>
-    <h1 tabindex="-1">${L('Your English teacher, step by step', 'Tu profesor de inglés, paso a paso')}</h1>
-    <p class="lead">${L('A structured path from A1 to C1: learn, practise and review — with feedback designed for Spanish speakers.', 'Una ruta estructurada de A1 a C1: aprende, practica y repasa, con correcciones pensadas para hispanohablantes.')}</p>
-    <form class="panel onboard" id="ob">
-      <label class="field"><span>${L('What should we call you?', '¿Cómo te llamas?')} <small class="muted">(${L('optional', 'opcional')})</small></span><input name="name" autocomplete="given-name" maxlength="30" value="${esc(S.name)}"></label>
-      <fieldset><legend>${L('Daily goal', 'Objetivo diario')}</legend><div class="seg">${[5, 10, 15, 20].map(m => `<label><input type="radio" name="goal" value="${m}" ${S.goal === m ? 'checked' : ''}><span>${m} min</span></label>`).join('')}</div>
-        <p class="small muted">${L('Short, daily sessions work better than long, occasional ones.', 'Las sesiones cortas y diarias funcionan mejor que las largas y esporádicas.')}</p></fieldset>
-      <div class="ob-choices">
-        <button type="submit" class="choice primary" name="go" value="test">${icon('compass')}<b>${L('Find my level', 'Descubrir mi nivel')}</b><span>${L('Adaptive test · 5 minutes', 'Test adaptativo · 5 minutos')}</span></button>
-        <button type="submit" class="choice" name="go" value="zero">${icon('flag')}<b>${L('Start from zero', 'Empezar desde cero')}</b><span>A1 · ${L('Beginner', 'Principiante')}</span></button>
-      </div>
-    </form>
-    <div class="ob-account"><p class="muted">${L('Already studying with us?', '¿Ya estudias con nosotros?')}</p>${googleBtn(L('Sign in with Google and continue', 'Entra con Google y continúa'))}</div></section>`;
-  prepare().catch(() => {});
-  const form = root.querySelector('#ob');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const fd = new FormData(form);
-    S.name = (fd.get('name') || '').trim(); S.goal = +(fd.get('goal') || 10);
-    if (e.submitter?.value === 'zero') { S.level = 'a1'; S.placed = null; S.onboarded = true; save(); location.hash = '#/'; }
-    else { save(); location.hash = '#/placement'; }
-  });
-}
 
 export function placement(root) {
   const asked = []; // { lv, s, ok }
@@ -113,7 +84,7 @@ export function placement(root) {
       <table class="tbl narrow"><thead><tr><th scope="col">${L('Area', 'Área')}</th><th scope="col">${L('Correct', 'Aciertos')}</th></tr></thead><tbody>${Object.entries(bySkill).map(([k, v]) => `<tr><th scope="row">${k}</th><td>${v.c}/${v.t}</td></tr>`).join('')}</tbody></table>
       <div class="panel left"><h2>${L('Your recommended learning path', 'Tu ruta recomendada')}</h2>
         <p>${L(`Start at ${lv.code}, Unit 1. Earlier units stay open so you can review them anytime.`, `Empieza en ${lv.code}, unidad 1. Las unidades anteriores quedan abiertas para repasarlas cuando quieras.`)}</p>
-        <ol class="rec-units">${units.map(u => `<li><span aria-hidden="true">${u.icon}</span> ${esc(u.title)}</li>`).join('')}</ol></div>
+        <ol class="rec-units">${units.map(u => `<li>${esc(u.title)}</li>`).join('')}</ol></div>
       <div class="res-actions"><a class="btn ghost" href="#/placement" id="retry">${icon('refresh')} ${L('Repeat test', 'Repetir test')}</a><button type="button" class="btn primary lg" id="accept">${L('Start my path', 'Empezar mi ruta')} ${icon('arrow')}</button></div>
     </section>`;
     root.querySelector('h1').focus();

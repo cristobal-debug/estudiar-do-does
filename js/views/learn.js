@@ -36,7 +36,7 @@ export function learn(root, { level }) {
       return `<li class="unit-node ${st}">
         <span class="node-dot" aria-hidden="true">${icon(ic)}</span>
         <a class="unit-card" href="#/unit/${u.id}">
-          <span class="u-emoji" aria-hidden="true">${u.icon}</span>
+          <span class="u-num" aria-hidden="true">${String(u.n).padStart(2, '0')}</span>
           <span class="u-txt"><small>${L('Unit', 'Unidad')} ${u.n} · <span class="st">${L(en, es)}</span></small>
             <b>${esc(u.title)}</b>${u.es ? `<span class="muted small">${esc(u.es)}</span>` : ''}
             ${st !== 'locked' ? bar(r, `${Math.round(r * 100)}%`) : ''}</span>

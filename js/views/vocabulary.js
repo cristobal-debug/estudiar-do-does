@@ -51,7 +51,7 @@ function list(root, ws, { title, eyebrow, back }) {
 export function topic(root, { cat }) {
   if (!CATEGORIES[cat]) { location.hash = '#/vocabulary'; return; }
   const ws = WORDS.filter(w => w.cat === cat).sort((a, b) => a.level.localeCompare(b.level));
-  list(root, ws, { title: catName(cat), eyebrow: `${CATEGORIES[cat][2]} ${L('Topic', 'Tema')}`, back: '#/vocabulary' });
+  list(root, ws, { title: catName(cat), eyebrow: L('Topic', 'Tema'), back: '#/vocabulary' });
 }
 export function levelWords(root, { level }) {
   const lv = LEVEL[level]; if (!lv) { location.hash = '#/vocabulary'; return; }

@@ -61,7 +61,7 @@ export default function dashboard(root) {
   root.innerHTML = `
   <header class="dash-head">
     <div><p class="eyebrow">${new Date().toLocaleDateString(L('en-GB', 'es-ES'), { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-    <h1 tabindex="-1">${esc(greeting())} <span aria-hidden="true">👋</span></h1>
+    <h1 tabindex="-1">${esc(greeting())}</h1>
     <p class="lead">${L('Continue learning English', 'Sigue aprendiendo inglés')}</p></div>
     <a class="level-card" href="#/learn/${S.level}" aria-label="${L('Your level', 'Tu nivel')}: ${lv.code} ${lv.name}">
       <span class="lc-code">${lv.code}</span><span class="lc-txt"><small>${L('Your level', 'Tu nivel')}${S.placed ? '' : ''}</small><b>${esc(L(lv.name, lv.es))}</b>${bar(levelRatio(), L('Level progress', 'Progreso del nivel'))}</span>
