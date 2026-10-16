@@ -94,7 +94,7 @@ function audioSettings(box) {
     ${!speech.canSpeak ? audioNote() : `
       <fieldset><legend>${L('Voice type', 'Tipo de voz')}</legend>
         <div class="seg">${[[1, 'AI voice (natural)', 'Voz IA (natural)'], [0, 'Device voice', 'Voz del dispositivo']].map(([v, en, es]) => `<label><input type="radio" name="ai" value="${v}" ${+ai === v ? 'checked' : ''}><span>${L(en, es)}</span></label>`).join('')}</div>
-        <p class="small muted">${ai ? L('Natural native pronunciation (Google). Needs internet the first time each sentence is played.', 'Pronunciación nativa y natural (Google). Necesita internet la primera vez que suena cada frase.') : L('Uses the voices installed on this device. Works offline.', 'Usa las voces instaladas en este dispositivo. Funciona sin internet.')}</p>
+        <p class="small muted">${ai ? L('Natural native pronunciation (AI). Needs internet the first time each sentence is played.', 'Pronunciación nativa y natural (IA). Necesita internet la primera vez que suena cada frase.') : L('Uses the voices installed on this device. Works offline.', 'Usa las voces instaladas en este dispositivo. Funciona sin internet.')}</p>
       </fieldset>
       ${ai ? `<fieldset><legend>${L('Voice', 'Voz')}</legend><div class="seg">${[['female', 'Female', 'Mujer'], ['male', 'Male', 'Hombre']].map(([v, en, es]) => `<label><input type="radio" name="gender" value="${v}" ${c.aiGender === v ? 'checked' : ''}><span>${L(en, es)}</span></label>`).join('')}</div></fieldset>` : ''}
       <fieldset><legend>${L('English pronunciation', 'Pronunciación del inglés')}</legend>
@@ -108,7 +108,7 @@ function audioSettings(box) {
         <label class="field"><span>${L('Fine-tune', 'Ajuste fino')}: <output id="rate-o">${c.speechRate.toFixed(2)}×</output></span><input type="range" id="rate" min="0.5" max="1.3" step="0.05" value="${c.speechRate}"></label>
         <p class="small muted">${L('Slow is ideal for new words and dictation. Pronunciation is not changed, only the speed.', 'Lento es ideal para palabras nuevas y dictados. No cambia la pronunciación, solo la velocidad.')}</p></fieldset>
       <fieldset><legend>${L('Volume', 'Volumen')}</legend><label class="field"><span class="sr">${L('Volume', 'Volumen')}</span><input type="range" id="vol" min="0" max="1" step="0.05" value="${c.speechVolume}"></label></fieldset>
-      <div class="row">${audioBtn(SAMPLE, { variant: 'label', kind: 'sentence', label: L('Test voice', 'Probar voz') })}<span class="small muted">${ai ? esc(speech.aiVoiceName()) : active ? `${esc(active.name)} · ${esc(active.lang)}` : ''}</span></div>`}`;
+      <div class="row">${audioBtn(SAMPLE, { variant: 'label', kind: 'sentence', label: L('Test voice', 'Probar voz') })}<span class="small muted">${ai ? `${L('AI voice', 'Voz IA')} · ${speech.ACCENTS[c.preferredAccent]?.flag || ''}` : active ? `${esc(active.name)} · ${esc(active.lang)}` : ''}</span></div>`}`;
     const $ = s => box.querySelector(s);
     box.querySelectorAll('input[name=accent]').forEach(r => r.addEventListener('change', () => { speech.stop(); speech.setAccent(r.value); paint(); }));
     box.querySelectorAll('input[name=ai]').forEach(r => r.addEventListener('change', () => { speech.stop(); speech.setAI(r.value === '1'); paint(); }));

@@ -9,7 +9,7 @@
 //  getVoices() englishVoices() availableAccents() selectVoice() setAccent()
 //  setRate() setSpeed() setPitch() setVolume() settings()
 //  subscribe(fn)              state changes: { status: 'idle'|'playing'|'paused', key, part }
-//  setAI(on) setAIGender(g)   natural AI voice (Google Cloud TTS via /api/tts/); falls back to the device voice
+//  setAI(on) setAIGender(g)   natural AI voice (OpenAI TTS via /api/tts/); falls back to the device voice
 
 const synth = globalThis.speechSynthesis;
 export const canSpeak = !!synth && typeof globalThis.SpeechSynthesisUtterance === 'function';
@@ -27,10 +27,10 @@ export const ACCENTS = {
   'en-GB': { flag: '🇬🇧', en: 'British English', es: 'Inglés británico' },
 };
 const DEFAULTS = { preferredAccent: 'en-US', preferredVoice: '', speechSpeed: 'normal', speechRate: 1, speechVolume: 1, speechPitch: 1, aiVoice: true, aiGender: 'female' };
-// Google Cloud voices allowed by api/tts.js.
+// AI voices allowed by api/tts.js (OpenAI; the accent is set server-side).
 export const AI_VOICES = {
-  'en-US': { female: 'en-US-Neural2-F', male: 'en-US-Neural2-D' },
-  'en-GB': { female: 'en-GB-Neural2-A', male: 'en-GB-Neural2-B' },
+  'en-US': { female: 'us-female', male: 'us-male' },
+  'en-GB': { female: 'gb-female', male: 'gb-male' },
 };
 let cfg = { ...DEFAULTS };
 try { Object.assign(cfg, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (_) {}
