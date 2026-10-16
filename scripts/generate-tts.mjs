@@ -6,7 +6,10 @@
 //   node scripts/generate-tts.mjs           generate what is missing (skips existing files)
 //
 // Needs OPENAI_API_KEY in .env.local (never committed). Voice settings must match api/tts.js.
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+// With ffmpeg installed (or FFMPEG=path), files are re-encoded to 48 kbps mono: ~1/3 the size, same clarity.
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, unlinkSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ttsHash, ttsNorm, splitSentences } from '../js/core/tts-text.js';
@@ -62,6 +65,31 @@ const KEY = process.env.OPENAI_API_KEY || env.match(/^OPENAI_API_KEY=(.+)$/m)?.[
 if (!KEY) { console.error('Missing OPENAI_API_KEY in .env.local'); process.exit(1); }
 mkdirSync(OUT, { recursive: true });
 
+function findFfmpeg() {
+  if (process.env.FFMPEG) return process.env.FFMPEG;
+  if (spawnSync('ffmpeg', ['-version']).status === 0) return 'ffmpeg';
+  const base = join(process.env.LOCALAPPDATA || '', 'Microsoft', 'WinGet', 'Packages');
+  try {
+    for (const pkg of readdirSync(base).filter(d => d.startsWith('Gyan.FFmpeg')))
+      for (const build of readdirSync(join(base, pkg))) {
+        const exe = join(base, pkg, build, 'bin', 'ffmpeg.exe');
+        if (existsSync(exe)) return exe;
+      }
+  } catch (_) {}
+  return null;
+}
+const FFMPEG = findFfmpeg();
+console.log(FFMPEG ? 'Compressing with ffmpeg (48 kbps mono).' : 'ffmpeg not found: saving the original MP3s.');
+function compress(buf, name) {
+  if (!FFMPEG) return buf;
+  const src = join(tmpdir(), `tts-${name}-in.mp3`), dst = join(tmpdir(), `tts-${name}-out.mp3`);
+  writeFileSync(src, buf);
+  const r = spawnSync(FFMPEG, ['-v', 'error', '-y', '-i', src, '-ac', '1', '-ar', '24000', '-b:a', '48k', dst]);
+  const out = r.status === 0 ? readFileSync(dst) : buf;
+  try { unlinkSync(src); unlinkSync(dst); } catch (_) {}
+  return out;
+}
+
 async function synth(text, tries = 4) {
   for (let a = 1; ; a++) {
     const r = await fetch('https://api.openai.com/v1/audio/speech', {
@@ -82,7 +110,8 @@ const queue = todo.slice();
 async function worker() {
   while (queue.length) {
     const t = queue.shift();
-    try { writeFileSync(join(OUT, ttsHash(t) + '.mp3'), await synth(t)); done++; }
+    const h = ttsHash(t);
+    try { writeFileSync(join(OUT, h + '.mp3'), compress(await synth(t), h)); done++; }
     catch (e) {
       failed++; console.error(`\n✗ "${t.slice(0, 60)}": ${e.message}`);
       if (/insufficient_quota|401|403/.test(e.message)) { queue.length = 0; }
