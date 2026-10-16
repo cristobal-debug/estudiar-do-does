@@ -70,7 +70,9 @@ export function resolveVoice(lang = cfg.preferredAccent) {
   const pref = voices.find(v => v.voiceURI === cfg.preferredVoice && norm(v.lang) === norm(lang));
   if (pref) return pref;
   const pick = list => list.slice().sort((a, b) => rank(a) - rank(b))[0];
-  return pick(voicesFor(lang)) || pick(voicesFor(lang === 'en-GB' ? 'en-US' : 'en-GB')) || pick(englishVoices()) || voices.find(v => v.default) || null;
+  // Never fall back to the system default voice: on a Spanish device it is Spanish and would read
+  // English with Spanish pronunciation. With no voice set, u.lang = 'en-*' lets the engine pick English.
+  return pick(voicesFor(lang)) || pick(voicesFor(lang === 'en-GB' ? 'en-US' : 'en-GB')) || pick(englishVoices()) || null;
 }
 
 export function selectVoice(voiceURI) { cfg.preferredVoice = voiceURI || ''; persist(); emit(); }
