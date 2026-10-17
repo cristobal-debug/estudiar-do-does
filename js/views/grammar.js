@@ -28,8 +28,8 @@ export function topic(root, { id }) {
   root.innerHTML = `${h1(t.title, { eyebrow: `${lv.code} · ${esc(t.es)}`, lead: md(t.sum), back: `#/grammar/level/${t.level}` })}
   <div class="topic-layout">
     <article class="prose reading">
-      ${english ? `<p class="lang-note">${L('From B2 the theory is in English, so you also practise reading. The notes comparing it with Spanish stay in Spanish.', 'Desde B2 la teoría está en inglés, para que también practiques la lectura. Las notas que lo comparan con el español siguen en español.')}</p>` : ''}
-      <div${english ? ' lang="en"' : ''}>${topicBody(t)}</div>
+      ${english ? `<p class="lang-note">${L('From B2 the theory is in English, so you also practise reading. If you prefer it in Spanish, switch it here.', 'Desde B2 la teoría está en inglés, para que también practiques la lectura. Si la prefieres en español, cámbiala aquí.')}</p>` : ''}
+      ${topicBody(t)}
     </article>
     <aside class="topic-side">
       <section class="panel"><h2>${L('Practise', 'Practica')}</h2>

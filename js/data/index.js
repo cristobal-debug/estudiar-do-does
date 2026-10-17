@@ -4,6 +4,7 @@ import GA from './grammar-a.js';
 import GB from './grammar-b.js';
 import UA from './units-a.js';
 import UB from './units-b.js';
+import EXPLAIN_ES from './explain-es.js';
 import { VOCAB, CATEGORIES } from './vocab.js';
 import { CONVERTED } from './classic.js';
 import { MISTAKES, TIPS } from './mistakes.js';
@@ -40,6 +41,7 @@ export const LEVEL_IDS = LEVELS.filter(l => !l.soon).map(l => l.id);
 // ——— Grammar topics (+ the original class exercises merged in) ———
 export const TOPICS = Object.fromEntries([...GA, ...GB].map(t => [t.id, t]));
 for (const { topic, ...ex } of CONVERTED) TOPICS[topic].ex.push({ ...ex, src: 'classic' });
+for (const [id, paras] of Object.entries(EXPLAIN_ES)) if (TOPICS[id]) TOPICS[id].explainEs = paras;   // B2–C1 theory in Spanish
 for (const t of Object.values(TOPICS)) t.ex.forEach(e => { e.skill = 'grammar'; e.topic = t.id; e.key = uid([t.id, e.q, e.a, e.o]); });
 export const TOPIC_LIST = Object.values(TOPICS);
 

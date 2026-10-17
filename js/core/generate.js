@@ -3,7 +3,7 @@ import { esc, md, shuffle, sample, seeded, dayKey, uid, canon } from './util.js'
 import { L, lang } from './i18n.js';
 import { icon } from './icons.js';
 import { audioBtn, readAlong, canSpeak } from './audio.js';
-import { S } from './store.js';
+import { S, save } from './store.js';
 import { strength, dueIds } from './srs.js';
 import { UNIT, UNITS, TOPICS, WORDS, WORD, LESSON, LEVEL_IDS, unitsOf, topicsOf, MISTAKES } from '../data/index.js';
 import { currentUnit, unitState } from './path.js';
@@ -49,10 +49,33 @@ const wordCard = w => `<article class="word-card">
   ${w.ex ? `<p class="wc-ex" lang="en">${esc(w.ex)}</p>${audioBtn(w.ex, { variant: 'label', kind: 'example' })}` : ''}
 </article>`;
 
-export function topicBody(t, { compact = false } = {}) {
+// B2–C1 theory is in English by default; the learner can switch it to Spanish (saved and synced).
+const theoryEs = t => !!(t.explainEs && S.theoryEs);
+function theoryInner(t, compact) {
   const tbl = t.table ? `<div class="tw"><table><thead><tr>${t.table.head.map(h => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${t.table.rows.map(r => `<tr>${r.map((c, i) => i ? `<td>${esc(c)}</td>` : `<th scope="row">${esc(c)}</th>`).join('')}</tr>`).join('')}</tbody></table></div>` : '';
-  return `${t.explain.map(p => `<p>${md(p)}</p>`).join('')}${compact ? '' : tbl}`;
+  return `${(theoryEs(t) ? t.explainEs : t.explain).map(p => `<p>${md(p)}</p>`).join('')}${compact ? '' : tbl}`;
 }
+export function theorySwitch(t) {
+  if (!t.explainEs) return '';
+  const es = theoryEs(t);
+  return `<div class="theory-switch" role="group" aria-label="${L('Theory language', 'Idioma de la teoría')}"><span class="small muted">${L('Theory in', 'Teoría en')}</span>
+    <button type="button" class="ts-opt" data-theory="en" aria-pressed="${!es}">${L('English', 'Inglés')}</button><button type="button" class="ts-opt" data-theory="es" aria-pressed="${es}">${L('Spanish', 'Español')}</button></div>`;
+}
+export function topicBody(t, { compact = false, toggle = !compact } = {}) {
+  const en = t.explainEs && !theoryEs(t);
+  return `${toggle ? theorySwitch(t) : ''}<div class="theory" data-theory-body="${t.id}"${compact ? ' data-compact="1"' : ''}${en ? ' lang="en"' : ''}>${theoryInner(t, compact)}</div>`;
+}
+// One listener for every switch on screen: swaps the text in place, so a running lesson is not restarted.
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-theory]'); if (!b) return;
+  S.theoryEs = b.dataset.theory === 'es'; save();
+  document.querySelectorAll('[data-theory-body]').forEach(el => {
+    const t = TOPICS[el.dataset.theoryBody]; if (!t) return;
+    el.innerHTML = theoryInner(t, !!el.dataset.compact);
+    if (t.explainEs && !theoryEs(t)) el.setAttribute('lang', 'en'); else el.removeAttribute('lang');
+  });
+  document.querySelectorAll('[data-theory]').forEach(x => x.setAttribute('aria-pressed', String((x.dataset.theory === 'es') === S.theoryEs)));
+});
 export function contrastBlock(t) {
   if (!t.contrast?.length) return '';
   return `<div class="contrast"><h3>${icon('alert')} ${L('Where Spanish leads you astray', 'Donde el español te engaña')}</h3>${t.contrast.map(c => `

@@ -404,6 +404,11 @@ body:has(.session, .flash) .site-footer { display: none; }
 .reading p { margin: 0 0 1em; }
 .reading .tw { margin-top: 1.4em; }
 .lang-note { font-size: .9rem; line-height: 1.5; color: var(--ink-2); border-left: 3px solid var(--lime); padding: 2px 0 2px 12px; }
+.theory-switch { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
+.theory-switch .small { margin-right: 2px; }
+.ts-opt { font: 600 .88rem/1 var(--font); color: var(--ink-2); background: var(--surface); border: 1.5px solid var(--line-2); border-radius: 999px; padding: 8px 14px; min-height: 36px; cursor: pointer; transition: background var(--t), border-color var(--t), color var(--t); }
+.ts-opt[aria-pressed=true] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.ts-opt:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 .contrast-sheet { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--coral); border-radius: var(--r); padding: var(--s3) var(--s4); margin: var(--s4) 0; }
 @media (max-width: 520px) { .contrast-sheet { padding: var(--s3); } }
 .links { list-style: none; padding: 0; margin: 0 0 12px; display: grid; gap: 6px; }

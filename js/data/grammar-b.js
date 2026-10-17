@@ -382,4 +382,52 @@ export default [
     { t: 'mc', q: 'I wish my neighbour ___ playing loud music at night.', o: ['would stop', 'stops', 'will stop'], e: 'Annoying habit → **wish + would**.' },
   ],
 },
+{
+  id: 'emphasis', level: 'c1', title: 'Emphasis and intensifiers', es: 'Énfasis: do enfático, intensificadores y negación fuerte',
+  sum: 'Dar fuerza a una idea sin exagerar: I do think…, by far the best, no doubt whatsoever, fully aware.',
+  contrast: [
+    { es: 'Sí que me importa.', wrong: 'I yes care.', right: 'I do care.', why: 'El _sí que_ enfático del español se dice con **do / does / did** + verbo base, y se acentúa el auxiliar al hablar.' },
+    { es: 'Es, con diferencia, el mejor.', wrong: "It's with difference the best.", right: "It's by far the best.", why: '_Con diferencia_ = **by far**, justo delante del superlativo.' },
+    { es: 'No tengo ninguna duda.', wrong: 'I have not any doubt.', right: 'I have no doubt whatsoever.', why: 'Negación fuerte: **no** + sustantivo, y **whatsoever** al final para reforzarla.' },
+  ],
+  explain: [
+    '**Emphatic do**: stress the auxiliary to insist or to contradict: _I **do** understand your point. She **did** call you, twice._ In the past, use **did** + base form.',
+    '**Intensifying superlatives and comparatives**: _**by far** the best, **easily** the most important, **much / far / considerably** better, the **very** best_.',
+    '**Strong negation**: _no… **whatsoever**, not… **at all**, not **in the least**, **by no means**_: _I have no interest whatsoever._',
+    '**Adverb + adjective pairs** are fixed: _**highly** unlikely, **deeply** concerned, **fully** aware, **utterly** ridiculous_. _Very_ fits almost any adjective; _absolutely_ only extreme ones (absolutely furious, but very angry).',
+  ],
+  examples: [['I do appreciate your help.', 'De verdad agradezco tu ayuda.'], ['This is by far the most convincing argument.', 'Es, con diferencia, el argumento más convincente.'], ['There is no evidence whatsoever to support that claim.', 'No hay ninguna prueba que respalde esa afirmación.'], ['We are fully aware of the risks.', 'Somos plenamente conscientes de los riesgos.']],
+  ex: [
+    { t: 'mc', q: 'You think I forgot, but I ___ send the email.', o: ['did', 'do', 'was'], e: 'Emphatic past → **did** + base form (send). It contradicts what the other person believes.' },
+    { t: 'mc', q: 'This is ___ the best restaurant in town.', o: ['by far', 'very', 'too much'], e: '**By far** intensifies a superlative. _Very_ cannot go before "the best".' },
+    { t: 'mc', q: 'There is no reason ___ to panic.', o: ['whatsoever', 'at least', 'anyway'], e: '**Whatsoever** after no + noun makes the negation stronger.' },
+    { t: 'mc', q: 'The minister was ___ aware of the problem.', o: ['fully', 'highly', 'bitterly'], e: 'Fixed pair: **fully aware**. _Highly_ goes with likely / unlikely; _bitterly_ with disappointed.' },
+    { t: 'tr', q: 'Sí que me gusta tu idea.', a: ['I do like your idea', 'I really do like your idea'], e: 'Spanish _sí que_ = emphatic **do** + base form: I **do** like…' },
+    { t: 'build', q: 'Make it stronger: It is the best option.', a: 'It is by far the best option', x: ['very', 'more'], e: '**By far** + superlative.' },
+  ],
+},
+{
+  id: 'collocations', level: 'c1', title: 'Collocations', es: 'Colocaciones: las palabras que van juntas',
+  sum: 'Por qué se dice heavy rain y no strong rain, o make a decision y no do a decision.',
+  contrast: [
+    { es: 'Llovió fuerte.', wrong: 'There was strong rain.', right: 'There was heavy rain.', why: 'La lluvia, el tráfico y el humo son **heavy**, no strong. _Strong_ va con el viento o el café.' },
+    { es: 'Hice un gran esfuerzo.', wrong: 'I did a big effort.', right: 'I made a big effort.', why: 'Esfuerzo, decisión, progreso y error van con **make**, aunque en español usemos _hacer_ o _tomar_.' },
+    { es: 'Cometer un delito.', wrong: 'Make a crime.', right: 'Commit a crime.', why: '_Cometer_ un delito o una falta es **commit**: commit a crime, commit an offence.' },
+  ],
+  explain: [
+    'A **collocation** is a combination that native speakers prefer, even when another one would be logical: _**heavy** rain_ (not strong rain), _**strong** coffee_ (not powerful coffee), _a **high** price_.',
+    '**Verb + noun**: _**make** a decision / an effort / progress, **take** a risk / a break, **pay** attention, **raise** a question, **meet** a deadline, **reach** an agreement_.',
+    '**Adverb + adjective**: _**highly** unlikely, **deeply** concerned, **bitterly** disappointed, **widely** available, **closely** related_.',
+    'Learn words **in pairs**, not on their own. A good dictionary shows the usual partners of each word.',
+  ],
+  examples: [['We need to meet the deadline.', 'Tenemos que cumplir el plazo.'], ['It is highly unlikely that prices will fall.', 'Es muy improbable que bajen los precios.'], ['Heavy traffic delayed the meeting.', 'El tráfico intenso retrasó la reunión.'], ['Both sides reached an agreement late at night.', 'Ambas partes llegaron a un acuerdo de madrugada.']],
+  ex: [
+    { t: 'mc', q: 'We must ___ the deadline.', o: ['meet', 'reach', 'do'], e: 'Fixed pair: **meet a deadline**. You _reach_ an agreement, not a deadline.' },
+    { t: 'mc', q: 'There was ___ traffic on the motorway.', o: ['heavy', 'strong', 'big'], e: 'Traffic, rain and smoke are **heavy**.' },
+    { t: 'mc', q: "It's ___ unlikely that they will agree.", o: ['highly', 'strongly', 'heavily'], e: '**Highly** goes with likely / unlikely, probable and recommended.' },
+    { t: 'fix', q: 'They did a big effort to finish on time.', a: ['They made a big effort to finish on time', 'They made a great effort to finish on time'], e: 'Effort goes with **make**: make an effort.' },
+    { t: 'mc', q: 'Please ___ attention to the safety instructions.', o: ['pay', 'put', 'give'], e: 'Fixed pair: **pay attention**.' },
+    { t: 'match', p: [['commit', 'a crime'], ['take', 'a risk'], ['raise', 'a question'], ['reach', 'an agreement'], ['make', 'progress']] },
+  ],
+},
 ];
