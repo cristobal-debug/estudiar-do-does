@@ -13,7 +13,7 @@ import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ttsHash, ttsNorm, splitSentences } from '../js/core/tts-text.js';
+import { ttsHash, ttsNorm, splitSentences, fillBlank } from '../js/core/tts-text.js';
 import GA from '../js/data/grammar-a.js';
 import GB from '../js/data/grammar-b.js';
 import UA from '../js/data/units-a.js';
@@ -48,6 +48,12 @@ for (const u of [...UA, ...UB]) {
 for (const t of [...GA, ...GB]) {
   t.examples?.forEach(([en]) => speak(plain(en)));
   t.contrast?.forEach(c => speak(c.right));
+  // The full correct sentence shown (with its audio button) after each exercise — same as core/session.js.
+  t.ex?.forEach(x => {
+    const fill = a => x.q ? fillBlank(x.q, a) : a;
+    const right = x.t === 'mc' ? fill(x.o[0]) : x.t === 'type' ? fill([].concat(x.a)[0]) : x.t === 'fix' || x.t === 'tr' || x.t === 'build' ? [].concat(x.a)[0] : '';
+    if (right) speak(plain(right));
+  });
 }
 Object.values(MISTAKES).forEach(m => speak(m.right.replace(/\s*\/\s*/g, ' ')));
 Object.values(PLACEMENT).flat().forEach(q => q?.say && speak(q.say));

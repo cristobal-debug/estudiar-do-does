@@ -2,6 +2,14 @@
 // the MP3 file the generator wrote (assets/voice/<ttsHash(text)>.mp3).
 export const ttsNorm = t => String(t || '').replace(/\s+/g, ' ').trim();
 
+// The complete correct sentence of a gap exercise: the answer goes into the gap, the hint in brackets
+// after it ("___ (go)") is dropped, and "prompt → answer" exercises keep only the answer side.
+export const fillBlank = (q, a, mark = s => s) => {
+  if (!q.includes('___')) return mark(a);
+  const s = q.includes('→') ? q.split('→').pop().trim() : q;
+  return s.replace(/_{3,}(\s*\([^)]*\))?/, mark(a));
+};
+
 // cyrb53: fast 53-bit string hash, as base 36 (collisions are negligible for a few thousand texts).
 export function ttsHash(text) {
   const str = ttsNorm(text);

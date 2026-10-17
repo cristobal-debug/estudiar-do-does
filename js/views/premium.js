@@ -4,7 +4,7 @@ import { esc } from '../core/util.js';
 import { L } from '../core/i18n.js';
 import { icon } from '../core/icons.js';
 import { cloudState, onCloud, prepare } from '../core/cloud.js';
-import { isPremium, checkout, onPremium, hasPending, AMOUNTS, guessCurrency, FREE } from '../core/premium.js';
+import { isPremium, checkout, onPremium, hasPending, restore, AMOUNTS, guessCurrency, FREE } from '../core/premium.js';
 import { LEVELS, LEVEL, unitsOf, topicsOf, wordsOf } from '../data/index.js';
 import { googleBtn } from './account.js';
 import { toast } from './ui.js';
@@ -70,8 +70,9 @@ export default function premium(root, { level, state } = {}) {
                <div class="seg picks">${AMOUNTS[cur].picks.map(n => `<label><input type="radio" name="amt" value="${n}"${!custom && n === amt ? ' checked' : ''}><span>${cur === 'clp' ? `$${fmt(n)}` : `${n} USD`}</span></label>`).join('')}</div>
                <label class="field prem-other"><span class="small">${L('Or another amount', 'U otro monto')} (${cur.toUpperCase()})</span><input type="number" inputmode="numeric" name="custom" min="${AMOUNTS[cur].min}" max="${AMOUNTS[cur].max}" step="1" placeholder="${cur === 'clp' ? '8000' : '12'}" value="${esc(custom)}"></label></fieldset>
              <button type="button" class="btn primary lg block" data-buy${valid() ? '' : ' disabled'}>${buyLabel()}</button>
+             <p class="small muted prem-restore">${L('Already paid?', '¿Ya aportaste?')} <button type="button" class="linkish" data-restore>${L('Recover my purchase', 'Recuperar mi compra')}</button></p>
              <p class="small muted">${cur === 'clp' ? L('You pay with Mercado Pago: card, debit or transfer.', 'Pagas con Mercado Pago: tarjeta, débito o transferencia.') : L('You pay by card with Stripe.', 'Pagas con tarjeta a través de Stripe.')} ${L('Account', 'Cuenta')}: <b>${esc(user.email)}</b></p>`
-          : `<p class="small"><b>${L('First, sign in', 'Primero, entra con tu cuenta')}</b> ${L('so the course is saved to your account.', 'para que el curso quede guardado en ella.')}</p>${googleBtn(L('Continue with Google', 'Continuar con Google'), 'block')}`}
+          : `<p class="small"><b>${L('First, sign in', 'Primero, entra con tu cuenta')}</b> ${L('so the course is saved to your account. If you already paid, use the same Google account.', 'para que el curso quede guardado en ella. Si ya aportaste, usa la misma cuenta de Google.')}</p>${googleBtn(L('Continue with Google', 'Continuar con Google'), 'block')}`}
         <p class="small muted prem-safe">${icon('lock')} ${L('Secure payment by Stripe or Mercado Pago. We never see your card.', 'Pago seguro con Stripe o Mercado Pago. Nunca vemos los datos de tu tarjeta.')}</p>
       </aside>
     </section>
@@ -92,6 +93,15 @@ export default function premium(root, { level, state } = {}) {
     syncBuy();
   });
   root.addEventListener('click', async e => {
+    const rb = e.target.closest('[data-restore]');
+    if (rb && !rb.disabled) {
+      rb.disabled = true; const was = rb.textContent; rb.textContent = L('Looking for your payment…', 'Buscando tu pago…');
+      try {
+        if (!(await restore())) toast(L(`We found no payment for ${cloudState().user?.email}. If you paid with another Google account, sign in with it.`, `No encontramos un pago de ${cloudState().user?.email}. Si pagaste con otra cuenta de Google, entra con esa.`), { icon: 'alert' });
+      } catch (err) { toast(err.code === 'not configured' ? L('Payments are not switched on yet.', 'Los pagos todavía no están activados.') : L('Could not check right now. Please try again.', 'No se pudo comprobar ahora. Inténtalo de nuevo.'), { icon: 'alert' }); }
+      rb.disabled = false; rb.textContent = was;
+      return;
+    }
     const b = e.target.closest('[data-buy]'); if (!b || b.disabled || !valid()) return;
     b.disabled = true; b.innerHTML = L('Opening payment…', 'Abriendo el pago…');
     try { await checkout(cur, amt); }
@@ -112,4 +122,11 @@ export default function premium(root, { level, state } = {}) {
   // When the course gets unlocked while a locked page is showing, open that page.
   const rerouteSoon = () => { stop(); if (level) dispatchEvent(new HashChangeEvent('hashchange')); else paint(); };
   paint();
+  // Signed in but locked: look once per visit for a purchase made elsewhere (closed tab, other device, transfer).
+  const once = () => { try { if (sessionStorage.getItem('doable:restored')) return true; } catch (_) {}
+    if (!cloudState().user) return false;
+    try { sessionStorage.setItem('doable:restored', '1'); } catch (_) {}
+    if (!isPremium()) restore().catch(() => {});
+    return true; };
+  if (!once()) { const off = onCloud(() => { if (once()) off(); }); }
 }

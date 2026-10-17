@@ -5,6 +5,7 @@ import { esc, md, shuffle, matchAnswer, matchExact, canon, lev, uid } from './ut
 import { L } from './i18n.js';
 import { icon } from './icons.js';
 import { stop as stopSpeaking } from './speech.js';
+import { fillBlank } from './tts-text.js';
 import { audioBtn, listenPanel, canSpeak } from './audio.js';
 import * as store from './store.js';
 import { MISTAKES } from '../data/index.js';
@@ -22,7 +23,7 @@ const INSTR = {
 };
 export { audioBtn };
 
-const blankIn = (q, a) => q.includes('___') ? q.replace(/_{3,}/, `**${a}**`) : a;
+const blankIn = (q, a) => fillBlank(q, a, x => `**${x}**`);
 // The learner's answer as a whole sentence, so the typical-mistake patterns can recognise it.
 const asSentence = (it, given) => (it.t === 'mc' || it.t === 'type') && it.q?.includes('___') ? it.q.replace(/_{3,}/, given).replace(/\*\*|_/g, '') : given;
 

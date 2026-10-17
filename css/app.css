@@ -955,6 +955,13 @@ body:has(.landing) .topbar { padding-inline: max(16px, calc((100% - var(--wrap))
 .prem-amount .seg.picks { display: grid; grid-template-columns: repeat(4, 1fr); }
 .prem-amount .seg.picks span { width: 100%; justify-content: center; padding-inline: 4px; }
 .prem-other { margin: 4px 0 0; }
+.prem-restore { margin: 0; }
+.admin-sum { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 0 32px; margin: var(--s4) 0; }
+.admin-sum div { border-top: 1px solid var(--line); padding: 14px 0; }
+.admin-sum dt { font-size: .85rem; color: var(--muted); font-weight: 600; }
+.admin-sum dd { margin: 4px 0 0; }
+.admin-sum b { font: 800 1.8rem/1.1 var(--display); letter-spacing: -.03em; margin-right: 6px; }
+.tbl { overflow-x: auto; }
 .prem-other .small { font-weight: 500; color: var(--muted); }
 .prem-card [data-buy][disabled] { opacity: .55; cursor: not-allowed; }
 .prem-safe { display: flex; gap: 6px; align-items: flex-start; padding-top: 12px; border-top: 1px solid var(--line); }
@@ -992,3 +999,4 @@ body:has(.landing) .topbar { padding-inline: max(16px, calc((100% - var(--wrap))
 .seo-words li { break-inside: avoid; padding: 5px 0; border-bottom: 1px solid var(--line); font-size: .95rem; display: flex; justify-content: space-between; gap: 10px; }
 .seo-words li span { color: var(--muted); text-align: right; }
 .seo-note { border-top: 1px solid var(--line); padding-top: 18px; margin-top: var(--s4); }
+.nowrap { white-space: nowrap; }

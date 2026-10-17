@@ -27,6 +27,7 @@ import { placement } from './views/placement.js';
 import home from './views/home.js';
 import mistakes from './views/mistakes.js';
 import premium from './views/premium.js';
+import admin from './views/admin.js';
 import { canAccess, initPremium } from './core/premium.js';
 import { LESSON, UNIT, TOPICS, WORD } from './data/index.js';
 import { classicHome, classic } from './views/classic.js';
@@ -72,6 +73,7 @@ const ROUTES = [
   ['mistakes', mistakes, ['My mistakes', 'Mis errores']],
   ['premium', premium, ['Full course', 'Curso completo']],
   ['premium/:state', premium, ['Full course', 'Curso completo']],
+  ['admin', admin, ['Payments', 'Aportes']],
   ['classic', classicHome, ['Class exercises', 'Ejercicios de clase']],
   ['classic/:mode', classic, ['Class exercises', 'Ejercicios de clase']],
 ].map(([pat, fn, title]) => {

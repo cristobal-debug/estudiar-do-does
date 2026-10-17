@@ -3,6 +3,8 @@
 //  canAccess(level)   may the learner open content of this CEFR level?
 //  isPremium()        has this account bought the full course?
 //  checkout(cur, n)   go to the payment page for an amount the learner chose (clp → Mercado Pago, usd → Stripe)
+//  restore()          look for a paid purchase of this account (closed tab, other device, transfer) → true if unlocked
+//  adminPayments()    the course's payments (only answers for the admin account)
 //  initPremium()      call once at startup: finishes a payment the learner just came back from
 //
 // The license is signed by /api/premium/ after it checks the payment with Stripe / Mercado Pago, saved in the
@@ -43,6 +45,14 @@ export async function checkout(currency, amount) {
   const { url } = await call({ action: 'checkout', currency, amount });
   location.href = url;
 }
+
+export async function restore() {
+  const r = await call({ action: 'restore' });
+  if (!r.ok || !r.license) return false;
+  S.license = r.license; save(); writePending(null); emit('unlocked');
+  return true;
+}
+export const adminPayments = () => call({ action: 'admin' }).then(r => r.rows || []);
 
 const subs = new Set();
 export const onPremium = fn => { subs.add(fn); return () => subs.delete(fn); };
