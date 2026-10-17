@@ -5,7 +5,7 @@ import { LEVELS, unitsOf, topicsOf, wordsOf } from '../js/data/index.js';
 
 const SITE = 'https://estudiar-do-does.vercel.app';
 const FREE = 'a1';                       // same rule as js/core/premium.js
-const PRICE_USD = 15;
+const MIN_USD = 1;                       // voluntary payment minimum, same as js/core/premium.js
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const strip = s => String(s).replace(/\*\*|_/g, '');
 const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/(^|[\s(¿¡«])_(.+?)_(?=[\s.,;:!?)»]|$)/g, '$1<em>$2</em>');
@@ -29,7 +29,7 @@ for (const lv of levels) {
 <link rel="stylesheet" href="../css/app.css">
 <script type="application/ld+json">${JSON.stringify({
     '@context': 'https://schema.org', '@type': 'Course', name: `Inglés ${lv.code} · ${lv.es}`, description: desc, inLanguage: 'en', educationalLevel: `${lv.code} (MCER)`,
-    isAccessibleForFree: free, ...(free ? {} : { offers: { '@type': 'Offer', category: 'Paid', price: PRICE_USD, priceCurrency: 'USD' } }),
+    isAccessibleForFree: free, ...(free ? {} : { offers: { '@type': 'Offer', category: 'Paid', price: MIN_USD, priceCurrency: 'USD', description: 'Pago voluntario: el alumno elige cuánto aportar' } }),
     provider: { '@type': 'Organization', name: 'Doable English', url: SITE },
   })}</script>
 </head><body class="seo">
@@ -42,7 +42,7 @@ for (const lv of levels) {
   <p class="eyebrow">Nivel ${lv.code} · ${esc(lv.es)}</p>
   <h1>Inglés ${lv.code}</h1>
   <p class="seo-focus">${esc(lv.focus)}</p>
-  <p class="seo-facts">${units.length} unidades · ${lessons} lecciones · ${topics.length} temas de gramática · ${words.length} palabras con audio${free ? ' · <b>gratis</b>' : ` · incluido en el curso completo (pago único de ${PRICE_USD} USD)`}</p>
+  <p class="seo-facts">${units.length} unidades · ${lessons} lecciones · ${topics.length} temas de gramática · ${words.length} palabras con audio${free ? ' · <b>gratis</b>' : ` · incluido en el curso completo (pago voluntario: tú eliges cuánto aportar)`}</p>
   <p class="seo-ctas"><a class="btn primary lg" href="../#/learn/${lv.id}">${cta}</a> <a class="btn ghost lg" href="../#/placement">Hacer el test de nivel</a></p>
 </header>
 

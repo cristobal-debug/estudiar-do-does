@@ -1,16 +1,17 @@
-// POST /api/premium/ — one-time purchase of the full course (A2–C1). A1 stays free.
-//   { action: 'checkout', idToken }              → { url }   payment page (Mercado Pago in Chile, Stripe elsewhere)
+// POST /api/premium/ — pay-what-you-want, one-time purchase of the full course (A2–C1). A1 stays free.
+//   { action: 'checkout', idToken, currency, amount } → { url } payment page (CLP → Mercado Pago, USD → Stripe)
 //   { action: 'confirm', idToken, provider, ref } → { license } once the provider says the payment went through
 //   { action: 'check', idToken, license }        → { ok }    is this license genuine and for this account?
 // No database and no webhooks: the payment is always checked against Stripe / Mercado Pago themselves and
 // the result is a license signed with LICENSE_SECRET, stored in the learner's synced progress.
-// Env: STRIPE_SECRET_KEY, MP_ACCESS_TOKEN, LICENSE_SECRET, optional PRICE_USD (15) and PRICE_CLP (14000).
+// Env: STRIPE_SECRET_KEY, MP_ACCESS_TOKEN, LICENSE_SECRET.
 const crypto = require('crypto');
 
 const FIREBASE_KEY = 'AIzaSyAg-qYTPblHf6hyp7Hx2ANeffhz_QydDdk';   // public web key (same as js/core/cloud.js)
-const PRODUCT = 'Doable English · Curso completo A1–C1';
-const USD = Number(process.env.PRICE_USD || 15);
-const CLP = Number(process.env.PRICE_CLP || 14000);
+const PRODUCT = 'Doable English · Curso completo A1–C1 (aporte voluntario)';
+// The learner chooses the amount; same limits as js/core/premium.js.
+const LIMITS = { usd: { min: 1, max: 500 }, clp: { min: 1000, max: 500000 } };
+const amountOk = (cur, n) => Number.isInteger(n) && n >= LIMITS[cur].min && n <= LIMITS[cur].max;
 
 // The Firebase ID token proves who is paying; Google checks it for us.
 async function whoIs(idToken) {
@@ -54,10 +55,10 @@ const mp = (path, body) => fetch(`https://api.mercadopago.com/${path}`, {
   body: body ? JSON.stringify(body) : undefined,
 }).then(r => r.json());
 
-async function checkout(user, origin, provider) {
+async function checkout(user, origin, provider, amount) {
   if (provider === 'mp') {
     const pref = await mp('checkout/preferences', {
-      items: [{ title: PRODUCT, quantity: 1, unit_price: CLP, currency_id: 'CLP' }],
+      items: [{ title: PRODUCT, quantity: 1, unit_price: amount, currency_id: 'CLP' }],
       external_reference: user.uid,
       payer: user.email ? { email: user.email } : undefined,
       back_urls: { success: `${origin}/?pay=mp`, pending: `${origin}/?pay=mp`, failure: `${origin}/?pay=fail` },
@@ -73,7 +74,7 @@ async function checkout(user, origin, provider) {
     client_reference_id: user.uid,
     customer_email: user.email || undefined,
     metadata: { uid: user.uid, product: 'doable-full' },
-    line_items: [{ quantity: 1, price_data: { currency: 'usd', unit_amount: Math.round(USD * 100), product_data: { name: PRODUCT } } }],
+    line_items: [{ quantity: 1, price_data: { currency: 'usd', unit_amount: amount * 100, product_data: { name: PRODUCT } } }],
   });
   return s.url;
 }
@@ -86,7 +87,7 @@ async function paid(user, provider, ref) {
   }
   if (provider === 'mp') {
     const p = await mp(`v1/payments/${encodeURIComponent(ref)}`);
-    return p.status === 'approved' && p.external_reference === user.uid && Number(p.transaction_amount) >= CLP;
+    return p.status === 'approved' && p.external_reference === user.uid && Number(p.transaction_amount) >= LIMITS.clp.min;
   }
   return false;
 }
@@ -94,7 +95,7 @@ async function paid(user, provider, ref) {
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
   if (!process.env.LICENSE_SECRET) return res.status(503).json({ error: 'not configured' });
-  const { action, idToken, provider, ref, license } = req.body || {};
+  const { action, idToken, provider, ref, license, currency, amount } = req.body || {};
   try {
     const user = await whoIs(idToken);
     if (!user) return res.status(401).json({ error: 'signin' });
@@ -104,10 +105,12 @@ module.exports = async (req, res) => {
       return res.json({ ok: !!l && l.uid === user.uid });
     }
     if (action === 'checkout') {
-      const country = String(req.headers['x-vercel-ip-country'] || '').toUpperCase();
-      const via = provider === 'stripe' || provider === 'mp' ? provider : country === 'CL' ? 'mp' : 'stripe';
+      const cur = currency === 'clp' ? 'clp' : 'usd';
+      const n = Number(amount);
+      if (!amountOk(cur, n)) return res.status(400).json({ error: 'amount' });
+      const via = cur === 'clp' ? 'mp' : 'stripe';
       const origin = `https://${req.headers['x-forwarded-host'] || req.headers.host}`;
-      const url = await checkout(user, origin, via);
+      const url = await checkout(user, origin, via, n);
       return url ? res.json({ url, provider: via }) : res.status(502).json({ error: 'provider' });
     }
     if (action === 'confirm') {

@@ -1,8 +1,8 @@
-// Full course = one-time purchase. A1 is free; A2–C1 need a license tied to the learner's Google account.
+// Full course = one-time, pay-what-you-want purchase. A1 is free; A2–C1 need a license tied to the learner's Google account.
 //
 //  canAccess(level)   may the learner open content of this CEFR level?
 //  isPremium()        has this account bought the full course?
-//  checkout(provider) go to the payment page (provider optional: the server picks Mercado Pago in Chile, Stripe elsewhere)
+//  checkout(cur, n)   go to the payment page for an amount the learner chose (clp → Mercado Pago, usd → Stripe)
 //  initPremium()      call once at startup: finishes a payment the learner just came back from
 //
 // The license is signed by /api/premium/ after it checks the payment with Stripe / Mercado Pago, saved in the
@@ -11,7 +11,13 @@ import { S, save } from './store.js';
 import { cloudState, onCloud, idToken } from './cloud.js';
 
 export const FREE = 'a1';
-export const PRICE = { usd: 15, clp: 14000 };
+// Voluntary amount: the learner picks or types it. The server enforces the same min / max.
+export const AMOUNTS = {
+  clp: { min: 1000, max: 500000, picks: [5000, 10000, 15000, 25000], def: 10000 },
+  usd: { min: 1, max: 500, picks: [5, 10, 15, 25], def: 10 },
+};
+// Chile → CLP with Mercado Pago; anywhere else → USD with a card. The learner can switch.
+export const guessCurrency = () => { try { return /Santiago|Punta_Arenas|Easter/.test(Intl.DateTimeFormat().resolvedOptions().timeZone) || /-CL$/i.test(navigator.language) ? 'clp' : 'usd'; } catch (_) { return 'usd'; } };
 const PENDING = 'doable:pay';
 const API = '/api/premium/';
 
@@ -33,8 +39,8 @@ async function call(body) {
   return data;
 }
 
-export async function checkout(provider) {
-  const { url } = await call({ action: 'checkout', provider });
+export async function checkout(currency, amount) {
+  const { url } = await call({ action: 'checkout', currency, amount });
   location.href = url;
 }
 

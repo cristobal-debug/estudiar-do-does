@@ -117,7 +117,7 @@ export default function home(root) {
 
   <section class="land-sec route-sec" id="ruta" aria-labelledby="ruta-t">
     <div class="sec-head"><p class="eyebrow">La ruta</p><h2 id="ruta-t">Cinco niveles, un camino claro.</h2>
-      <p class="muted">Sigue los niveles del Marco Común Europeo. El test te sitúa en el tuyo y cada unidad desbloquea la siguiente. El A1 es gratis; de A2 a C1 se desbloquean con un pago único de 15 USD.</p></div>
+      <p class="muted">Sigue los niveles del Marco Común Europeo. El test te sitúa en el tuyo y cada unidad desbloquea la siguiente. El A1 es gratis; de A2 a C1 se desbloquean con un pago voluntario, una sola vez: tú decides cuánto vale.</p></div>
     <ol class="route">${levels.map((l, i) => {
       const us = unitsOf(l.id);
       const lessons = us.reduce((n, u) => n + u.lessons.length, 0);
