@@ -20,11 +20,11 @@ const INSTR = {
   build: ['Build the sentence', 'Construye la frase'], match: ['Match the pairs', 'Une las parejas'],
   listen: ['Listen and answer', 'Escucha y responde'], dict: ['Listen and write what you hear', 'Escucha y escribe lo que oyes'],
 };
-const PRAISE = [['Correct!', '¡Correcto!'], ['Great!', '¡Muy bien!'], ['Exactly!', '¡Exacto!'], ['Nice work!', '¡Genial!']];
-
 export { audioBtn };
 
 const blankIn = (q, a) => q.includes('___') ? q.replace(/_{3,}/, `**${a}**`) : a;
+// The learner's answer as a whole sentence, so the typical-mistake patterns can recognise it.
+const asSentence = (it, given) => (it.t === 'mc' || it.t === 'type') && it.q?.includes('___') ? it.q.replace(/_{3,}/, given).replace(/\*\*|_/g, '') : given;
 
 // ——— Exercise renderers: each returns nothing, and calls api.submit(result) when answered ———
 const R = {
@@ -48,7 +48,7 @@ const R = {
         if (!items[i].ok) btns[i].classList.add('no');
         btns.forEach((b, k) => { if (items[k].ok || k === i) b.insertAdjacentHTML('beforeend', icon(items[k].ok ? 'check' : 'x', 'mark')); });
       }
-      api.submit({ ok: items[i].ok, given: items[i].t, right: it.o[0] });
+      api.submit({ ok: items[i].ok, given: items[i].t, right: it.q?.includes('___') ? blankIn(it.q, it.o[0]) : it.o[0] });
     };
     el.onclick = e => { const b = e.target.closest('.opt'); if (b) pick(+b.dataset.i); };
     api.keys(k => { const n = +k - 1; if (n >= 0 && n < items.length) pick(n); });
@@ -236,17 +236,29 @@ export function runSession(root, opts) {
     setFoot('continue');
   }
 
+  // The feedback answers to what this learner actually did: the explanation comes first, and the
+  // "typical mistake" note only appears when their answer really is that mistake.
   function feedback(it, res) {
-    const p = PRAISE[Math.floor(Math.random() * PRAISE.length)];
     const mk = it.m && MISTAKES[it.m];
+    const given = typeof res.given === 'string' ? res.given.trim() : '';
+    const rightText = String(res.right || '').replace(/\*\*/g, '');
+    const typical = !res.ok && mk && !!mk.re && !!given && mk.re.test(asSentence(it, given).toLowerCase());
+    const near = !res.ok && !typical && given && it.t !== 'mc' && it.t !== 'listen' && lev(canon(given), canon(rightText)) <= Math.max(2, Math.round(rightText.length * 0.12));
+    const title = res.ok ? (res.typo ? L('Correct, but check the spelling', 'Correcto, pero revisa la ortografía') : L('Correct', 'Correcto'))
+      : typical ? L('This is the classic mistake', 'Es el error típico del hispanohablante')
+      : near ? L('Almost: one detail is wrong', 'Casi: falla un detalle')
+      : it.t === 'mc' ? L('Not this option', 'No es esta opción') : L('Not correct', 'No es correcto');
+    const why = it.e || (typical ? mk.es : '');   // the item's own note is the most specific; the pattern's note is the fallback
+    const showGiven = !res.ok && given && !['mc', 'listen', 'match'].includes(it.t);   // options already show what was picked
     const showRight = res.right && (!res.ok || res.typo || it.t === 'listen' || it.t === 'dict');
     fbBox.className = `ses-fb show ${res.ok ? 'ok' : 'no'}`;
-    fbBox.innerHTML = `<div class="fb-head">${icon(res.ok ? 'check' : 'x')}<strong>${res.ok ? L(p[0], p[1]) : L('Not quite', 'Casi…')}</strong>${res.ok ? `<span class="xp-pop">+${it.retry ? 1 : 2} XP</span>` : ''}</div>
-      ${showRight ? `<p>${res.ok ? '' : L('Correct answer: ', 'Respuesta correcta: ')}<strong>${md(res.right)}</strong> ${it.t === 'listen' || it.t === 'dict' ? '' : audioBtn(res.right.replace(/\*\*/g, ''), { kind: 'sentence' })}</p>` : ''}
-      ${res.typo ? `<p class="small">${L('Watch the spelling.', 'Ojo con la ortografía.')}</p>` : ''}
-      ${res.note ? `<p class="small">${esc(res.note)}</p>` : ''}
-      ${it.e ? `<p class="fb-e">${md(it.e)}</p>` : ''}
-      ${!res.ok && mk ? `<p class="fb-tag">${icon('alert')} ${L('Common mistake for Spanish speakers', 'Error típico de hispanohablantes')}: <s>${esc(mk.wrong)}</s> → <strong>${esc(mk.right)}</strong></p>` : ''}`;
+    fbBox.innerHTML = `<div class="fb-head">${icon(res.ok ? 'check' : 'x')}<strong>${title}</strong>${res.ok ? `<span class="xp-pop">+${it.retry ? 1 : 2} XP</span>` : ''}</div>
+      ${why ? `<p class="fb-e">${md(why)}</p>` : ''}
+      ${showGiven || showRight ? `<dl class="fb-cmp">
+        ${showGiven ? `<div class="fb-given"><dt>${L('You wrote', 'Escribiste')}</dt><dd lang="en"><s>${esc(given)}</s></dd></div>` : ''}
+        ${showRight ? `<div class="fb-right"><dt>${res.ok ? L('Exactly', 'Exacto') : L('Correct', 'Correcto')}</dt><dd lang="en"><strong>${md(res.right)}</strong> ${it.t === 'listen' || it.t === 'dict' ? '' : audioBtn(rightText, { kind: 'sentence' })}</dd></div>` : ''}
+      </dl>` : ''}
+      ${res.note ? `<p class="small">${esc(res.note)}</p>` : ''}`;
     // After answering: read the transcript and listen again to connect sound and text.
     if (it.t === 'listen' && canSpeak) fbBox.insertAdjacentHTML('beforeend', `<p class="small transcript-row">${L('Transcript', 'Transcripción')}: <em lang="en">${esc(it.say)}</em> ${audioBtn(it.say, { kind: 'sentence' })}</p>`);
   }

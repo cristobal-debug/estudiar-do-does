@@ -14,6 +14,8 @@ const T = TOPICS['present-simple'];
 const row = type => T.table.rows.find(r => r[0] === type)[2];          // 'She works here.' / 'Does she work here?'
 const TRAP = MISTAKES.doesS;                                            // Does she works here? → Does she work here?
 const OPTIONS = [TRAP.wrong, TRAP.right, TRAP.right.replace(/^Does/, 'Do')];
+// Each wrong option gets the explanation of its own mistake.
+const WHY = [TRAP.es, 'La -s de tercera persona pasa al auxiliar: **does**. El verbo principal queda en forma base: **work**.', 'Con she, he o it el auxiliar es **does**, no do. Y el verbo principal va en forma base: **work**.'];
 
 // "She works here." with its parts named: the -s is what moves into "Does".
 const base = () => {
@@ -66,7 +68,7 @@ function wireDemo(root) {
     });
     box.querySelector('.demo-transform').hidden = false;
     box.classList.add('solved');
-    fb.innerHTML = `<p class="fb-line ${ok ? 'ok' : 'no'}">${icon(ok ? 'check' : 'x')} <b>${ok ? 'Correcto.' : 'Todavía no.'}</b> ${md(TRAP.es)}</p>
+    fb.innerHTML = `<p class="fb-line ${ok ? 'ok' : 'no'}">${icon(ok ? 'check' : 'x')} <b>${ok ? 'Correcto.' : 'No es esta.'}</b> ${md(WHY[+b.dataset.i])}</p>
       ${ok ? '' : '<button type="button" class="btn ghost sm" data-retry>Probar otra vez</button>'}`;
   });
   fb.addEventListener('click', e => {
@@ -81,7 +83,7 @@ function wireDemo(root) {
 
 // What actually happens in a lesson, in order (session phases).
 const STEPS = [
-  ['explain', 'La regla, explicada en español y con ejemplos que puedes escuchar.'],
+  ['explain', 'La regla, explicada en español (desde B2, en inglés) y con ejemplos que puedes escuchar.'],
   ['guided', 'Primeros ejercicios con pistas, para fijar la estructura.'],
   ['exercise', 'Práctica sin ayuda: eliges, completas y traduces.'],
   ['challenge', 'Construyes y escribes tus propias frases.'],
@@ -93,7 +95,7 @@ const PRACTICE = [
   ['listen', 'Listening', 'Audios con transcripción y velocidad lenta.'],
   ['read', 'Reading', 'Textos por nivel con glosario y preguntas.'],
   ['write', 'Writing', 'Tareas guiadas con comprobación de lo que escribes.'],
-  ['speak', 'Speaking', 'Repite en voz alta y compara tu pronunciación.'],
+  ['speak', 'Speaking', 'Repite en voz alta con un modelo. Si tu navegador reconoce la voz, verás qué palabras se entendieron.'],
 ];
 
 export default function home(root) {
@@ -115,12 +117,12 @@ export default function home(root) {
 
   <section class="land-sec route-sec" id="ruta" aria-labelledby="ruta-t">
     <div class="sec-head"><p class="eyebrow">La ruta</p><h2 id="ruta-t">Cinco niveles, un camino claro.</h2>
-      <p class="muted">Sigue los niveles del Marco Común Europeo. El test te sitúa en el tuyo y cada unidad desbloquea la siguiente.</p></div>
+      <p class="muted">Sigue los niveles del Marco Común Europeo. El test te sitúa en el tuyo y cada unidad desbloquea la siguiente. El A1 es gratis; de A2 a C1 se desbloquean con un pago único de 15 USD.</p></div>
     <ol class="route">${levels.map((l, i) => {
       const us = unitsOf(l.id);
       const lessons = us.reduce((n, u) => n + u.lessons.length, 0);
       return `<li class="stop"><span class="stop-code">${l.code}</span><span class="stop-name">${esc(l.es)}</span>
-        <span class="stop-meta">${us.length} unidades · ${lessons} lecciones</span>${i === 0 ? '<span class="stop-tag">Empiezas aquí o donde diga el test</span>' : ''}</li>`;
+        <span class="stop-meta">${us.length} unidades · ${lessons} lecciones</span><span class="stop-tag${i === 0 ? '' : ' paid'}">${i === 0 ? 'Gratis' : 'Curso completo'}</span></li>`;
     }).join('')}</ol>
   </section>
 

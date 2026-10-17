@@ -24,19 +24,23 @@ export function topic(root, { id }) {
   const lv = LEVEL[t.level];
   const units = UNITS.filter(u => u.grammar.includes(id));
   const b = S.topics[id]?.best;
+  const english = t.level === 'b2' || t.level === 'c1';
   root.innerHTML = `${h1(t.title, { eyebrow: `${lv.code} · ${esc(t.es)}`, lead: md(t.sum), back: `#/grammar/level/${t.level}` })}
   <div class="topic-layout">
-    <article class="panel prose">${topicBody(t)}</article>
+    <article class="prose reading">
+      ${english ? `<p class="lang-note">${L('From B2 the theory is in English, so you also practise reading. The notes comparing it with Spanish stay in Spanish.', 'Desde B2 la teoría está en inglés, para que también practiques la lectura. Las notas que lo comparan con el español siguen en español.')}</p>` : ''}
+      <div${english ? ' lang="en"' : ''}>${topicBody(t)}</div>
+    </article>
     <aside class="topic-side">
       <section class="panel"><h2>${L('Practise', 'Practica')}</h2>
-        ${b != null ? `${bar(b)}<p class="small muted">${L('Best score', 'Mejor resultado')}: ${Math.round(b * 100)}%</p>` : `<p class="small muted">${t.ex.length} ${L('exercises available', 'ejercicios disponibles')}</p>`}
+        ${b != null ? `${bar(b)}<p class="small muted">${L('Best score', 'Mejor resultado')}: ${Math.round(b * 100)}%</p>` : `<p class="small muted">${t.ex.length} ${L('exercises on this topic', 'ejercicios sobre este tema')}</p>`}
         <a class="btn primary" href="#/grammar/${id}/practice">${icon('practice')} ${L('Practise this topic', 'Practicar este tema')}</a>
-        ${units.length ? `<p class="small">${L('Studied in', 'Se estudia en')}: ${units.map(u => `<a href="#/unit/${u.id}">${lv.code} · ${esc(u.title)}</a>`).join(', ')}</p>` : ''}
+        ${units.length ? `<p class="small">${L('Studied in', 'Se estudia en')}: ${units.map(u => `<a href="#/unit/${u.id}">${lv.code} · ${esc(L(u.title, u.es || u.title))}</a>`).join(', ')}</p>` : ''}
       </section>
     </aside>
   </div>
-  ${t.contrast?.length ? `<section class="panel">${contrastBlock(t)}</section>` : ''}
-  <section class="panel"><h2>${L('Examples', 'Ejemplos')}</h2>${examplesBlock(t.examples)}</section>
+  ${t.contrast?.length ? `<section class="contrast-sheet">${contrastBlock(t)}</section>` : ''}
+  <section class="sect"><h2>${L('Examples', 'Ejemplos')}</h2>${examplesBlock(t.examples)}</section>
   <div class="center"><a class="btn primary lg" href="#/grammar/${id}/practice">${L('Practise now', 'Practicar ahora')} ${icon('arrow')}</a></div>`;
 }
 

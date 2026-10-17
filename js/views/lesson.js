@@ -51,11 +51,11 @@ export default function lesson(root, { id }) {
       const nu = nl && UNIT[nl.unit];
       const unitFinished = !nextLesson(u) && !already;
       return {
-        title: up ? L(`Welcome to ${LEVEL[up.to].code}!`, `¡Bienvenido/a a ${LEVEL[up.to].code}!`) : unitFinished ? L('Unit completed!', '¡Unidad completada!') : L('Lesson completed!', '¡Lección completada!'),
+        title: up ? L(`Welcome to ${LEVEL[up.to].code}!`, `¡Bienvenido/a a ${LEVEL[up.to].code}!`) : unitFinished ? L('Unit completed', 'Unidad terminada') : L('Lesson completed', 'Lección terminada'),
         sub: up ? L(`You finished ${LEVEL[up.from].code}. A new level starts now.`, `Has terminado ${LEVEL[up.from].code}. Empieza un nuevo nivel.`)
-          : score >= 0.8 ? L('Excellent. You now know a bit more than before.', 'Excelente. Ahora sabes un poco más que antes.')
-          : score >= 0.5 ? L('Good work. Your mistakes will come back in your review.', 'Buen trabajo. Tus fallos volverán en el repaso.')
-          : L('Done! Repeat the lesson whenever you want — mistakes are how we learn.', '¡Hecho! Repite la lección cuando quieras: de los errores se aprende.'),
+          : score >= 0.8 ? L('You answered the final test well. What you missed is saved in My mistakes.', 'Has respondido bien el test final. Lo que fallaste queda guardado en Mis errores.')
+          : score >= 0.5 ? L('Half the test is solid. The questions you missed will come back in your review.', 'La mitad del test está asentada. Las preguntas que fallaste volverán en el repaso.')
+          : L('This one needs another round. Read the explanation again and repeat the lesson: the second time is usually much better.', 'Esta lección necesita otra vuelta. Relee la explicación y repítela: la segunda vez suele salir mucho mejor.'),
         icon: up || unitFinished ? 'trophy' : 'sparkle',
         bonus,
         extra: `${deltaHtml(deltas(before, after))}

@@ -55,7 +55,7 @@ export function topicBody(t, { compact = false } = {}) {
 }
 export function contrastBlock(t) {
   if (!t.contrast?.length) return '';
-  return `<div class="contrast"><h3>${icon('alert')} ${L('Watch out, Spanish speakers', '¡Ojo! Español → inglés')}</h3>${t.contrast.map(c => `
+  return `<div class="contrast"><h3>${icon('alert')} ${L('Where Spanish leads you astray', 'Donde el español te engaña')}</h3>${t.contrast.map(c => `
     <div class="ct-row">${c.es ? `<p class="ct-es"><span class="flag-es">ES</span> ${esc(c.es)}</p>` : ''}
     <p class="ct-no"><span class="tag no">${icon('x')} NO</span> <s>${esc(c.wrong)}</s></p>
     <p class="ct-ok"><span class="tag ok">${icon('check')} ${L('YES', 'SÍ')}</span> <strong>${esc(c.right)}</strong> ${audioBtn(c.right, { kind: 'sentence' })}</p>

@@ -2,7 +2,7 @@
 export default [
 {
   id: 'b1u1', level: 'b1', n: 1, title: 'Experiences', es: 'Experiencias', icon: '🌍',
-  can: ['Talk about life experiences (Have you ever…?)', 'Tell a story with background actions', 'Choose between past simple and present perfect'],
+  can: ['Hablar de experiencias vividas (Have you ever…?)', 'Contar una historia con acciones de fondo (past continuous)', 'Elegir entre past simple y present perfect'],
   grammar: ['present-perfect', 'past-continuous'],
   phrases: [['Have you ever been to…?', '¿Has estado alguna vez en…?'], ["I've never tried…", 'Nunca he probado…'], ['I was walking home when…', 'Volvía a casa cuando…'], ['What happened next?', '¿Qué pasó después?'], ['In the end…', 'Al final…'], ['Believe it or not…', 'Aunque no lo creas…']],
   dialogue: [['A', 'Have you ever done anything really scary?'], ['B', "Yes! I've been skydiving once."], ['A', 'No way! When did you do it?'], ['B', 'Two years ago, in Portugal. I was shaking when we were going up in the plane.'], ['A', 'And how was it?'], ['B', "Incredible. I've never felt so alive."]],
@@ -18,7 +18,7 @@ export default [
 },
 {
   id: 'b1u2', level: 'b1', n: 2, title: 'Work & Career', es: 'Trabajo y carrera', icon: '💼',
-  can: ['Describe your job and responsibilities', 'Take part in a simple job interview', 'Use gerunds, infinitives and relative clauses'],
+  can: ['Describir tu trabajo y tus responsabilidades', 'Desenvolverte en una entrevista de trabajo sencilla', 'Usar gerundios, infinitivos y oraciones de relativo'],
   grammar: ['gerunds', 'relative'],
   phrases: [["I'm in charge of…", 'Soy responsable de…'], ["I'm looking for a job in…", 'Busco trabajo en…'], ["I'm good at working in a team.", 'Se me da bien trabajar en equipo.'], ["I'd like to apply for the position of…", 'Me gustaría solicitar el puesto de…'], ['What are the working hours?', '¿Cuál es el horario?'], ["I'm used to working under pressure.", 'Estoy acostumbrado a trabajar bajo presión.']],
   dialogue: [['Interviewer', 'So, tell me a bit about yourself.'], ['Candidate', "I'm a graphic designer. I've worked for an agency that creates campaigns for sports brands."], ['Interviewer', 'Why do you want to leave?'], ['Candidate', "I enjoy working there, but I'd like to take on more responsibility."], ['Interviewer', 'What are you good at?'], ['Candidate', "I'm good at solving problems and I love learning new tools."], ['Interviewer', 'Do you mind travelling for work?'], ['Candidate', 'Not at all.']],
@@ -34,7 +34,7 @@ export default [
 },
 {
   id: 'b1u3', level: 'b1', n: 3, title: 'Travel & Culture', es: 'Viajes y cultura', icon: '🏛️',
-  can: ['Describe traditions and famous places', 'Use the passive to talk about history and processes', 'Compare customs in different countries'],
+  can: ['Describir tradiciones y lugares conocidos', 'Usar la voz pasiva para hablar de historia y de procesos', 'Comparar costumbres de distintos países'],
   grammar: ['passive'],
   phrases: [['It was built in…', 'Fue construido en…'], ["It's known for…", 'Es conocido por…'], ["It's worth visiting.", 'Merece la pena visitarlo.'], ['In my country, people usually…', 'En mi país, la gente suele…'], ["It's considered rude to…", 'Se considera de mala educación…'], ['The local food is amazing.', 'La comida local es increíble.']],
   dialogue: [['A', 'What should I see in Granada?'], ['B', 'You must visit the Alhambra. It was built by the Nasrid kings in the 13th and 14th centuries.'], ['A', 'Do I need to book tickets?'], ['B', 'Yes, definitely. Tickets are often sold out weeks in advance.'], ['A', "And what's the city known for?"], ['B', 'Tapas! In many bars, a free tapa is served with every drink.']],
@@ -50,7 +50,7 @@ export default [
 },
 {
   id: 'b1u4', level: 'b1', n: 4, title: 'Technology', es: 'Tecnología', icon: '📱',
-  can: ['Talk about gadgets, apps and the internet', 'Describe problems and solutions (If…, will…)', 'Give instructions for using technology'],
+  can: ['Hablar de dispositivos, aplicaciones e internet', 'Plantear problemas y soluciones (If…, will…)', 'Dar instrucciones para usar la tecnología'],
   grammar: ['first-conditional'],
   phrases: [["It doesn't work. / It's not working.", 'No funciona.'], ['Have you tried turning it off and on again?', '¿Has probado a apagarlo y encenderlo?'], ['If you click here, it will open.', 'Si haces clic aquí, se abrirá.'], ['The battery is running out.', 'Se está acabando la batería.'], ["I'll send you the link.", 'Te mando el enlace.'], ["I can't log in.", 'No puedo iniciar sesión.']],
   dialogue: [['A', 'My laptop is so slow today.'], ['B', 'Have you restarted it?'], ['A', 'Not yet. If I restart it, will I lose my documents?'], ['B', "No, not if you save them first. And if it's still slow, I'll check it for you."], ['A', "Thanks! Also, I can't connect to the Wi-Fi."], ['B', "You need the new password. I'll send it to you."]],
@@ -66,7 +66,7 @@ export default [
 },
 {
   id: 'b1u5', level: 'b1', n: 5, title: 'Opinions & Society', es: 'Opiniones y sociedad', icon: '🗣️',
-  can: ['Give and justify opinions', 'Agree and disagree politely', 'Talk about hypothetical situations (If I were…)'],
+  can: ['Dar una opinión y justificarla', 'Mostrar acuerdo y desacuerdo con educación', 'Hablar de situaciones hipotéticas (If I were…)'],
   grammar: ['second-conditional'],
   phrases: [['In my opinion…', 'En mi opinión…'], ["I (don't) think that…", '(No) creo que…'], ['I agree with you.', 'Estoy de acuerdo contigo.'], ["That's a good point, but…", 'Es un buen argumento, pero…'], ['I see what you mean; however…', 'Entiendo lo que dices; sin embargo…'], ['If I were the mayor, I would…', 'Si yo fuera alcalde, …']],
   dialogue: [['A', 'Do you think public transport should be free?'], ['B', "I think it's a great idea. If buses were free, fewer people would drive."], ['A', 'I see your point, but who would pay for it?'], ['B', 'The government, with taxes.'], ['A', "I'm not sure I agree. If taxes went up, people would complain."], ['B', "That's true, but cleaner air would benefit everyone."]],
@@ -82,8 +82,8 @@ export default [
 },
 // ——— B2 ———
 {
-  id: 'b2u1', level: 'b2', n: 1, title: 'Advanced Conversation', icon: '💬',
-  can: ['Keep a conversation going naturally', 'Speculate about the past (must have, might have)', 'Express regret and criticism (should have)'],
+  id: 'b2u1', level: 'b2', n: 1, title: 'Advanced Conversation', es: 'Conversación avanzada', icon: '💬',
+  can: ['Mantener una conversación con naturalidad', 'Hacer deducciones sobre el pasado (must have, might have)', 'Expresar arrepentimiento y reproches (should have)'],
   grammar: ['modal-perfects'],
   phrases: [['You must have been exhausted.'], ['She might have missed the bus.'], ['I should have called you.'], ['Speaking of which…'], ['That reminds me…'], ['To be honest…']],
   dialogue: [['A', 'Did you see Mark at the party?'], ['B', "No, he didn't turn up. He must have been working late."], ['A', "Or he might have forgotten. He's been so stressed lately."], ['B', 'True. I should have texted him before. Speaking of which, are you coming to Ana\'s birthday on Friday?'], ['A', "Wouldn't miss it!"]],
@@ -98,8 +98,8 @@ export default [
   speaking: { p: 'Tell a story about a misunderstanding.', use: ['must have|might have|should have', 'anyway|in the end'], repeat: ['You must have been exhausted.', 'She might have missed the bus.', 'I should have called you.'], model: "Last year I waited for a friend for an hour outside the wrong cinema. She must have thought I'd forgotten about her. I should have checked the address. Anyway, in the end we laughed about it." },
 },
 {
-  id: 'b2u2', level: 'b2', n: 2, title: 'Business English', icon: '📊',
-  can: ['Write clear professional emails', 'Take part in meetings', 'Use impersonal passive structures'],
+  id: 'b2u2', level: 'b2', n: 2, title: 'Business English', es: 'Inglés de negocios', icon: '📊',
+  can: ['Escribir correos profesionales claros', 'Participar en reuniones', 'Usar estructuras pasivas impersonales (It is said that…)'],
   grammar: ['advanced-passive'],
   phrases: [["I'm writing with regard to…"], ['Please find attached…'], ['It has been agreed that…'], ['Could we schedule a call?'], ["Let's touch base next week."], ['The deadline has been extended.']],
   dialogue: [['Chair', "Right, let's get started. The first item on the agenda is the budget."], ['Finance', "The figures have been reviewed, and it's been agreed that marketing will get ten percent more."], ['Chair', 'Good. Is the launch date still on track?'], ['Product', "It's expected to be delayed by two weeks, I'm afraid. The supplier is said to be having problems."], ['Chair', "Okay, let's schedule a follow-up call for Thursday."]],
@@ -114,8 +114,8 @@ export default [
   speaking: { p: 'Give a one-minute project update to your team.', use: ['has been|have been|will be', 'expected|next step'], repeat: ["I'm writing with regard to your order.", 'The deadline has been extended.', 'Could we schedule a call for Thursday?'], model: "Quick update on the website project. The design has been approved and the first pages have been built. The launch is expected at the end of the month. The next step is testing, which will be done by the QA team." },
 },
 {
-  id: 'b2u3', level: 'b2', n: 3, title: 'News & Media', icon: '📰',
-  can: ['Understand news stories', 'Report what people said', 'Tell facts from opinions'],
+  id: 'b2u3', level: 'b2', n: 3, title: 'News & Media', es: 'Noticias y medios', icon: '📰',
+  can: ['Entender noticias', 'Contar lo que dijo otra persona (reported speech)', 'Distinguir hechos de opiniones'],
   grammar: ['reported'],
   phrases: [['According to…'], ['The minister claimed that…'], ['Sources say that…'], ['It is reported that…'], ['She denied having…'], ['The article suggests that…']],
   dialogue: [['A', 'Did you read about the new traffic law?'], ['B', 'Only the headline. What did it say?'], ['A', 'The mayor announced that cars would be banned from the centre from next year.'], ['B', 'Really? Did she explain why?'], ['A', 'She said it would reduce pollution by thirty percent.'], ['B', 'Shop owners must be furious.'], ['A', 'They are. One of them told the reporter that he might have to close.']],
@@ -130,8 +130,8 @@ export default [
   speaking: { p: 'Summarise a news story you read or heard this week.', use: ['said|announced|reported|according to', 'would|had'], repeat: ['According to the report, prices will rise.', 'The minister claimed that the plan would work.', 'She denied having any information.'], model: "According to the news, the government announced that it would invest in renewable energy. The minister said the plan would create thousands of jobs, but critics claimed that it had come too late." },
 },
 {
-  id: 'b2u4', level: 'b2', n: 4, title: 'Debate & Arguments', icon: '⚖️',
-  can: ['Build a structured argument', 'Respond to opposing views politely', 'Talk about past hypotheticals (third & mixed conditionals)'],
+  id: 'b2u4', level: 'b2', n: 4, title: 'Debate & Arguments', es: 'Debate y argumentación', icon: '⚖️',
+  can: ['Construir un argumento ordenado', 'Responder con educación a opiniones contrarias', 'Hablar de hipótesis sobre el pasado (tercer condicional y mixtos)'],
   grammar: ['advanced-cond'],
   phrases: [['On the one hand… on the other hand…'], ['It could be argued that…'], ['That may be true, but…'], ['The evidence suggests that…'], ['Let me put it another way.'], ['I take your point, but…']],
   dialogue: [['A', 'Remote work should be the default for office jobs.'], ['B', 'I take your point, but young employees learn a lot from colleagues in person.'], ['A', "That may be true, but if we hadn't been forced to work from home in 2020, we would never have discovered how productive it can be."], ['B', "Productive for some. The evidence suggests that isolation is a real drawback."], ['A', 'Then a hybrid model might be a reasonable compromise.']],
@@ -146,8 +146,8 @@ export default [
   speaking: { p: 'Argue for or against: "Social media has made us less happy."', use: ['on the one hand|on the other hand|however', 'evidence|argue|point'], repeat: ['It could be argued that…', "I take your point, but I don't agree.", 'The evidence suggests that the benefits outweigh the drawbacks.'], model: "It could be argued that social media connects people. However, the evidence suggests that heavy users feel more anxious. If platforms had been designed differently from the start, we might be happier today." },
 },
 {
-  id: 'b2u5', level: 'b2', n: 5, title: 'Complex Grammar', icon: '🧩',
-  can: ['Use inversion for emphasis', 'Combine ideas in complex sentences', 'Understand formal written English'],
+  id: 'b2u5', level: 'b2', n: 5, title: 'Complex Grammar', es: 'Gramática compleja', icon: '🧩',
+  can: ['Usar la inversión para dar énfasis', 'Combinar ideas en frases complejas', 'Entender el inglés escrito formal'],
   grammar: ['inversion', 'complex-clauses'],
   phrases: [['Never before have we seen…'], ['Not only… but also…'], ['Despite having…'], ['Having considered…'], ['…, which means that…'], ['Under no circumstances…']],
   dialogue: [['A', 'Did you read the report on sleep and memory?'], ['B', 'I did. Not only does sleep help us remember, but it also helps us forget what is useless.'], ['A', "Fascinating. Despite knowing that, I still check my phone at midnight."], ['B', 'Never have I felt so called out by a scientific study!']],
@@ -163,8 +163,8 @@ export default [
 },
 // ——— C1 ———
 {
-  id: 'c1u1', level: 'c1', n: 1, title: 'Academic English', icon: '🎓',
-  can: ['Write cautious, objective academic prose', 'Use hedging and nominalisation', 'Link ideas with advanced connectors'],
+  id: 'c1u1', level: 'c1', n: 1, title: 'Academic English', es: 'Inglés académico', icon: '🎓',
+  can: ['Escribir textos académicos prudentes y objetivos', 'Matizar afirmaciones (hedging) y usar la nominalización', 'Enlazar ideas con conectores avanzados'],
   grammar: ['academic', 'connectors'],
   phrases: [['It could be argued that…'], ['There is evidence to suggest that…'], ['This is consistent with…'], ['A significant proportion of…'], ['To some extent…'], ['Further research is needed to…']],
   dialogue: [['Supervisor', 'Your literature review is thorough, but some claims are too strong.'], ['Student', 'Which ones, for example?'], ['Supervisor', 'You write that social media "causes" loneliness. The evidence only suggests an association.'], ['Student', 'So I should say it "may contribute to" loneliness?'], ['Supervisor', 'Exactly. And cite the longitudinal studies — they are more compelling than the surveys.']],
@@ -179,8 +179,8 @@ export default [
   speaking: { p: 'Present an argument about a controversial research topic, using cautious language.', use: ['may|might|could|tend|appear|suggest', 'however|nevertheless|whereas'], repeat: ['There is evidence to suggest that this approach works.', 'It could be argued that the sample was too small.', 'Further research is needed to confirm these findings.'], model: "There is evidence to suggest that four-day working weeks may increase productivity. Nevertheless, most trials have been small and voluntary, so it could be argued that the companies involved were already highly motivated." },
 },
 {
-  id: 'c1u2', level: 'c1', n: 2, title: 'Professional Communication', icon: '🤝',
-  can: ['Adapt register to audience and purpose', 'Give diplomatic feedback and negotiate', 'Write persuasive professional messages'],
+  id: 'c1u2', level: 'c1', n: 2, title: 'Professional Communication', es: 'Comunicación profesional', icon: '🤝',
+  can: ['Adaptar el registro al destinatario y al propósito', 'Dar feedback con diplomacia y negociar', 'Escribir mensajes profesionales persuasivos'],
   grammar: ['formality'],
   phrases: [['I would be grateful if you could…'], ['I wonder whether we might consider…'], ['With all due respect,…'], ["I'm afraid that won't be possible."], ['Would it be feasible to…?'], ['Let me get back to you on that.']],
   dialogue: [['Client', 'Frankly, the proposal is over budget.'], ['Consultant', 'I appreciate your concern. Would it be feasible to phase the project over two quarters?'], ['Client', "That could work, but we'd need the core features first."], ['Consultant', "Absolutely. I'll revise the timeline and get back to you by Friday."], ['Client', 'Thank you. I appreciate your flexibility.']],
@@ -195,8 +195,8 @@ export default [
   speaking: { p: 'Negotiate: your client wants a lower price. Respond diplomatically.', use: ['appreciate|understand', 'would it be|might|could we'], repeat: ['I appreciate your concern.', 'Would it be feasible to phase the project?', "I'm afraid that won't be possible, but here is what we can do."], model: "I appreciate that the budget is tight. I'm afraid we can't reduce the price without reducing the scope, but would it be feasible to start with the core features and add the rest next quarter?" },
 },
 {
-  id: 'c1u3', level: 'c1', n: 3, title: 'Advanced Reading & Writing', icon: '✍️',
-  can: ['Read complex texts and understand implicit meaning', 'Use emphasis and cleft sentences', 'Write a formal argumentative essay'],
+  id: 'c1u3', level: 'c1', n: 3, title: 'Advanced Reading & Writing', es: 'Lectura y escritura avanzadas', icon: '✍️',
+  can: ['Leer textos complejos y captar lo que dan a entender', 'Dar énfasis con oraciones escindidas (What I need is…)', 'Escribir un ensayo argumentativo formal'],
   grammar: ['discourse', 'nuance'],
   phrases: [['What strikes me most is…'], ['It is not so much… as…'], ['The irony is that…'], ['On closer inspection,…'], ["It's high time we…"], ['Far from being…, it is…']],
   dialogue: [['A', 'What did you make of the ending?'], ['B', "What struck me most was how little was resolved."], ['A', "I thought it was frustrating. It's not so much ambiguous as unfinished."], ['B', 'The irony is that the ambiguity is the point — the narrator never knew the truth either.'], ['A', 'On closer inspection, you might be right.']],

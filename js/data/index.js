@@ -13,15 +13,25 @@ export { CATEGORIES, MISTAKES, TIPS };
 
 export const LEVELS = [
   { id: 'a1', code: 'A1', name: 'Beginner', es: 'Principiante',
+    focus: 'Frases completas con sujeto y verbo: be, el presente simple, there is y can. Aquí se fijan los hábitos que luego cuesta corregir, así que cada lección insiste en la estructura antes que en la cantidad de vocabulario.',
+    trap: { wrong: 'Does she works here?', right: "Does she work here?", why: 'La -s de tercera persona ya está en **does**; el verbo principal vuelve a su forma base.' },
     goals: ['Presentarte y hablar de ti y tu familia', 'Describir tu rutina y tu entorno', 'Pedir comida y preguntar direcciones', 'Entender frases y textos muy sencillos'] },
   { id: 'a2', code: 'A2', name: 'Elementary', es: 'Elemental',
+    focus: 'Salir del presente: contar lo que pasó, lo que está pasando y lo que vas a hacer, y comparar opciones. El reto es elegir el tiempo verbal, no solo conjugarlo.',
+    trap: { wrong: 'Did you saw the film?', right: "Did you see the film?", why: '**Did** ya marca el pasado. El verbo principal va en forma base, igual que después de does.' },
     goals: ['Contar experiencias pasadas', 'Hablar de planes y del futuro', 'Desenvolverte en viajes, tiendas y en el médico', 'Comparar lugares y opciones'] },
   { id: 'b1', code: 'B1', name: 'Intermediate', es: 'Intermedio',
-    goals: ['Narrate experiences and tell stories', 'Handle job interviews and work situations', 'Give and justify opinions', 'Understand the main points of clear texts'] },
+    focus: 'Conectar el pasado con el presente y razonar: present perfect, condicionales, pasiva y opiniones justificadas. Es el nivel donde el inglés deja de ser una traducción palabra por palabra.',
+    trap: { wrong: 'I live here since 2020.', right: "I've lived here since 2020.", why: 'El español usa presente (_vivo aquí desde…_), pero en inglés una situación que empezó antes y sigue va en **present perfect**.' },
+    goals: ['Contar experiencias e historias', 'Desenvolverte en entrevistas y situaciones de trabajo', 'Dar opiniones y justificarlas', 'Entender las ideas principales de textos claros'] },
   { id: 'b2', code: 'B2', name: 'Upper Intermediate', es: 'Intermedio alto',
-    goals: ['Hold fluent conversations with native speakers', 'Write clear professional emails and essays', 'Understand news, arguments and complex texts', 'Speculate and argue about hypothetical situations'] },
+    focus: 'Matizar: deducir sobre el pasado, contar lo que dijo otra persona, plantear hipótesis y cambiar de registro. Desde B2 la teoría de gramática se lee en inglés; los contrastes con el español siguen en español.',
+    trap: { wrong: 'He said me the truth.', right: "He told me the truth.", why: 'Con la persona a quien hablas se usa **tell**. _Say_ no admite la persona justo detrás.' },
+    goals: ['Conversar con fluidez con hablantes nativos', 'Escribir correos profesionales y ensayos claros', 'Entender noticias, argumentos y textos complejos', 'Hacer deducciones y argumentar sobre hipótesis'] },
   { id: 'c1', code: 'C1', name: 'Advanced', es: 'Avanzado',
-    goals: ['Write cautious academic and professional texts', 'Adapt tone and register to any audience', 'Understand implicit meaning in demanding texts', 'Express ideas with precision and nuance'] },
+    focus: 'Precisión y registro: escribir con cautela, adaptar el tono a cada destinatario y entender lo que un texto da a entender sin decirlo.',
+    trap: { wrong: 'Although it was late, but we stayed.', right: "Although it was late, we stayed.", why: 'En español se oye _aunque…, pero_. En inglés, un solo conector por contraste: **although** o **but**.' },
+    goals: ['Escribir textos académicos y profesionales con prudencia', 'Adaptar el tono y el registro a cada destinatario', 'Captar lo implícito en textos exigentes', 'Expresar ideas con precisión y matices'] },
   { id: 'c2', code: 'C2', name: 'Proficiency', es: 'Maestría', soon: true, goals: [] },
 ];
 export const LEVEL = Object.fromEntries(LEVELS.map(l => [l.id, l]));
