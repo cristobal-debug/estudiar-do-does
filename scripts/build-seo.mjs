@@ -66,7 +66,7 @@ for (const lv of levels) {
 
 <p class="seo-note small muted">Este nivel trabaja los contenidos centrales del ${lv.code} del Marco Común Europeo (MCER) con ${units.length} unidades. No sustituye la preparación específica de un examen oficial.</p>
 <p class="center"><a class="btn primary lg" href="../#/learn/${lv.id}">${cta}</a></p>
-</div><footer class="site-footer">Desarrollado por <a href="https://cristobaljeldrez.com" target="_blank" rel="noopener">cristobaljeldrez.com</a></footer></main></body></html>`;
+</div><footer class="site-footer">Diseño web: <a href="https://cristobaljeldrez.com" target="_blank" rel="noopener">Cristóbal Jeldrez</a></footer></main></body></html>`;
   mkdirSync(slug, { recursive: true });
   writeFileSync(`${slug}/index.html`, html);
 }

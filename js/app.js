@@ -145,7 +145,7 @@ function route() {
   root.className = 'view-inner';
   const footer = document.createElement('footer');
   footer.className = 'site-footer';
-  footer.innerHTML = `${L('Developed by', 'Desarrollado por')} <a href="https://cristobaljeldrez.com" target="_blank" rel="noopener">cristobaljeldrez.com</a>`;
+  footer.innerHTML = `${L('Web design:', 'Diseño web:')} <a href="https://cristobaljeldrez.com" target="_blank" rel="noopener">Cristóbal Jeldrez</a>`;
   view.replaceChildren(root, footer);
   const lvl = routeLevel(r.pat, params);
   const locked = !canAccess(lvl);
